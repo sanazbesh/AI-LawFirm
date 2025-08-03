@@ -70,7 +70,7 @@ def create_user_subscription(email, plan_type):
             "has_advanced_reports": False,
             "has_time_tracking": True
         },
-        "pro": {
+        "premium": {
             "document_limit": "unlimited",
             "client_limit": "unlimited",
             "storage_limit_mb": "unlimited",
