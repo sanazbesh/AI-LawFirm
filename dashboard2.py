@@ -958,20 +958,17 @@ elif page == "Time & Billing":
         
         # Invoice list
         st.subheader("Recent Invoices")
-        
-        for invoice in st.session_state.invoices:
-            status_colors = {'draft': '#6c757d', 'sent': '#ffc107', 'paid': '#28a745'}
-            
-            st.markdown(f"""
-            <div class="document-card">
-                <strong>Invoice {invoice.invoice_number}</strong><br>
-                <small>Issued: {invoice.date_issued.strftime('%Y-%m-%d')} | Due: {invoice.due_date.strftime('%Y-%m-%d')}</small><br>
-                <strong>${invoice.total_amount:,.2f}</strong>
-                <span style="background: {status_colors.get(invoice.status, '#6c757d')}; color: white; padding: 0.25rem 0.5rem; border-radius: 4px; font-size: 0.8rem; margin-left: 1rem;">
-                    {invoice.status.upper()}
-                </span>
-            </div>
-            """, unsafe_allow_html=True)
+
+        if st.session_state.invoices:
+            for invoice in st.session_state.invoices:
+                with st.container():
+                    st.write(f"**Invoice {invoice.invoice_number}**")
+                    st.write(f"Issued: {invoice.date_issued.strftime('%Y-%m-%d')} | Due: {invoice.due_date.strftime('%Y-%m-%d')}")
+                    st.write(f"Amount: ${invoice.total_amount:,.2f}")
+                    st.write(f"Status: {invoice.status.upper()}")
+                    st.write("---")
+        else:
+            st.info("No invoices generated yet.")
     
     with tab3:
         st.subheader("Billing Reports")
