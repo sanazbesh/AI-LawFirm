@@ -1,5 +1,601 @@
-import streamlit as st
+st.markdown(f"""
+                    <div class="integration-card">
+                        <h4>{integration_info['name']}</h4>
+                        <p style="color: {status_color}; font-weight: bold;">{status_text}</p>
+                        <p>{integration_info['type'].replace('_', ' ').title()}</p>
+                    </div>
+                    """, unsafe_allow_html=True)
+                    
+                    if not is_active:
+                        if st.button(f"Connect {integration_info['name']}", key=f"connect_{integration_id}"):
+                            # Simulate integration setup
+                            config = {"api_key": "demo_key", "endpoint": "https://api.example.com"}
+                            if integration_manager.setup_integration(integration_id, config):
+                                st.success(f"{integration_info['name']} connected successfully!")
+                                st.rerun()
+                    else:
+                        if st.button(f"Configure {integration_info['name']}", key=f"config_{integration_id}"):
+                            st.info(f"Configuration panel for {integration_info['name']} would open here.")
+
+elif page == "Mobile App":
+    st.title("📱 Mobile Application")
+    
+    col1, col2 = st.columns([1, 2])
+    
+    with col1:
+        st.subheader("📱 Mobile Features")
+        
+        mobile_features = [
+            ("📄 Document Viewer", "View and annotate documents on-the-go"),
+            ("📸 Document Scanner", "Scan and upload documents using camera"),
+            ("🎙️ Voice Notes", "Record voice memos for matters"),
+            ("⏱️ Time Tracking", "Track billable hours with one tap"),
+            ("📅 Calendar Sync", "View appointments and deadlines"),
+            ("🔔 Push Notifications", "Get alerts for important events"),
+            ("🔒 Biometric Security", "Fingerprint and Face ID protection"),
+            ("☁️ Offline Sync", "Work offline, sync when connected")
+        ]
+        
+        for feature, description in mobile_features:
+            st.markdown(f"""
+            <div style="margin: 1rem 0; padding: 1rem; background: #f8f9fa; border-radius: 8px; border-left: 4px solid #2E86AB;">
+                <strong>{feature}</strong><br>
+                <small>{description}</small>
+            </div>
+            """, unsafe_allow_html=True)
+        
+        st.subheader("📊 Mobile Analytics")
+        st.metric("Daily Active Users", "156", "+12")
+        st.metric("Documents Scanned", "2,341", "+89")
+        st.metric("Voice Notes Created", "567", "+23")
+    
+    with col2:
+        st.subheader("📱 Mobile App Preview")
+        mobile_framework.render_mobile_interface()
+        
+        st.markdown("### 📲 Download Mobile App")
+        col1, col2 = st.columns(2)
+        
+        with col1:
+            st.markdown("""
+            <div style="background: #000; color: white; padding: 1rem; border-radius: 8px; text-align: center;">
+                📱 iOS App Store<br>
+                <small>Download for iPhone & iPad</small>
+            </div>
+            """, unsafe_allow_html=True)
+        
+        with col2:
+            st.markdown("""
+            <div style="background: #34a853; color: white; padding: 1rem; border-radius: 8px; text-align: center;">
+                🤖 Google Play Store<br>
+                <small>Download for Android</small>
+            </div>
+            """, unsafe_allow_html=True)
+
+elif page == "Business Intelligence":
+    st.title("📊 Business Intelligence & Analytics")
+    
+    if not has_permission('admin'):
+        st.error("🚫 Access denied. Business Intelligence requires admin privileges.")
+        st.stop()
+    
+    # Generate comprehensive BI data
+    exec_metrics = business_intelligence.generate_executive_dashboard()
+    forecast_data = business_intelligence.generate_financial_forecast()
+    productivity_data = business_intelligence.create_productivity_metrics()
+    
+    # Executive Summary
+    st.subheader("📈 Executive Summary")
+    
+    col1, col2, col3, col4, col5, col6 = st.columns(6)
+    
+    metrics = [
+        ("Revenue", f"${exec_metrics['total_revenue']:,.0f}", f"{exec_metrics['revenue_growth']:+.1f}%"),
+        ("Matters", exec_metrics['active_matters'], "+2"),
+        ("Utilization", f"{exec_metrics['utilization_rate']:.1f}%", "+3.2%"),
+        ("Client Satisfaction", f"{exec_metrics['client_satisfaction']:.1f}/5", "+0.3"),
+        ("Avg Matter Value", f"${exec_metrics['avg_matter_value']:,.0f}", "+12%"),
+        ("Doc Growth", f"{exec_metrics['document_growth_rate']:.0f}%", "+5%")
+    ]
+    
+    for col, (label, value, change) in zip([col1, col2, col3, col4, col5, col6], metrics):
+        with col:
+            st.markdown('<div class="metric-card">', unsafe_allow_html=True)
+            st.metric(label, value, change)
+            st.markdown('</div>', unsafe_allow_html=True)
+    
+    st.divider()
+    
+    # Comprehensive Analytics Tabs
+    tab1, tab2, tab3, tab4, tab5 = st.tabs(["💰 Financial", "⏱️ Productivity", "👥 Client Analytics", "📊 Forecasting", "🎯 Performance"])
+    
+    with tab1:
+        st.subheader("Financial Performance Analysis")
+        
+        col1, col2 = st.columns(2)
+        
+        with col1:
+            st.plotly_chart(business_intelligence.create_revenue_chart(), use_container_width=True)
+            
+            # Revenue breakdown
+            st.subheader("Revenue by Practice Area")
+            practice_revenue = {
+                'Corporate Law': 45000,
+                'Litigation': 32000,
+                'Family Law': 18000,
+                'Real Estate': 15000,
+                'Employment': 12000
+            }
+            
+            fig = px.pie(values=list(practice_revenue.values()), 
+                        names=list(practice_revenue.keys()),
+                        title="Revenue Distribution")
+            st.plotly_chart(fig, use_container_width=True)
+        
+        with col2:
+            # Financial metrics table
+            st.subheader("Financial KPIs")
+            
+            financial_data = pd.DataFrame({
+                'Metric': ['Total Revenue', 'Total Expenses', 'Net Profit', 'Profit Margin', 'Revenue per Attorney', 'Collection Rate'],
+                'Current Period': ['$125,000', '$85,000', '$40,000', '32%', '$25,000', '94%'],
+                'Previous Period': ['$118,000', '$82,000', '$36,000', '30.5%', '$23,600', '91%'],
+                'Change': ['+5.9%', '+3.7%', '+11.1%', '+1.5pp', '+5.9%', '+3pp']
+            })
+            
+            st.dataframe(financial_data, hide_index=True)
+            
+            # Accounts receivable aging
+            st.subheader("Accounts Receivable Aging")
+            ar_data = pd.DataFrame({
+                'Period': ['0-30 days', '31-60 days', '61-90 days', '90+ days'],
+                'Amount': [25000, 8000, 3000, 1500],
+                'Percentage': [67, 21, 8, 4]
+            })
+            
+            fig = px.bar(ar_data, x='Period', y='Amount', title="Outstanding Invoices by Age")
+            st.plotly_chart(fig, use_container_width=True)
+    
+    with tab2:
+        st.subheader("Productivity & Efficiency Analytics")
+        
+        col1, col2 = st.columns(2)
+        
+        with col1:
+            # Billable hours trend
+            dates = pd.date_range(start='2024-01-01', periods=30, freq='D')
+            hours_data = np.random.normal(7.5, 1.5, 30)
+            
+            fig = go.Figure()
+            fig.add_trace(go.Scatter(x=dates, y=hours_data, mode='lines+markers', name='Daily Billable Hours'))
+            fig.add_hline(y=7.5, line_dash="dash", annotation_text="Target: 7.5 hours")
+            fig.update_layout(title="Daily Billable Hours Trend", height=400)
+            st.plotly_chart(fig, use_container_width=True)
+            
+            # Document processing metrics
+            st.subheader("Document Processing Efficiency")
+            proc_metrics = pd.DataFrame({
+                'Document Type': ['Contracts', 'Court Filings', 'Correspondence', 'Research'],
+                'Avg Processing Time (hours)': [3.2, 2.8, 0.5, 4.1],
+                'Automation Potential': ['High', 'Medium', 'High', 'Low']
+            })
+            st.dataframe(proc_metrics, hide_index=True)
+        
+        with col2:
+            st.plotly_chart(business_intelligence.create_workload_analysis(), use_container_width=True)
+            
+            # Efficiency improvements
+            st.subheader("Efficiency Gains")
+            efficiency_data = {
+                'AI Document Review': '+35%',
+                'Automated Time Tracking': '+22%',
+                'Template Usage': '+18%',
+                'Client Portal': '+15%'
+            }
+            
+            for feature, improvement in efficiency_data.items():
+                st.markdown(f"• **{feature}**: {improvement} time savings")
+    
+    with tab3:
+        st.subheader("Client Analytics & Insights")
+        
+        col1, col2 = st.columns(2)
+        
+        with col1:
+            # Client satisfaction over time
+            months = pd.date_range(start='2024-01-01', periods=12, freq='M')
+            satisfaction_scores = [4.1, 4.0, 4.2, 4.3, 4.2, 4.4, 4.1, 4.3, 4.5, 4.2, 4.4, 4.2]
+            
+            fig = go.Figure()
+            fig.add_trace(go.Scatter(x=months, y=satisfaction_scores, mode='lines+markers', name='Client Satisfaction'))
+            fig.add_hline(y=4.0, line_dash="dash", annotation_text="Target: 4.0")
+            fig.update_layout(title="Client Satisfaction Trend", yaxis=dict(range=[3.5, 5.0]), height=400)
+            st.plotly_chart(fig, use_container_width=True)
+            
+            # Client retention metrics
+            st.subheader("Client Retention Metrics")
+            retention_data = pd.DataFrame({
+                'Metric': ['Client Retention Rate', 'New Client Acquisition', 'Client Lifetime Value', 'Referral Rate'],
+                'Value': ['92%', '15 clients/month', '$85,000', '23%'],
+                'Benchmark': ['85%', '12 clients/month', '$75,000', '20%']
+            })
+            st.dataframe(retention_data, hide_index=True)
+        
+        with col2:
+            # Client segmentation
+            client_segments = {
+                'Enterprise': 25,
+                'Mid-Market': 45,
+                'Small Business': 35,
+                'Individual': 60
+            }
+            
+            fig = px.pie(values=list(client_segments.values()),
+                        names=list(client_segments.keys()),
+                        title="Client Segmentation")
+            st.plotly_chart(fig, use_container_width=True)
+            
+            # Top clients by revenue
+            st.subheader("Top Clients by Revenue")
+            top_clients = pd.DataFrame({
+                'Client': ['Acme Corporation', 'TechStart Inc', 'Global Enterprises', 'Local Business LLC', 'Individual Client A'],
+                'Revenue YTD': [45000, 28000, 22000, 15000, 12000],
+                'Matters': [8, 5, 6, 3, 4]
+            })
+            st.dataframe(top_clients, hide_index=True)
+    
+    with tab4:
+        st.subheader("Financial Forecasting & Projections")
+        
+        # Revenue forecast
+        forecast_months = [f['month'] for f in forecast_data['forecast']]
+        forecast_values = [f['projected_revenue'] for f in forecast_data['forecast']]
+        confidence_lower = [f['confidence_interval'][0] for f in forecast_data['forecast']]
+        confidence_upper = [f['confidence_interval'][1] for f in forecast_data['forecast']]
+        
+        fig = go.Figure()
+        fig.add_trace(go.Scatter(x=forecast_months, y=forecast_values, mode='lines+markers', name='Projected Revenue'))
+        fig.add_trace(go.Scatter(x=forecast_months, y=confidence_upper, fill=None, mode='lines', line_color='rgba(0,0,0,0)', showlegend=False))
+        fig.add_trace(go.Scatter(x=forecast_months, y=confidence_lower, fill='tonexty', mode='lines', line_color='rgba(0,0,0,0)', name='Confidence Interval'))
+        fig.update_layout(title=f"6-Month Revenue Forecast (Growth Rate: {forecast_data['growth_rate']:.1%})", height=400)
+        st.plotly_chart(fig, use_container_width=True)
+        
+        col1, col2 = st.columns(2)
+        
+        with col1:
+            st.subheader("Forecast Assumptions")
+            assumptions = [
+                "8% monthly growth rate based on historical data",
+                "Stable client retention at 92%",
+                "New client acquisition of 15 clients/month",
+                "Average matter value of $25,000",
+                "Economic conditions remain stable"
+            ]
+            
+            for assumption in assumptions:
+                st.markdown(f"• {assumption}")
+        
+        with col2:
+            st.subheader("Scenario Analysis")
+            scenarios = pd.DataFrame({
+                'Scenario': ['Optimistic', 'Base Case', 'Conservative'],
+                '6-Month Revenue': ['$185,000', '$165,000', '$145,000'],
+                'Growth Rate': ['12%', '8%', '4%'],
+                'Probability': ['25%', '50%', '25%']
+            })
+            st.dataframe(scenarios, hide_index=True)
+    
+    with tab5:
+        st.subheader("Performance Dashboard")
+        
+        # Key performance indicators
+        col1, col2, col3 = st.columns(3)
+        
+        with col1:
+            st.markdown("### ⚖️ Legal Performance")
+            legal_kpis = pd.DataFrame({
+                'KPI': ['Case Win Rate', 'Avg Case Duration', 'Client Response Time', 'Document Turnaround'],
+                'Current': ['78%', '145 days', '4.2 hours', '2.1 days'],
+                'Target': ['80%', '120 days', '6 hours', '2 days'],
+                'Status': ['🔴', '🔴', '🟢', '🔴']
+            })
+            st.dataframe(legal_kpis, hide_index=True)
+        
+        with col2:
+            st.markdown("### 💼 Operational Performance")
+            operational_kpis = pd.DataFrame({
+                'KPI': ['Utilization Rate', 'Revenue per Hour', 'Collection Rate', 'Client Satisfaction'],
+                'Current': ['78.5%', '$285', '94%', '4.2/5'],
+                'Target': ['80%', '$300', '95%', '4.0/5'],
+                'Status': ['🟡', '🔴', '🟡', '🟢']
+            })
+            st.dataframe(operational_kpis, hide_index=True)
+        
+        with col3:
+            st.markdown("### 📊 Technology Performance")
+            tech_kpis = pd.DataFrame({
+                'KPI': ['System Uptime', 'Document Processing', 'AI Accuracy', 'Mobile Adoption'],
+                'Current': ['99.8%', '94% automated', '91%', '67%'],
+                'Target': ['99.9%', '95%', '90%', '70%'],
+                'Status': ['🟡', '🟡', '🟢', '🟡']
+            })
+            st.dataframe(tech_kpis, hide_index=True)
+        
+        # Performance trends
+        st.subheader("📈 Performance Trends")
+        
+        # Create performance trend chart
+        months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+        utilization = [75, 77, 74, 79, 76, 81, 78, 80, 79, 78, 82, 78.5]
+        satisfaction = [4.0, 4.1, 3.9, 4.2, 4.0, 4.3, 4.1, 4.2, 4.4, 4.1, 4.3, 4.2]
+        win_rate = [76, 78, 75, 80, 77, 82, 79, 81, 78, 76, 79, 78]
+        
+        fig = make_subplots(specs=[[{"secondary_y": True}]])
+        fig.add_trace(go.Scatter(x=months, y=utilization, name="Utilization Rate (%)"), secondary_y=False)
+        fig.add_trace(go.Scatter(x=months, y=win_rate, name="Win Rate (%)"), secondary_y=False)
+        fig.add_trace(go.Scatter(x=months, y=[s*20 for s in satisfaction], name="Client Satisfaction (x20)"), secondary_y=True)
+        
+        fig.update_xaxes(title_text="Month")
+        fig.update_yaxes(title_text="Percentage", secondary_y=False)
+        fig.update_yaxes(title_text="Satisfaction Score (x20)", secondary_y=True)
+        fig.update_layout(title="Key Performance Trends", height=400)
+        
+        st.plotly_chart(fig, use_container_width=True)
+
+elif page == "Time & Billing":
+    st.title("⏱️ Advanced Time Tracking & Billing")
+    
+    if not has_permission('time_tracking'):
+        st.error("🚫 Access denied. Time tracking access required.")
+        st.stop()
+    
+    # Billing overview metrics
+    col1, col2, col3, col4 = st.columns(4)
+    
+    total_unbilled_hours = sum(entry.hours for entry in st.session_state.time_entries if entry.status in ['draft', 'submitted'])
+    total_unbilled_amount = sum(entry.hours * entry.billing_rate for entry in st.session_state.time_entries if entry.status in ['draft', 'submitted'])
+    
+    with col1:
+        st.markdown('<div class="metric-card">', unsafe_allow_html=True)
+        st.metric("Unbilled Hours", f"{total_unbilled_hours:.1f}")
+        st.markdown('</div>', unsafe_allow_html=True)
+    
+    with col2:
+        st.markdown('<div class="metric-card">', unsafe_allow_html=True)
+        st.metric("Unbilled Amount", f"${total_unbilled_amount:,.2f}")
+        st.markdown('</div>', unsafe_allow_html=True)
+    
+    with col3:
+        st.markdown('<div class="metric-card">', unsafe_allow_html=True)
+        st.metric("Outstanding Invoices", len([inv for inv in st.session_state.invoices if inv.status in ['sent', 'overdue']]))
+        st.markdown('</div>', unsafe_allow_html=True)
+    
+    with col4:
+        st.markdown('<div class="metric-card">', unsafe_allow_html=True)
+        st.metric("Collection Rate", "94.2%", "+2.1%")
+        st.markdown('</div>', unsafe_allow_html=True)
+    
+    st.divider()
+    
+    # Time tracking and billing tabs
+    tab1, tab2, tab3, tab4 = st.tabs(["⏱️ Time Entry", "📊 Time Analysis", "💰 Billing", "📈 Reports"])
+    
+    with tab1:
+        st.subheader("Time Entry Management")
+        
+        # Quick time entry form
+        with st.form("quick_time_entry"):
+            col1, col2, col3 = st.columns(3)
+            
+            with col1:
+                entry_matter = st.selectbox("Matter", [f"{m.name} - {m.client_name}" for m in st.session_state.matters])
+                entry_hours = st.number_input("Hours", min_value=0.0, max_value=24.0, value=1.0, step=0.25)
+            
+            with col2:
+                entry_date = st.date_input("Date", value=datetime.now().date())
+                entry_rate = st.number_input("Rate ($)", min_value=0.0, value=250.0, step=25.0)
+            
+            with col3:
+                entry_activity = st.selectbox("Activity Type", ["Legal Research", "Document Review", "Client Meeting", "Court Appearance", "Administrative"])
+                billable = st.checkbox("Billable", value=True)
+            
+            entry_description = st.text_area("Description", placeholder="Describe the work performed...")
+            
+            if st.form_submit_button("Add Time Entry"):
+                if entry_matter and entry_description:
+                    matter_id = st.session_state.matters[[f"{m.name} - {m.client_name}" for m in st.session_state.matters].index(entry_matter)].id
+                    
+                    new_entry = TimeEntry(
+                        id=str(uuid.uuid4()),
+                        user_id=st.session_state['user']['email'],
+                        matter_id=matter_id,
+                        client_id="demo_client",  # Simplified for demo
+                        date=datetime.combine(entry_date, datetime.now().time()),
+                        hours=entry_hours,
+                        description=entry_description,
+                        billing_rate=entry_rate,
+                        billable=billable,
+                        activity_type=entry_activity,
+                        status=BillingStatus.DRAFT.value,
+                        created_date=datetime.now()
+                    )
+                    
+                    st.session_state.time_entries.append(new_entry)
+                    st.success("Time entry added successfully!")
+                    st.rerun()
+        
+        st.divider()
+        
+        # Recent time entries
+        st.subheader("Recent Time Entries")
+        
+        recent_entries = sorted(st.session_state.time_entries, key=lambda x: x.created_date, reverse=True)[:10]
+        
+        for entry in recent_entries:
+            matter_name = next((m.name for m in st.session_state.matters if m.id == entry.matter_id), "Unknown Matter")
+            status_color = {"draft": "#6c757d", "submitted": "#ffc107", "approved": "#28a745", "billed": "#17a2b8"}
+            
+            st.markdown(f"""
+            <div class="document-card">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <div>
+                        <strong>{matter_name}</strong> - {entry.hours} hours<br>
+                        <small>{entry.description[:100]}...</small><br>
+                        <small>Rate: ${entry.billing_rate}/hr | Amount: ${entry.hours * entry.billing_rate:.2f}</small>
+                    </div>
+                    <div style="text-align: right;">
+                        <span style="background: {status_color.get(entry.status, '#6c757d')}; color: white; padding: 0.25rem 0.5rem; border-radius: 4px; font-size: 0.8rem;">
+                            {entry.status.upper()}
+                        </span><br>
+                        <small>{entry.date.strftime('%Y-%m-%d')}</small>
+                    </div>
+                </div>
+            </div>
+            """, unsafe_allow_html=True)
+    
+    with tab2:
+        st.subheader("Time Analysis & Utilization")
+        
+        # Time analysis charts
+        col1, col2 = st.columns(2)
+        
+        with col1:
+            # Daily hours trend
+            if st.session_state.time_entries:
+                daily_hours = {}
+                for entry in st.session_state.time_entries:
+                    date_str = entry.date.strftime('%Y-%m-%d')
+                    daily_hours[date_str] = daily_hours.get(date_str, 0) + entry.hours
+                
+                if daily_hours:
+                    dates = list(daily_hours.keys())
+                    hours = list(daily_hours.values())
+                    
+                    fig = go.Figure()
+                    fig.add_trace(go.Scatter(x=dates, y=hours, mode='lines+markers', name='Daily Hours'))
+                    fig.add_hline(y=7.5, line_dash="dash", annotation_text="Target: 7.5 hours")
+                    fig.update_layout(title="Daily Hours Trend", height=400)
+                    st.plotly_chart(fig, use_container_width=True)
+            else:
+                st.info("No time entries available for analysis")
+        
+        with col2:
+            # Hours by activity type
+            activity_hours = {}
+            for entry in st.session_state.time_entries:
+                activity_hours[entry.activity_type] = activity_hours.get(entry.activity_type, 0) + entry.hours
+            
+            if activity_hours:
+                fig = px.pie(values=list(activity_hours.values()),
+                           names=list(activity_hours.keys()),
+                           title="Hours by Activity Type")
+                st.plotly_chart(fig, use_container_width=True)
+        
+        # Utilization metrics
+        st.subheader("Utilization Metrics")
+        
+        utilization_data = pd.DataFrame({
+            'Attorney': ['John Partner', 'Jane Associate', 'Bob Paralegal'],
+            'Billable Hours': [165, 158, 142],
+            'Non-Billable Hours': [15, 22, 18],
+            'Total Hours': [180, 180, 160],
+            'Utilization Rate': ['91.7%', '87.8%', '88.8%']
+        })
+        
+        st.dataframe(utilization_data, hide_index=True)
+    
+    with tab3:
+        st.subheader("Billing Management")
+        
+        # Invoice generation
+        st.markdown("### 📄 Generate New Invoice")
+        
+        with st.form("generate_invoice"):
+            col1, col2 = st.columns(2)
+            
+            with col1:
+                invoice_client = st.selectbox("Client", [f"{c.name}" for c in st.session_state.clients])
+                billing_period_start = st.date_input("Billing Period Start", value=datetime.now().replace(day=1).date())
+            
+            with col2:
+                invoice_matter = st.selectbox("Matter", [f"{m.name}" for m in st.session_state.matters])
+                billing_period_end = st.date_input("Billing Period End", value=datetime.now().date())
+            
+            if st.form_submit_button("Generate Invoice"):
+                client_id = next(c.id for c in st.session_state.clients if c.name == invoice_client)
+                matter_id = next(m.id for m in st.session_state.matters if m.name == invoice_matter)
+                
+                new_invoice = billing_system.generate_invoice(
+                    client_id, matter_id, 
+                    datetime.combine(billing_period_start, datetime.min.time()),
+                    datetime.combine(billing_period_end, datetime.max.time())
+                )
+                
+                st.session_state.invoices.append(new_invoice)
+                st.success(f"Invoice {new_invoice.invoice_number} generated successfully!")
+                st.rerun()
+        
+        st.divider()
+        
+        # Invoice list
+        st.subheader("📋 Invoice Management")
+        
+        for invoice in st.session_state.invoices:
+            client_name = next((c.name for c in st.session_state.clients if c.id == invoice.client_id), "Unknown Client")
+            matter_name = next((m.name for m in st.session_state.matters if m.id == invoice.matter_id), "Unknown Matter")
+            
+            status_colors = {
+                'draft': '#6c757d',
+                'sent': '#ffc107', 
+                'paid': '#28a745',
+                'overdue': '#dc3545'
+            }
+            
+            st.markdown(f"""
+            <div class="document-card">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <div>
+                        <strong>Invoice {invoice.invoice_number}</strong><br>
+                        <small>Client: {client_name} | Matter: {matter_name}</small><br>
+                        <small>Issued: {invoice.date_issued.strftime('%Y-%m-%d')} | Due: {invoice.due_date.strftime('%Y-%m-%d')}</small>
+                    </div>
+                    <div style="text-align: right;">
+                        <strong>${invoice.total_amount:,.2f}</strong><br>
+                        <span style="background: {status_colors.get(invoice.status, '#6c757d')}; color: white; padding: 0.25rem 0.5rem; border-radius: 4px; font-size: 0.8rem;">
+                            {invoice.status.upper()}
+                        </span>
+                    </div>
+                </div>
+            </div>
+            """, unsafe_allow_html=True)
+    
+    with tab4:
+        st.subheader("Billing Reports & Analytics")
+        
+        # Billing summary charts
+        col1, col2 = st.columns(2)
+        
+        with col1:
+            # Monthly billing
+            monthly_billing = {
+                'Jan': 15000, 'Feb': 18000, 'Mar': 22000, 'Apr': 19000,
+                'May': 25000, 'Jun': 28000, 'Jul': 24000, 'Aug': 30000,
+                'Sep': 27000, 'Oct': 32000, 'Nov': 29000, 'Dec': 35000
+            }
+            
+            fig = px.bar(x=list(monthly_billing.keys()), y=list(monthly_billing.values()),
+                        title="Monthly Billing Revenue")
+            st.plotly_chart(fig, use_container_width=True)
+        
+        with col2:
+            # Collections analysis
+            collections_data = {
+                'Billed': 125000,
+                'Collected': 118000,import streamlit as st
 import pandas as pd
+import plotly.express as px
+import plotly.graph_objects as go
+from plotly.subplots import make_subplots
 import os
 from datetime import datetime, timedelta
 import hashlib
@@ -9,128 +605,293 @@ import time
 import pyrebase
 import uuid
 import re
-from typing import Dict, List, Optional, Tuple
+from typing import Dict, List, Optional, Tuple, Union
 import difflib
-from dataclasses import dataclass, asdict
+from dataclasses import dataclass, asdict, field
 from enum import Enum
 import base64
 import io
 from PIL import Image
-import pytesseract  # For OCR
-import fitz  # PyMuPDF for PDF processing
 import nltk
 from nltk.tokenize import sent_tokenize, word_tokenize
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 import numpy as np
+import smtplib
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
+from email.mime.base import MIMEBase
+from email import encoders
+import imaplib
+import email
+import calendar
+from icalendar import Calendar, Event
+import requests
+from cryptography.fernet import Fernet
+import qrcode
+import stripe  # For payment processing
+from twilio.rest import Client  # For SMS notifications
+import openai  # For advanced AI features
+from transformers import pipeline  # For local AI models
+import spacy  # For advanced NLP
+import networkx as nx  # For relationship mapping
+from wordcloud import WordCloud
+import matplotlib.pyplot as plt
+import seaborn as sns
+from fpdf import FPDF
+import docx
+from docx2python import docx2python
+import zipfile
+import tempfile
 
-# Configure page
+# Configure page with enhanced settings
 st.set_page_config(
-    page_title="LegalDoc Pro - Advanced Document Management",
+    page_title="LegalDoc Pro - Complete Enterprise Platform",
     page_icon="⚖️",
     layout="wide",
     initial_sidebar_state="expanded"
 )
 
-# Custom CSS for better styling
+# Enhanced CSS for professional legal theme
 st.markdown("""
 <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+    
+    .main {
+        font-family: 'Inter', sans-serif;
+    }
+    
     .main-header {
-        font-size: 2rem;
-        font-weight: bold;
-        color: #2E86AB;
-        text-align: center;
+        background: linear-gradient(135deg, #2E86AB 0%, #A23B72 100%);
+        color: white;
+        padding: 2rem;
+        border-radius: 15px;
         margin-bottom: 2rem;
+        text-align: center;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
     }
-    .metric-container {
-        background-color: #f0f2f6;
-        padding: 1rem;
-        border-radius: 0.5rem;
+    
+    .main-header h1 {
+        font-size: 2.5rem;
+        margin: 0;
+        font-weight: 700;
+    }
+    
+    .main-header p {
+        font-size: 1.2rem;
+        margin: 0.5rem 0 0 0;
+        opacity: 0.9;
+    }
+    
+    .metric-card {
+        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+        padding: 1.5rem;
+        border-radius: 15px;
+        border-left: 5px solid #2E86AB;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.08);
         margin: 0.5rem 0;
+        transition: all 0.3s ease;
     }
+    
+    .metric-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+    }
+    
     .alert-box {
-        padding: 1rem;
-        border-radius: 0.5rem;
+        padding: 1.5rem;
+        border-radius: 12px;
         margin: 1rem 0;
         border-left: 5px solid;
+        backdrop-filter: blur(10px);
     }
-    .alert-warning {
-        background-color: #fff3cd;
-        border-color: #ffc107;
-        color: #856404;
-    }
+    
     .alert-success {
-        background-color: #d1e7dd;
+        background: linear-gradient(135deg, #d1e7dd 0%, #badbcc 100%);
         border-color: #198754;
         color: #0a3622;
     }
+    
+    .alert-warning {
+        background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%);
+        border-color: #ffc107;
+        color: #856404;
+    }
+    
     .alert-danger {
-        background-color: #f8d7da;
+        background: linear-gradient(135deg, #f8d7da 0%, #f5c6cb 100%);
         border-color: #dc3545;
         color: #58151c;
     }
-    .document-card {
-        background-color: white;
-        padding: 1rem;
-        border-radius: 0.5rem;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        margin: 0.5rem 0;
-        border-left: 4px solid #2E86AB;
+    
+    .alert-info {
+        background: linear-gradient(135deg, #cff4fc 0%, #b6effb 100%);
+        border-color: #0dcaf0;
+        color: #055160;
     }
-    .matter-card {
-        background-color: #f8f9fa;
+    
+    .document-card {
+        background: white;
         padding: 1.5rem;
-        border-radius: 0.8rem;
+        border-radius: 12px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+        margin: 1rem 0;
+        border-left: 4px solid #2E86AB;
+        transition: all 0.3s ease;
+    }
+    
+    .document-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+    }
+    
+    .matter-card {
+        background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+        padding: 2rem;
+        border-radius: 15px;
         border: 2px solid #dee2e6;
         margin: 1rem 0;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+        transition: all 0.3s ease;
     }
-    .version-badge {
-        background-color: #6c757d;
-        color: white;
-        padding: 0.25rem 0.5rem;
-        border-radius: 0.25rem;
-        font-size: 0.75rem;
+    
+    .matter-card:hover {
+        border-color: #2E86AB;
+        transform: translateY(-2px);
     }
-    .status-active {
-        background-color: #28a745;
-        color: white;
-        padding: 0.25rem 0.5rem;
-        border-radius: 0.25rem;
-        font-size: 0.75rem;
+    
+    .status-badge {
+        padding: 0.4rem 0.8rem;
+        border-radius: 20px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
     }
-    .status-pending {
-        background-color: #ffc107;
-        color: #212529;
-        padding: 0.25rem 0.5rem;
-        border-radius: 0.25rem;
-        font-size: 0.75rem;
+    
+    .status-active { background-color: #28a745; color: white; }
+    .status-pending { background-color: #ffc107; color: #212529; }
+    .status-draft { background-color: #6c757d; color: white; }
+    .status-review { background-color: #17a2b8; color: white; }
+    .status-final { background-color: #28a745; color: white; }
+    .status-archived { background-color: #6c757d; color: white; }
+    
+    .priority-high { color: #dc3545; font-weight: 600; }
+    .priority-medium { color: #ffc107; font-weight: 600; }
+    .priority-low { color: #28a745; font-weight: 600; }
+    
+    .ai-insight {
+        background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+        border: 1px solid #2196f3;
+        border-radius: 12px;
+        padding: 1rem;
+        margin: 1rem 0;
     }
-    .status-draft {
-        background-color: #6c757d;
-        color: white;
-        padding: 0.25rem 0.5rem;
-        border-radius: 0.25rem;
-        font-size: 0.75rem;
+    
+    .client-portal {
+        background: linear-gradient(135deg, #f3e5f5 0%, #e1bee7 100%);
+        border: 1px solid #9c27b0;
+        border-radius: 12px;
+        padding: 1rem;
+        margin: 1rem 0;
+    }
+    
+    .mobile-frame {
+        width: 300px;
+        height: 600px;
+        background: #000;
+        border-radius: 25px;
+        padding: 20px;
+        margin: 0 auto;
+        position: relative;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    }
+    
+    .mobile-screen {
+        width: 100%;
+        height: 100%;
+        background: white;
+        border-radius: 20px;
+        overflow: hidden;
+        position: relative;
+    }
+    
+    .integration-card {
+        background: white;
+        border: 2px solid #e9ecef;
+        border-radius: 12px;
+        padding: 1.5rem;
+        margin: 1rem 0;
+        text-align: center;
+        transition: all 0.3s ease;
+    }
+    
+    .integration-card:hover {
+        border-color: #2E86AB;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+    
+    .chart-container {
+        background: white;
+        padding: 1.5rem;
+        border-radius: 12px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+        margin: 1rem 0;
+    }
+    
+    .sidebar .stSelectbox > div > div {
+        background-color: #f8f9fa;
+    }
+    
+    .stProgress .st-bo {
+        background-color: #2E86AB;
+    }
+    
+    .calendar-widget {
+        background: white;
+        border-radius: 12px;
+        padding: 1rem;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.08);
     }
 </style>
 """, unsafe_allow_html=True)
 
-# Data Classes for better structure
+# Enhanced Data Classes
 @dataclass
 class User:
+    id: str
     email: str
-    role: str  # 'partner', 'associate', 'paralegal', 'client'
+    role: str
     permissions: List[str]
     created_date: datetime
     last_login: datetime
+    profile_settings: Dict
+    notification_preferences: Dict
+    billing_info: Dict
+
+@dataclass
+class Client:
+    id: str
+    name: str
+    client_type: str  # 'individual', 'business', 'organization'
+    contact_info: Dict
+    billing_address: Dict
+    primary_contact: str
+    created_date: datetime
+    status: str  # 'active', 'inactive', 'prospective'
+    portal_access: bool
+    portal_credentials: Dict
+    billing_preferences: Dict
+    communication_preferences: Dict
 
 @dataclass
 class Matter:
     id: str
     name: str
+    client_id: str
     client_name: str
-    matter_type: str  # 'litigation', 'corporate', 'family', 'real_estate', etc.
-    status: str  # 'active', 'closed', 'on_hold'
+    matter_type: str
+    status: str
     created_date: datetime
     assigned_attorneys: List[str]
     description: str
@@ -138,1194 +899,1900 @@ class Matter:
     estimated_hours: float
     actual_hours: float
     important_dates: Dict[str, datetime]
+    billing_rate: float
+    priority: str  # 'high', 'medium', 'low'
+    court_info: Dict
+    opposing_parties: List[Dict]
+    statute_of_limitations: Optional[datetime]
+    custom_fields: Dict
 
 @dataclass
-class DocumentVersion:
-    version_number: str
+class EmailMessage:
+    id: str
+    subject: str
+    sender: str
+    recipients: List[str]
+    body: str
+    attachments: List[str]
+    timestamp: datetime
+    matter_id: Optional[str]
+    client_id: Optional[str]
+    message_type: str  # 'received', 'sent'
+    priority: str
+    is_privileged: bool
+
+@dataclass
+class CalendarEvent:
+    id: str
+    title: str
+    description: str
+    start_time: datetime
+    end_time: datetime
+    event_type: str  # 'court_date', 'meeting', 'deadline', 'reminder'
+    matter_id: Optional[str]
+    client_id: Optional[str]
+    location: str
+    attendees: List[str]
+    reminders: List[Dict]
+    recurring: bool
+    status: str
+
+@dataclass
+class TimeEntry:
+    id: str
+    user_id: str
+    matter_id: str
+    client_id: str
+    date: datetime
+    hours: float
+    description: str
+    billing_rate: float
+    billable: bool
+    activity_type: str
+    status: str  # 'draft', 'submitted', 'approved', 'billed'
     created_date: datetime
-    created_by: str
-    file_content: bytes
-    changes_summary: str
-    file_size: int
 
 @dataclass
-class Document:
+class Invoice:
+    id: str
+    client_id: str
+    matter_id: str
+    invoice_number: str
+    date_issued: datetime
+    due_date: datetime
+    line_items: List[Dict]
+    subtotal: float
+    tax_rate: float
+    tax_amount: float
+    total_amount: float
+    status: str  # 'draft', 'sent', 'paid', 'overdue'
+    payment_terms: str
+    notes: str
+
+@dataclass
+class AIInsight:
+    id: str
+    document_id: str
+    insight_type: str  # 'risk_analysis', 'clause_detection', 'deadline_extraction', 'similar_docs'
+    content: Dict
+    confidence_score: float
+    created_date: datetime
+    reviewed: bool
+    action_required: bool
+
+@dataclass
+class Integration:
     id: str
     name: str
-    matter_id: str
-    client_name: str
-    document_type: str
-    current_version: str
-    versions: List[DocumentVersion]
-    status: str
-    tags: List[str]
-    extracted_text: str
-    key_information: Dict
-    created_date: datetime
-    last_modified: datetime
-    access_permissions: Dict[str, List[str]]  # role -> permissions
-    retention_date: Optional[datetime]
-    is_privileged: bool
-    digital_signatures: List[Dict]
+    type: str  # 'email', 'calendar', 'court_filing', 'esignature', 'accounting'
+    status: str  # 'active', 'inactive', 'error'
+    settings: Dict
+    last_sync: datetime
+    sync_frequency: str
+    error_log: List[Dict]
 
-@dataclass
-class AuditEntry:
-    id: str
-    timestamp: datetime
-    user_email: str
-    action: str
-    resource_type: str
-    resource_id: str
-    details: Dict
-    ip_address: str
+# Enhanced Enums
+class NotificationType(Enum):
+    EMAIL = "email"
+    SMS = "sms"
+    IN_APP = "in_app"
+    PUSH = "push"
 
-class DocumentStatus(Enum):
+class DocumentRiskLevel(Enum):
+    LOW = "low"
+    MEDIUM = "medium"
+    HIGH = "high"
+    CRITICAL = "critical"
+
+class BillingStatus(Enum):
     DRAFT = "draft"
-    UNDER_REVIEW = "under_review"
+    SUBMITTED = "submitted"
     APPROVED = "approved"
-    FINAL = "final"
-    ARCHIVED = "archived"
+    BILLED = "billed"
+    PAID = "paid"
 
-class MatterType(Enum):
-    LITIGATION = "litigation"
-    CORPORATE = "corporate"
-    FAMILY = "family"
-    REAL_ESTATE = "real_estate"
-    EMPLOYMENT = "employment"
-    INTELLECTUAL_PROPERTY = "intellectual_property"
-    CRIMINAL = "criminal"
-    IMMIGRATION = "immigration"
+# Initialize Enhanced Session State
+def initialize_enhanced_session_state():
+    """Initialize all session state variables for the enhanced system"""
+    default_states = {
+        'enhanced_documents': [],
+        'matters': [],
+        'clients': [],
+        'users': [],
+        'time_entries': [],
+        'invoices': [],
+        'email_messages': [],
+        'calendar_events': [],
+        'ai_insights': [],
+        'integrations': [],
+        'notifications': [],
+        'user': None,
+        'audit_log': [],
+        'search_index': {},
+        'dashboard_data': {},
+        'mobile_session': {},
+        'client_portal_sessions': {},
+        'system_settings': {},
+        'billing_summary': {},
+        'analytics_cache': {}
+    }
+    
+    for key, default_value in default_states.items():
+        if key not in st.session_state:
+            st.session_state[key] = default_value
 
-# Firebase Configuration (same as before)
-firebase_config = {
-    "apiKey": "AIzaSyDt6y7YRFVF_zrMTYPn4z4ViHjLbmfMsLQ",
-    "authDomain": "trend-summarizer-6f28e.firebaseapp.com",
-    "projectId": "trend-summarizer-6f28e",
-    "storageBucket": "trend-summarizer-6f28e.firebasestorage.app",
-    "messagingSenderId": "655575726457",
-    "databaseURL": "https://trend-summarizer-6f28e-default-rtdb.firebaseio.com",
-    "appId": "1:655575726457:web:9ae1d0d363c804edc9d7a8",
-    "measurementId": "G-HHY482GQKZ"
-}
-
-firebase = pyrebase.initialize_app(firebase_config)
-auth = firebase.auth()
-db = firebase.database()
-
-# Initialize session state with enhanced data structures
-def initialize_session_state():
-    if 'enhanced_documents' not in st.session_state:
-        st.session_state.enhanced_documents = []
-    if 'matters' not in st.session_state:
-        st.session_state.matters = []
-    if 'clients' not in st.session_state:
-        st.session_state.clients = []
-    if 'time_entries' not in st.session_state:
-        st.session_state.time_entries = []
-    if 'user' not in st.session_state:
-        st.session_state.user = None
-    if 'audit_log' not in st.session_state:
-        st.session_state.audit_log = []
-    if 'search_index' not in st.session_state:
-        st.session_state.search_index = {}
-    if 'ai_insights' not in st.session_state:
-        st.session_state.ai_insights = {}
-
-# Advanced Document Processing Functions
-class DocumentProcessor:
-    @staticmethod
-    def extract_text_from_pdf(file_content: bytes) -> str:
-        """Extract text from PDF using PyMuPDF"""
+# Advanced Email Integration System
+class EmailIntegration:
+    def __init__(self, email_config: Dict):
+        self.smtp_server = email_config.get('smtp_server')
+        self.smtp_port = email_config.get('smtp_port', 587)
+        self.imap_server = email_config.get('imap_server')
+        self.imap_port = email_config.get('imap_port', 993)
+        self.username = email_config.get('username')
+        self.password = email_config.get('password')
+    
+    def connect_imap(self):
+        """Connect to IMAP server for reading emails"""
         try:
-            pdf_document = fitz.open(stream=file_content, filetype="pdf")
-            text = ""
-            for page in pdf_document:
-                text += page.get_text()
-            pdf_document.close()
-            return text
+            mail = imaplib.IMAP4_SSL(self.imap_server, self.imap_port)
+            mail.login(self.username, self.password)
+            return mail
         except Exception as e:
-            st.error(f"Error extracting text from PDF: {str(e)}")
-            return ""
+            st.error(f"Failed to connect to email server: {str(e)}")
+            return None
     
-    @staticmethod
-    def perform_ocr(image_content: bytes) -> str:
-        """Perform OCR on image content"""
+    def fetch_emails(self, folder='INBOX', limit=50) -> List[EmailMessage]:
+        """Fetch emails from specified folder"""
+        mail = self.connect_imap()
+        if not mail:
+            return []
+        
         try:
-            image = Image.open(io.BytesIO(image_content))
-            text = pytesseract.image_to_string(image)
-            return text
+            mail.select(folder)
+            _, message_ids = mail.search(None, 'ALL')
+            
+            emails = []
+            for msg_id in message_ids[0].split()[-limit:]:  # Get latest emails
+                _, msg_data = mail.fetch(msg_id, '(RFC822)')
+                email_body = msg_data[0][1]
+                email_message = email.message_from_bytes(email_body)
+                
+                # Extract email details
+                email_obj = EmailMessage(
+                    id=str(uuid.uuid4()),
+                    subject=email_message.get('Subject', 'No Subject'),
+                    sender=email_message.get('From', ''),
+                    recipients=email_message.get('To', '').split(','),
+                    body=self._extract_email_body(email_message),
+                    attachments=self._extract_attachments(email_message),
+                    timestamp=datetime.now(),
+                    matter_id=None,
+                    client_id=None,
+                    message_type='received',
+                    priority='normal',
+                    is_privileged=False
+                )
+                emails.append(email_obj)
+            
+            mail.logout()
+            return emails
+            
         except Exception as e:
-            st.error(f"Error performing OCR: {str(e)}")
-            return ""
+            st.error(f"Error fetching emails: {str(e)}")
+            return []
     
-    @staticmethod
-    def extract_key_information(text: str) -> Dict:
-        """Extract key information from document text using regex patterns"""
-        key_info = {}
-        
-        # Extract dates
-        date_pattern = r'\b\d{1,2}[/-]\d{1,2}[/-]\d{2,4}\b|\b(?:January|February|March|April|May|June|July|August|September|October|November|December)\s+\d{1,2},?\s+\d{4}\b'
-        dates = re.findall(date_pattern, text, re.IGNORECASE)
-        key_info['dates'] = list(set(dates))[:10]  # Limit to 10 dates
-        
-        # Extract dollar amounts
-        money_pattern = r'\$[\d,]+(?:\.\d{2})?'
-        amounts = re.findall(money_pattern, text)
-        key_info['monetary_amounts'] = list(set(amounts))[:10]
-        
-        # Extract email addresses
-        email_pattern = r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b'
-        emails = re.findall(email_pattern, text)
-        key_info['email_addresses'] = list(set(emails))
-        
-        # Extract phone numbers
-        phone_pattern = r'\b\d{3}[-.]?\d{3}[-.]?\d{4}\b'
-        phones = re.findall(phone_pattern, text)
-        key_info['phone_numbers'] = list(set(phones))
-        
-        # Extract potential party names (capitalized words, could be improved with NER)
-        name_pattern = r'\b[A-Z][a-z]+\s+[A-Z][a-z]+\b'
-        potential_names = re.findall(name_pattern, text)
-        key_info['potential_names'] = list(set(potential_names))[:10]
-        
-        return key_info
+    def send_email(self, to_addresses: List[str], subject: str, body: str, attachments: List = None):
+        """Send email with optional attachments"""
+        try:
+            msg = MIMEMultipart()
+            msg['From'] = self.username
+            msg['To'] = ', '.join(to_addresses)
+            msg['Subject'] = subject
+            
+            msg.attach(MIMEText(body, 'plain'))
+            
+            # Add attachments
+            if attachments:
+                for file_path in attachments:
+                    with open(file_path, "rb") as attachment:
+                        part = MIMEBase('application', 'octet-stream')
+                        part.set_payload(attachment.read())
+                        encoders.encode_base64(part)
+                        part.add_header(
+                            'Content-Disposition',
+                            f'attachment; filename= {os.path.basename(file_path)}'
+                        )
+                        msg.attach(part)
+            
+            # Send email
+            server = smtplib.SMTP(self.smtp_server, self.smtp_port)
+            server.starttls()
+            server.login(self.username, self.password)
+            text = msg.as_string()
+            server.sendmail(self.username, to_addresses, text)
+            server.quit()
+            
+            return True
+            
+        except Exception as e:
+            st.error(f"Error sending email: {str(e)}")
+            return False
     
-    @staticmethod
-    def classify_document(filename: str, text: str) -> str:
-        """Classify document based on filename and content"""
-        filename_lower = filename.lower()
-        text_lower = text.lower()
-        
-        # Contract/Agreement detection
-        if any(word in filename_lower or word in text_lower[:1000] for word in 
-               ['contract', 'agreement', 'terms', 'conditions']):
-            return 'Contract/Agreement'
-        
-        # Court documents
-        elif any(word in filename_lower or word in text_lower[:1000] for word in 
-                ['motion', 'complaint', 'petition', 'brief', 'order', 'judgment']):
-            return 'Court Filing'
-        
-        # Corporate documents
-        elif any(word in filename_lower or word in text_lower[:1000] for word in 
-                ['llc', 'corporation', 'incorporation', 'bylaws', 'board']):
-            return 'Corporate Document'
-        
-        # Real estate
-        elif any(word in filename_lower or word in text_lower[:1000] for word in 
-                ['lease', 'deed', 'mortgage', 'property', 'real estate']):
-            return 'Real Estate'
-        
-        # Family law
-        elif any(word in filename_lower or word in text_lower[:1000] for word in 
-                ['divorce', 'custody', 'prenuptial', 'marriage', 'child support']):
-            return 'Family Law'
-        
+    def _extract_email_body(self, email_message):
+        """Extract plain text body from email"""
+        body = ""
+        if email_message.is_multipart():
+            for part in email_message.walk():
+                if part.get_content_type() == "text/plain":
+                    body = part.get_payload(decode=True).decode()
+                    break
         else:
-            return 'General Document'
+            body = email_message.get_payload(decode=True).decode()
+        return body
     
-    @staticmethod
-    def generate_document_summary(text: str, max_length: int = 200) -> str:
-        """Generate a summary of the document"""
-        if len(text) <= max_length:
-            return text
+    def _extract_attachments(self, email_message):
+        """Extract attachment filenames from email"""
+        attachments = []
+        for part in email_message.walk():
+            if part.get_content_disposition() == 'attachment':
+                filename = part.get_filename()
+                if filename:
+                    attachments.append(filename)
+        return attachments
+    
+    def auto_assign_to_matter(self, email_obj: EmailMessage) -> Optional[str]:
+        """Automatically assign email to matter based on content analysis"""
+        # Simple keyword matching - can be enhanced with ML
+        email_content = f"{email_obj.subject} {email_obj.body}".lower()
         
-        # Simple extractive summarization - take first few sentences
-        sentences = sent_tokenize(text)
-        summary = ""
-        for sentence in sentences:
-            if len(summary + sentence) <= max_length:
-                summary += sentence + " "
-            else:
-                break
+        for matter in st.session_state.matters:
+            matter_keywords = [
+                matter.name.lower(),
+                matter.client_name.lower(),
+                matter.matter_type.lower()
+            ]
+            
+            if any(keyword in email_content for keyword in matter_keywords):
+                return matter.id
         
-        return summary.strip() or text[:max_length] + "..."
+        return None
 
-# Advanced Search Engine
-class DocumentSearchEngine:
+# Advanced Calendar Integration
+class CalendarIntegration:
     def __init__(self):
-        self.vectorizer = TfidfVectorizer(stop_words='english', max_features=1000)
-        self.document_vectors = None
-        self.documents = []
+        self.events = []
     
-    def index_documents(self, documents: List[Document]):
-        """Index documents for search"""
-        self.documents = documents
-        if not documents:
-            return
-        
-        # Combine text content for indexing
-        texts = []
-        for doc in documents:
-            content = f"{doc.name} {doc.document_type} {doc.client_name} {doc.extracted_text}"
-            texts.append(content)
-        
-        try:
-            self.document_vectors = self.vectorizer.fit_transform(texts)
-        except Exception as e:
-            st.error(f"Error indexing documents: {str(e)}")
-    
-    def search(self, query: str, top_k: int = 10) -> List[Tuple[Document, float]]:
-        """Search documents and return results with similarity scores"""
-        if not self.document_vectors or not query.strip():
-            return []
-        
-        try:
-            query_vector = self.vectorizer.transform([query])
-            similarities = cosine_similarity(query_vector, self.document_vectors)[0]
-            
-            # Get top-k results
-            top_indices = np.argsort(similarities)[::-1][:top_k]
-            results = []
-            
-            for idx in top_indices:
-                if similarities[idx] > 0:  # Only return relevant results
-                    results.append((self.documents[idx], similarities[idx]))
-            
-            return results
-        except Exception as e:
-            st.error(f"Error searching documents: {str(e)}")
-            return []
-
-# Matter Management Functions
-class MatterManager:
-    @staticmethod
-    def create_matter(name: str, client_name: str, matter_type: str, description: str) -> Matter:
-        """Create a new matter"""
-        matter = Matter(
+    def create_event(self, title: str, description: str, start_time: datetime, 
+                    end_time: datetime, event_type: str, matter_id: str = None) -> CalendarEvent:
+        """Create a new calendar event"""
+        event = CalendarEvent(
             id=str(uuid.uuid4()),
-            name=name,
-            client_name=client_name,
-            matter_type=matter_type,
-            status='active',
-            created_date=datetime.now(),
-            assigned_attorneys=[],
+            title=title,
             description=description,
-            budget=0.0,
-            estimated_hours=0.0,
-            actual_hours=0.0,
-            important_dates={}
+            start_time=start_time,
+            end_time=end_time,
+            event_type=event_type,
+            matter_id=matter_id,
+            client_id=None,
+            location="",
+            attendees=[],
+            reminders=[],
+            recurring=False,
+            status="confirmed"
         )
-        return matter
+        return event
     
-    @staticmethod
-    def get_matter_documents(matter_id: str, documents: List[Document]) -> List[Document]:
-        """Get all documents for a specific matter"""
-        return [doc for doc in documents if doc.matter_id == matter_id]
+    def get_upcoming_events(self, days_ahead: int = 30) -> List[CalendarEvent]:
+        """Get upcoming events within specified days"""
+        cutoff_date = datetime.now() + timedelta(days=days_ahead)
+        upcoming = [event for event in st.session_state.calendar_events 
+                   if event.start_time <= cutoff_date and event.start_time >= datetime.now()]
+        return sorted(upcoming, key=lambda x: x.start_time)
     
-    @staticmethod
-    def get_matter_stats(matter_id: str, documents: List[Document], time_entries: List[Dict]) -> Dict:
-        """Get statistics for a matter"""
-        matter_docs = MatterManager.get_matter_documents(matter_id, documents)
-        matter_time = [entry for entry in time_entries if entry.get('matter_id') == matter_id]
+    def get_court_dates(self) -> List[CalendarEvent]:
+        """Get all court dates"""
+        return [event for event in st.session_state.calendar_events 
+                if event.event_type == 'court_date']
+    
+    def get_deadlines(self) -> List[CalendarEvent]:
+        """Get all deadlines"""
+        return [event for event in st.session_state.calendar_events 
+                if event.event_type == 'deadline']
+    
+    def create_deadline_from_document(self, document, deadline_date: datetime):
+        """Create deadline event from document analysis"""
+        event = self.create_event(
+            title=f"Deadline: {document.name}",
+            description=f"Document deadline for {document.name}",
+            start_time=deadline_date,
+            end_time=deadline_date + timedelta(hours=1),
+            event_type="deadline",
+            matter_id=document.matter_id
+        )
+        st.session_state.calendar_events.append(event)
+        return event
+
+# Advanced Billing System
+class BillingSystem:
+    def __init__(self):
+        self.default_rates = {
+            'partner': 500.0,
+            'senior_associate': 350.0,
+            'associate': 250.0,
+            'paralegal': 150.0
+        }
+    
+    def create_time_entry(self, user_id: str, matter_id: str, hours: float, 
+                         description: str, activity_type: str = "legal_work") -> TimeEntry:
+        """Create a new time entry"""
+        user_role = self._get_user_role(user_id)
+        billing_rate = self.default_rates.get(user_role, 250.0)
         
-        total_hours = sum(entry.get('hours', 0) for entry in matter_time)
-        total_revenue = sum(entry.get('amount', 0) for entry in matter_time)
+        entry = TimeEntry(
+            id=str(uuid.uuid4()),
+            user_id=user_id,
+            matter_id=matter_id,
+            client_id=self._get_matter_client_id(matter_id),
+            date=datetime.now(),
+            hours=hours,
+            description=description,
+            billing_rate=billing_rate,
+            billable=True,
+            activity_type=activity_type,
+            status=BillingStatus.DRAFT.value,
+            created_date=datetime.now()
+        )
+        return entry
+    
+    def generate_invoice(self, client_id: str, matter_id: str, 
+                        billing_period_start: datetime, billing_period_end: datetime) -> Invoice:
+        """Generate invoice for specified period"""
+        # Get time entries for the period
+        time_entries = [
+            entry for entry in st.session_state.time_entries
+            if (entry.client_id == client_id and 
+                entry.matter_id == matter_id and
+                billing_period_start <= entry.date <= billing_period_end and
+                entry.billable and entry.status == BillingStatus.APPROVED.value)
+        ]
+        
+        # Calculate line items
+        line_items = []
+        subtotal = 0.0
+        
+        for entry in time_entries:
+            line_item = {
+                'date': entry.date,
+                'description': entry.description,
+                'hours': entry.hours,
+                'rate': entry.billing_rate,
+                'amount': entry.hours * entry.billing_rate,
+                'attorney': entry.user_id
+            }
+            line_items.append(line_item)
+            subtotal += line_item['amount']
+        
+        # Calculate tax
+        tax_rate = 0.08  # 8% tax rate
+        tax_amount = subtotal * tax_rate
+        total_amount = subtotal + tax_amount
+        
+        invoice = Invoice(
+            id=str(uuid.uuid4()),
+            client_id=client_id,
+            matter_id=matter_id,
+            invoice_number=f"INV-{datetime.now().strftime('%Y%m%d')}-{len(st.session_state.invoices) + 1:04d}",
+            date_issued=datetime.now(),
+            due_date=datetime.now() + timedelta(days=30),
+            line_items=line_items,
+            subtotal=subtotal,
+            tax_rate=tax_rate,
+            tax_amount=tax_amount,
+            total_amount=total_amount,
+            status="draft",
+            payment_terms="Net 30",
+            notes=""
+        )
+        
+        return invoice
+    
+    def _get_user_role(self, user_id: str) -> str:
+        """Get user role for billing rate"""
+        return "associate"  # Simplified for demo
+    
+    def _get_matter_client_id(self, matter_id: str) -> str:
+        """Get client ID from matter ID"""
+        matter = next((m for m in st.session_state.matters if m.id == matter_id), None)
+        return matter.client_id if matter else ""
+
+# Advanced AI Analysis System
+class AIAnalysisSystem:
+    def __init__(self):
+        # Initialize AI models (in production, you'd load actual models)
+        self.contract_analyzer = None
+        self.risk_analyzer = None
+        self.entity_extractor = None
+    
+    def analyze_contract(self, document_text: str) -> Dict:
+        """Analyze contract for risks, clauses, and recommendations"""
+        analysis = {
+            'risk_level': self._assess_risk_level(document_text),
+            'key_clauses': self._identify_key_clauses(document_text),
+            'missing_clauses': self._identify_missing_clauses(document_text),
+            'recommendations': self._generate_recommendations(document_text),
+            'entities': self._extract_entities(document_text),
+            'sentiment': self._analyze_sentiment(document_text),
+            'complexity_score': self._calculate_complexity(document_text),
+            'similar_documents': self._find_similar_documents(document_text)
+        }
+        return analysis
+    
+    def extract_deadlines(self, document_text: str) -> List[Dict]:
+        """Extract potential deadlines from document text"""
+        deadline_patterns = [
+            r'(?:due|deadline|must be completed by|no later than)\s+(?:on\s+)?([A-Za-z]+ \d{1,2},? \d{4})',
+            r'(?:within|in)\s+(\d+)\s+(days?|weeks?|months?)',
+            r'(?:before|by)\s+([A-Za-z]+ \d{1,2},? \d{4})',
+            r'(\d{1,2}[/-]\d{1,2}[/-]\d{2,4})'
+        ]
+        
+        deadlines = []
+        for pattern in deadline_patterns:
+            matches = re.findall(pattern, document_text, re.IGNORECASE)
+            for match in matches:
+                deadline = {
+                    'text': match if isinstance(match, str) else ' '.join(match),
+                    'confidence': 0.8,
+                    'type': 'deadline',
+                    'extracted_date': self._parse_date(match if isinstance(match, str) else match[0])
+                }
+                deadlines.append(deadline)
+        
+        return deadlines[:10]  # Return top 10 deadlines
+    
+    def analyze_document_relationships(self, documents: List) -> Dict:
+        """Analyze relationships between documents"""
+        relationships = {
+            'document_clusters': self._cluster_documents(documents),
+            'citation_network': self._build_citation_network(documents),
+            'temporal_relationships': self._analyze_temporal_patterns(documents),
+            'topic_evolution': self._track_topic_evolution(documents)
+        }
+        return relationships
+    
+    def predict_case_outcomes(self, matter_data: Dict) -> Dict:
+        """Predict case outcomes based on historical data"""
+        prediction = {
+            'success_probability': 0.75,  # Placeholder
+            'estimated_duration': 180,  # days
+            'cost_estimate': 25000.0,
+            'risk_factors': [
+                'Complex contract terms',
+                'Multiple parties involved',
+                'Jurisdiction challenges'
+            ],
+            'recommendations': [
+                'Consider early settlement',
+                'Strengthen evidence gathering',
+                'Engage subject matter expert'
+            ]
+        }
+        return prediction
+    
+    def _assess_risk_level(self, text: str) -> str:
+        """Assess risk level of document"""
+        risk_keywords = {
+            'high': ['penalty', 'termination', 'breach', 'litigation', 'damages'],
+            'medium': ['condition', 'requirement', 'obligation', 'restriction'],
+            'low': ['standard', 'routine', 'normal', 'typical']
+        }
+        
+        text_lower = text.lower()
+        high_count = sum(1 for word in risk_keywords['high'] if word in text_lower)
+        medium_count = sum(1 for word in risk_keywords['medium'] if word in text_lower)
+        
+        if high_count >= 3:
+            return DocumentRiskLevel.HIGH.value
+        elif high_count >= 1 or medium_count >= 5:
+            return DocumentRiskLevel.MEDIUM.value
+        else:
+            return DocumentRiskLevel.LOW.value
+    
+    def _identify_key_clauses(self, text: str) -> List[Dict]:
+        """Identify important clauses in the document"""
+        clause_patterns = {
+            'termination': r'(?:termination|terminate|end|cancel)[^.]*\.',
+            'payment': r'(?:payment|pay|fee|cost|price)[^.]*\.',
+            'liability': r'(?:liability|liable|responsible)[^.]*\.',
+            'confidentiality': r'(?:confidential|non-disclosure|proprietary)[^.]*\.',
+            'intellectual_property': r'(?:intellectual property|copyright|trademark|patent)[^.]*\.'
+        }
+        
+        clauses = []
+        for clause_type, pattern in clause_patterns.items():
+            matches = re.findall(pattern, text, re.IGNORECASE)
+            for match in matches[:3]:  # Limit to 3 per type
+                clauses.append({
+                    'type': clause_type,
+                    'text': match.strip(),
+                    'importance': 'high' if clause_type in ['termination', 'liability'] else 'medium'
+                })
+        
+        return clauses
+    
+    def _identify_missing_clauses(self, text: str) -> List[str]:
+        """Identify potentially missing important clauses"""
+        standard_clauses = [
+            'Force Majeure', 'Governing Law', 'Dispute Resolution',
+            'Indemnification', 'Limitation of Liability', 'Confidentiality'
+        ]
+        
+        text_lower = text.lower()
+        missing = []
+        
+        for clause in standard_clauses:
+            if clause.lower().replace(' ', '') not in text_lower.replace(' ', ''):
+                missing.append(clause)
+        
+        return missing
+    
+    def _generate_recommendations(self, text: str) -> List[str]:
+        """Generate recommendations based on document analysis"""
+        recommendations = [
+            "Consider adding explicit termination procedures",
+            "Review payment terms for clarity",
+            "Add force majeure clause for risk mitigation",
+            "Include dispute resolution mechanism",
+            "Strengthen intellectual property protections"
+        ]
+        return recommendations[:3]  # Return top 3
+    
+    def _extract_entities(self, text: str) -> Dict:
+        """Extract named entities from text"""
+        # Simplified entity extraction
+        entities = {
+            'organizations': re.findall(r'\b[A-Z][a-z]+ (?:Inc|LLC|Corp|Corporation|Company)\b', text),
+            'people': re.findall(r'\b[A-Z][a-z]+ [A-Z][a-z]+\b', text),
+            'locations': re.findall(r'\b[A-Z][a-z]+(?:, [A-Z]{2})?\b', text),
+            'dates': re.findall(r'\b(?:January|February|March|April|May|June|July|August|September|October|November|December) \d{1,2}, \d{4}\b', text)
+        }
+        return entities
+    
+    def _analyze_sentiment(self, text: str) -> Dict:
+        """Analyze sentiment of document text"""
+        # Simplified sentiment analysis
+        positive_words = ['agree', 'benefit', 'advantage', 'positive', 'favorable']
+        negative_words = ['dispute', 'breach', 'penalty', 'terminate', 'violation']
+        
+        text_lower = text.lower()
+        pos_count = sum(1 for word in positive_words if word in text_lower)
+        neg_count = sum(1 for word in negative_words if word in text_lower)
+        
+        if pos_count > neg_count:
+            sentiment = 'positive'
+        elif neg_count > pos_count:
+            sentiment = 'negative'
+        else:
+            sentiment = 'neutral'
         
         return {
-            'document_count': len(matter_docs),
-            'total_hours': total_hours,
-            'total_revenue': total_revenue,
-            'last_activity': max([doc.last_modified for doc in matter_docs], default=datetime.min)
+            'sentiment': sentiment,
+            'confidence': 0.8,
+            'positive_score': pos_count,
+            'negative_score': neg_count
+        }
+    
+    def _calculate_complexity(self, text: str) -> float:
+        """Calculate document complexity score"""
+        words = text.split()
+        sentences = text.split('.')
+        
+        avg_words_per_sentence = len(words) / len(sentences) if sentences else 0
+        long_words = sum(1 for word in words if len(word) > 6)
+        complexity = (avg_words_per_sentence * 0.4) + (long_words / len(words) * 100 * 0.6)
+        
+        return min(complexity, 100.0)  # Cap at 100
+    
+    def _find_similar_documents(self, text: str) -> List[Dict]:
+        """Find similar documents in the system"""
+        similar = [
+            {'name': 'Similar Contract A', 'similarity': 0.85, 'id': 'doc1'},
+            {'name': 'Related Agreement B', 'similarity': 0.72, 'id': 'doc2'},
+            {'name': 'Comparable Document C', 'similarity': 0.68, 'id': 'doc3'}
+        ]
+        return similar
+    
+    def _parse_date(self, date_str: str) -> Optional[datetime]:
+        """Parse date string to datetime object"""
+        try:
+            # Simple date parsing - enhance with more sophisticated parsing
+            return datetime.strptime(date_str, '%B %d, %Y')
+        except:
+            return None
+    
+    def _cluster_documents(self, documents: List) -> List[Dict]:
+        """Cluster documents by similarity"""
+        clusters = [
+            {'cluster_id': 1, 'documents': ['doc1', 'doc2'], 'theme': 'Employment Contracts'},
+            {'cluster_id': 2, 'documents': ['doc3', 'doc4'], 'theme': 'Real Estate Agreements'}
+        ]
+        return clusters
+    
+    def _build_citation_network(self, documents: List) -> Dict:
+        """Build citation network between documents"""
+        network = {
+            'nodes': [{'id': 'doc1', 'type': 'contract'}, {'id': 'doc2', 'type': 'amendment'}],
+            'edges': [{'source': 'doc1', 'target': 'doc2', 'relationship': 'references'}]
+        }
+        return network
+    
+    def _analyze_temporal_patterns(self, documents: List) -> Dict:
+        """Analyze temporal patterns in documents"""
+        return {
+            'creation_trends': {'monthly_growth': 0.15},
+            'seasonal_patterns': {'peak_months': ['March', 'September']},
+            'document_lifecycle': {'avg_duration': 45}
+        }
+    
+    def _track_topic_evolution(self, documents: List) -> Dict:
+        """Track how topics evolve over time"""
+        return {
+            'trending_topics': ['Remote Work', 'Data Privacy', 'AI Governance'],
+            'declining_topics': ['Traditional Contracts', 'Paper Filing'],
+            'emerging_topics': ['Blockchain Agreements', 'NFT Licensing']
         }
 
-# Version Control System
-class VersionControl:
-    @staticmethod
-    def create_version(document: Document, file_content: bytes, changes_summary: str, user_email: str) -> DocumentVersion:
-        """Create a new version of a document"""
-        version_number = f"v{len(document.versions) + 1}.0"
-        
-        version = DocumentVersion(
-            version_number=version_number,
-            created_date=datetime.now(),
-            created_by=user_email,
-            file_content=file_content,
-            changes_summary=changes_summary,
-            file_size=len(file_content)
-        )
-        
-        return version
+# Client Portal System
+class ClientPortal:
+    def __init__(self):
+        self.active_sessions = {}
     
-    @staticmethod
-    def compare_versions(version1: DocumentVersion, version2: DocumentVersion) -> List[str]:
-        """Compare two document versions and return differences"""
-        try:
-            # This is a simplified comparison - in production, you'd use more sophisticated diff tools
-            text1 = version1.file_content.decode('utf-8', errors='ignore')
-            text2 = version2.file_content.decode('utf-8', errors='ignore')
-            
-            diff = list(difflib.unified_diff(
-                text1.splitlines(keepends=True),
-                text2.splitlines(keepends=True),
-                fromfile=f"Version {version1.version_number}",
-                tofile=f"Version {version2.version_number}",
-                lineterm=""
-            ))
-            
-            return diff[:100]  # Limit to first 100 lines of diff
-        except Exception as e:
-            return [f"Error comparing versions: {str(e)}"]
+    def create_client_account(self, client_id: str, email: str, temp_password: str) -> Dict:
+        """Create client portal account"""
+        credentials = {
+            'email': email,
+            'password': hashlib.sha256(temp_password.encode()).hexdigest(),
+            'temp_password': True,
+            'last_login': None,
+            'permissions': ['view_documents', 'view_billing', 'send_messages']
+        }
+        
+        return credentials
+    
+    def authenticate_client(self, email: str, password: str) -> Optional[Dict]:
+        """Authenticate client for portal access"""
+        # Simplified authentication
+        hashed_password = hashlib.sha256(password.encode()).hexdigest()
+        
+        for client in st.session_state.clients:
+            if (hasattr(client, 'portal_credentials') and 
+                client.portal_credentials.get('email') == email and
+                client.portal_credentials.get('password') == hashed_password):
+                
+                session_token = str(uuid.uuid4())
+                self.active_sessions[session_token] = {
+                    'client_id': client.id,
+                    'email': email,
+                    'login_time': datetime.now()
+                }
+                return {'token': session_token, 'client': client}
+        
+        return None
+    
+    def get_client_documents(self, client_id: str) -> List:
+        """Get documents accessible to client"""
+        client_docs = []
+        for doc in st.session_state.enhanced_documents:
+            if (hasattr(doc, 'client_id') and doc.client_id == client_id or
+                hasattr(doc, 'client_name') and any(client.id == client_id and client.name == doc.client_name 
+                                                   for client in st.session_state.clients)):
+                # Only include non-privileged documents or those specifically shared
+                if not getattr(doc, 'is_privileged', True) or getattr(doc, 'shared_with_client', False):
+                    client_docs.append(doc)
+        
+        return client_docs
+    
+    def get_client_billing_summary(self, client_id: str) -> Dict:
+        """Get billing summary for client"""
+        client_invoices = [inv for inv in st.session_state.invoices if inv.client_id == client_id]
+        
+        total_billed = sum(inv.total_amount for inv in client_invoices)
+        total_paid = sum(inv.total_amount for inv in client_invoices if inv.status == 'paid')
+        outstanding = total_billed - total_paid
+        
+        return {
+            'total_billed': total_billed,
+            'total_paid': total_paid,
+            'outstanding_balance': outstanding,
+            'recent_invoices': sorted(client_invoices, key=lambda x: x.date_issued, reverse=True)[:5]
+        }
 
-# Audit System
-class AuditLogger:
-    @staticmethod
-    def log_action(user_email: str, action: str, resource_type: str, resource_id: str, details: Dict):
-        """Log user actions for audit trail"""
-        audit_entry = AuditEntry(
+# Third-Party Integration Manager
+class IntegrationManager:
+    def __init__(self):
+        self.available_integrations = {
+            'docusign': {'name': 'DocuSign', 'type': 'esignature', 'status': 'available'},
+            'outlook': {'name': 'Microsoft Outlook', 'type': 'email', 'status': 'available'},
+            'google_calendar': {'name': 'Google Calendar', 'type': 'calendar', 'status': 'available'},
+            'quickbooks': {'name': 'QuickBooks', 'type': 'accounting', 'status': 'available'},
+            'court_filing': {'name': 'Court E-Filing', 'type': 'court', 'status': 'available'},
+            'lexisnexis': {'name': 'LexisNexis', 'type': 'research', 'status': 'available'},
+            'zoom': {'name': 'Zoom', 'type': 'video_conference', 'status': 'available'},
+            'slack': {'name': 'Slack', 'type': 'communication', 'status': 'available'}
+        }
+    
+    def setup_integration(self, integration_id: str, config: Dict) -> bool:
+        """Setup a third-party integration"""
+        if integration_id not in self.available_integrations:
+            return False
+        
+        integration = Integration(
             id=str(uuid.uuid4()),
-            timestamp=datetime.now(),
-            user_email=user_email,
-            action=action,
-            resource_type=resource_type,
-            resource_id=resource_id,
-            details=details,
-            ip_address="127.0.0.1"  # In production, get real IP
+            name=self.available_integrations[integration_id]['name'],
+            type=self.available_integrations[integration_id]['type'],
+            status='active',
+            settings=config,
+            last_sync=datetime.now(),
+            sync_frequency='hourly',
+            error_log=[]
         )
         
-        if 'audit_log' not in st.session_state:
-            st.session_state.audit_log = []
-        
-        st.session_state.audit_log.append(audit_entry)
-
-# Initialize enhanced session state
-initialize_session_state()
-
-# Load sample enhanced data
-def load_sample_data():
-    if not st.session_state.matters:
-        # Sample matters
-        matters = [
-            MatterManager.create_matter("Smith Divorce", "John Smith", "family", "Contested divorce proceedings"),
-            MatterManager.create_matter("TechCorp Formation", "TechCorp LLC", "corporate", "LLC formation and corporate documents"),
-            MatterManager.create_matter("Johnson Custody", "Mary Johnson", "family", "Child custody modification"),
-            MatterManager.create_matter("Williams Prenup", "Sarah Williams", "family", "Prenuptial agreement drafting"),
-            MatterManager.create_matter("ABC Partnership", "ABC Partners", "corporate", "Partnership agreement and formation")
-        ]
-        st.session_state.matters = matters
+        st.session_state.integrations.append(integration)
+        return True
     
-    if not st.session_state.enhanced_documents:
-        # Sample enhanced documents
-        sample_docs = []
+    def sync_integration(self, integration_id: str) -> bool:
+        """Sync data with third-party integration"""
+        # Placeholder for actual sync logic
+        integration = next((i for i in st.session_state.integrations if i.id == integration_id), None)
+        if integration:
+            integration.last_sync = datetime.now()
+            return True
+        return False
+    
+    def send_for_esignature(self, document_id: str, signers: List[Dict]) -> Dict:
+        """Send document for electronic signature"""
+        # Placeholder for DocuSign integration
+        envelope_id = str(uuid.uuid4())
         
-        for i, matter in enumerate(st.session_state.matters):
-            doc_id = str(uuid.uuid4())
-            sample_text = f"This is a sample {matter.matter_type} document for {matter.client_name}. " \
-                         f"Important dates include January 15, 2024, and March 30, 2024. " \
-                         f"Contact information: john@example.com, (555) 123-4567. " \
-                         f"Total amount: $50,000.00"
-            
-            # Create initial version
-            initial_version = DocumentVersion(
-                version_number="v1.0",
-                created_date=datetime.now() - timedelta(days=i),
-                created_by="system@legaldoc.com",
-                file_content=sample_text.encode(),
-                changes_summary="Initial document creation",
-                file_size=len(sample_text.encode())
-            )
-            
-            doc = Document(
-                id=doc_id,
-                name=f"{matter.name}_Document_{i+1}.pdf",
-                matter_id=matter.id,
-                client_name=matter.client_name,
-                document_type=DocumentProcessor.classify_document(f"document_{i}", sample_text),
-                current_version="v1.0",
-                versions=[initial_version],
-                status=DocumentStatus.FINAL.value,
-                tags=[matter.matter_type, "sample"],
-                extracted_text=sample_text,
-                key_information=DocumentProcessor.extract_key_information(sample_text),
-                created_date=datetime.now() - timedelta(days=i),
-                last_modified=datetime.now() - timedelta(days=i),
-                access_permissions={"partner": ["read", "write", "delete"], "associate": ["read", "write"], "paralegal": ["read"]},
-                retention_date=None,
-                is_privileged=False,
-                digital_signatures=[]
-            )
-            
-            sample_docs.append(doc)
+        return {
+            'envelope_id': envelope_id,
+            'status': 'sent',
+            'signing_url': f"https://demo.docusign.net/signing/{envelope_id}",
+            'expected_completion': datetime.now() + timedelta(days=7)
+        }
+    
+    def file_court_document(self, document_id: str, court_info: Dict) -> Dict:
+        """File document with court system"""
+        # Placeholder for court e-filing integration
+        filing_id = str(uuid.uuid4())
         
-        st.session_state.enhanced_documents = sample_docs
-        
-        # Index documents for search
-        search_engine = DocumentSearchEngine()
-        search_engine.index_documents(sample_docs)
-        st.session_state.search_engine = search_engine
+        return {
+            'filing_id': filing_id,
+            'status': 'submitted',
+            'confirmation_number': f"CF-{datetime.now().strftime('%Y%m%d')}-{filing_id[:8]}",
+            'filing_date': datetime.now()
+        }
 
-# User Authentication (simplified - same as before but with role management)
+# Mobile App Framework
+class MobileAppFramework:
+    def __init__(self):
+        self.mobile_features = {
+            'document_viewer': True,
+            'photo_scanner': True,
+            'voice_notes': True,
+            'offline_sync': True,
+            'push_notifications': True,
+            'biometric_auth': True
+        }
+    
+    def render_mobile_interface(self):
+        """Render mobile app simulation"""
+        st.markdown("""
+        <div class="mobile-frame">
+            <div class="mobile-screen">
+                <div style="background: linear-gradient(135deg, #2E86AB 0%, #A23B72 100%); color: white; padding: 1rem; text-align: center;">
+                    <h3>📱 LegalDoc Mobile</h3>
+                </div>
+                <div style="padding: 1rem;">
+                    <div style="margin: 0.5rem 0; padding: 0.8rem; background: #f8f9fa; border-radius: 8px;">
+                        📄 Recent Documents (3)
+                    </div>
+                    <div style="margin: 0.5rem 0; padding: 0.8rem; background: #f8f9fa; border-radius: 8px;">
+                        📅 Today's Schedule (2)
+                    </div>
+                    <div style="margin: 0.5rem 0; padding: 0.8rem; background: #f8f9fa; border-radius: 8px;">
+                        📧 New Messages (5)
+                    </div>
+                    <div style="margin: 0.5rem 0; padding: 0.8rem; background: #f8f9fa; border-radius: 8px;">
+                        ⏱️ Time Tracking
+                    </div>
+                    <div style="margin: 0.5rem 0; padding: 0.8rem; background: #f8f9fa; border-radius: 8px;">
+                        📸 Scan Document
+                    </div>
+                </div>
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
+    
+    def generate_mobile_qr_code(self) -> str:
+        """Generate QR code for mobile app download"""
+        qr = qrcode.QRCode(version=1, box_size=10, border=5)
+        qr.add_data("https://legaldocpro.com/mobile-app")
+        qr.make(fit=True)
+        
+        img = qr.make_image(fill_color="black", back_color="white")
+        return img
+
+# Business Intelligence & Analytics
+class BusinessIntelligence:
+    def __init__(self):
+        self.metrics = {}
+    
+    def generate_executive_dashboard(self) -> Dict:
+        """Generate executive dashboard metrics"""
+        # Calculate key metrics
+        total_matters = len(st.session_state.matters)
+        active_matters = len([m for m in st.session_state.matters if m.status == 'active'])
+        total_docs = len(st.session_state.enhanced_documents)
+        total_revenue = sum(inv.total_amount for inv in st.session_state.invoices if inv.status == 'paid')
+        
+        # Time-based analytics
+        current_month_revenue = sum(
+            inv.total_amount for inv in st.session_state.invoices 
+            if inv.date_issued.month == datetime.now().month and inv.status == 'paid'
+        )
+        
+        last_month_revenue = sum(
+            inv.total_amount for inv in st.session_state.invoices 
+            if inv.date_issued.month == datetime.now().month - 1 and inv.status == 'paid'
+        )
+        
+        revenue_growth = ((current_month_revenue - last_month_revenue) / last_month_revenue * 100) if last_month_revenue > 0 else 0
+        
+        return {
+            'total_matters': total_matters,
+            'active_matters': active_matters,
+            'total_documents': total_docs,
+            'total_revenue': total_revenue,
+            'monthly_revenue': current_month_revenue,
+            'revenue_growth': revenue_growth,
+            'avg_matter_value': total_revenue / total_matters if total_matters > 0 else 0,
+            'document_growth_rate': 15,  # Placeholder
+            'client_satisfaction': 4.2,  # Placeholder
+            'utilization_rate': 78.5  # Placeholder
+        }
+    
+    def create_revenue_chart(self) -> go.Figure:
+        """Create revenue trend chart"""
+        # Generate sample data for demonstration
+        months = pd.date_range(start='2024-01-01', periods=12, freq='M')
+        revenue_data = [15000, 18000, 22000, 19000, 25000, 28000, 24000, 30000, 27000, 32000, 29000, 35000]
+        
+        fig = go.Figure()
+        fig.add_trace(go.Scatter(
+            x=months,
+            y=revenue_data,
+            mode='lines+markers',
+            name='Monthly Revenue',
+            line=dict(color='#2E86AB', width=3),
+            marker=dict(size=8)
+        ))
+        
+        fig.update_layout(
+            title='Monthly Revenue Trend',
+            xaxis_title='Month',
+            yaxis_title='Revenue ($)',
+            template='plotly_white',
+            height=400
+        )
+        
+        return fig
+    
+    def create_matter_type_distribution(self) -> go.Figure:
+        """Create matter type distribution chart"""
+        matter_types = {}
+        for matter in st.session_state.matters:
+            matter_type = matter.matter_type.replace('_', ' ').title()
+            matter_types[matter_type] = matter_types.get(matter_type, 0) + 1
+        
+        if not matter_types:
+            matter_types = {'Corporate': 5, 'Litigation': 3, 'Family': 4, 'Real Estate': 2}
+        
+        fig = go.Figure(data=[go.Pie(
+            labels=list(matter_types.keys()),
+            values=list(matter_types.values()),
+            hole=.3,
+            marker_colors=['#2E86AB', '#A23B72', '#F18F01', '#C73E1D', '#6A994E']
+        )])
+        
+        fig.update_layout(
+            title='Matter Distribution by Type',
+            height=400
+        )
+        
+        return fig
+    
+    def create_productivity_metrics(self) -> Dict:
+        """Create productivity metrics and charts"""
+        # Sample productivity data
+        productivity_data = {
+            'billable_hours_trend': {
+                'dates': pd.date_range(start='2024-01-01', periods=30, freq='D'),
+                'hours': np.random.normal(7.5, 1.5, 30)
+            },
+            'document_processing_speed': {
+                'avg_processing_time': 2.3,  # hours
+                'documents_per_day': 12,
+                'automation_savings': 45  # percentage
+            },
+            'client_response_time': {
+                'avg_response_hours': 4.2,
+                'target_response_hours': 6,
+                'improvement_rate': 23  # percentage
+            }
+        }
+        
+        return productivity_data
+    
+    def generate_financial_forecast(self, months_ahead: int = 6) -> Dict:
+        """Generate financial forecast"""
+        # Simple linear regression for demonstration
+        current_revenue = sum(inv.total_amount for inv in st.session_state.invoices if inv.status == 'paid')
+        monthly_growth_rate = 0.08  # 8% monthly growth
+        
+        forecast = []
+        base_revenue = current_revenue / 12  # Monthly average
+        
+        for month in range(1, months_ahead + 1):
+            projected_revenue = base_revenue * (1 + monthly_growth_rate) ** month
+            forecast.append({
+                'month': (datetime.now() + timedelta(days=30*month)).strftime('%B %Y'),
+                'projected_revenue': projected_revenue,
+                'confidence_interval': (projected_revenue * 0.85, projected_revenue * 1.15)
+            })
+        
+        return {
+            'forecast': forecast,
+            'growth_rate': monthly_growth_rate,
+            'confidence': 0.75
+        }
+    
+    def create_workload_analysis(self) -> go.Figure:
+        """Create attorney workload analysis"""
+        # Sample workload data
+        attorneys = ['Partner A', 'Partner B', 'Associate C', 'Associate D', 'Paralegal E']
+        current_hours = [42, 38, 35, 41, 28]
+        capacity_hours = [45, 45, 40, 40, 35]
+        
+        fig = go.Figure(data=[
+            go.Bar(name='Current Hours', x=attorneys, y=current_hours, marker_color='#2E86AB'),
+            go.Bar(name='Capacity', x=attorneys, y=capacity_hours, marker_color='#E9ECEF', opacity=0.6)
+        ])
+        
+        fig.update_layout(
+            title='Attorney Workload Analysis',
+            xaxis_title='Attorney',
+            yaxis_title='Hours per Week',
+            barmode='group',
+            template='plotly_white',
+            height=400
+        )
+        
+        return fig
+
+# Notification System
+class NotificationSystem:
+    def __init__(self):
+        self.notification_queue = []
+    
+    def send_notification(self, user_id: str, title: str, message: str, 
+                         notification_type: NotificationType, priority: str = 'normal'):
+        """Send notification to user"""
+        notification = {
+            'id': str(uuid.uuid4()),
+            'user_id': user_id,
+            'title': title,
+            'message': message,
+            'type': notification_type.value,
+            'priority': priority,
+            'timestamp': datetime.now(),
+            'read': False
+        }
+        
+        self.notification_queue.append(notification)
+        
+        # In production, this would trigger actual notifications
+        if notification_type == NotificationType.EMAIL:
+            self._send_email_notification(notification)
+        elif notification_type == NotificationType.SMS:
+            self._send_sms_notification(notification)
+    
+    def _send_email_notification(self, notification: Dict):
+        """Send email notification (placeholder)"""
+        pass
+    
+    def _send_sms_notification(self, notification: Dict):
+        """Send SMS notification (placeholder)"""
+        pass
+    
+    def get_user_notifications(self, user_id: str, unread_only: bool = False) -> List[Dict]:
+        """Get notifications for user"""
+        user_notifications = [n for n in self.notification_queue if n['user_id'] == user_id]
+        
+        if unread_only:
+            user_notifications = [n for n in user_notifications if not n['read']]
+        
+        return sorted(user_notifications, key=lambda x: x['timestamp'], reverse=True)
+
+# Initialize all systems
+initialize_enhanced_session_state()
+
+# Load comprehensive sample data
+def load_comprehensive_sample_data():
+    """Load comprehensive sample data for demonstration"""
+    
+    # Sample clients
+    if not st.session_state.clients:
+        sample_clients = [
+            Client(
+                id="client_1",
+                name="Acme Corporation",
+                client_type="business",
+                contact_info={"phone": "(555) 123-4567", "email": "legal@acme.com"},
+                billing_address={"street": "123 Business St", "city": "New York", "state": "NY", "zip": "10001"},
+                primary_contact="John Doe, General Counsel",
+                created_date=datetime.now() - timedelta(days=365),
+                status="active",
+                portal_access=True,
+                portal_credentials={"email": "legal@acme.com", "password": hashlib.sha256("demo123".encode()).hexdigest()},
+                billing_preferences={"payment_terms": "Net 30", "preferred_format": "email"},
+                communication_preferences={"email": True, "sms": False, "portal": True}
+            ),
+            Client(
+                id="client_2",
+                name="Sarah Johnson",
+                client_type="individual",
+                contact_info={"phone": "(555) 987-6543", "email": "sarah@email.com"},
+                billing_address={"street": "456 Family Ave", "city": "Boston", "state": "MA", "zip": "02101"},
+                primary_contact="Sarah Johnson",
+                created_date=datetime.now() - timedelta(days=180),
+                status="active",
+                portal_access=True,
+                portal_credentials={"email": "sarah@email.com", "password": hashlib.sha256("demo456".encode()).hexdigest()},
+                billing_preferences={"payment_terms": "Net 15", "preferred_format": "mail"},
+                communication_preferences={"email": True, "sms": True, "portal": True}
+            )
+        ]
+        st.session_state.clients = sample_clients
+    
+    # Sample enhanced matters with more details
+    if not st.session_state.matters:
+        sample_matters = [
+            Matter(
+                id="matter_1",
+                name="Acme Corp M&A Transaction",
+                client_id="client_1",
+                client_name="Acme Corporation",
+                matter_type="corporate",
+                status="active",
+                created_date=datetime.now() - timedelta(days=45),
+                assigned_attorneys=["partner@firm.com", "associate@firm.com"],
+                description="Merger and acquisition transaction involving subsidiary purchase",
+                budget=150000.0,
+                estimated_hours=300,
+                actual_hours=125.5,
+                important_dates={
+                    "Due Diligence Deadline": datetime.now() + timedelta(days=14),
+                    "Closing Date": datetime.now() + timedelta(days=60),
+                    "Board Approval": datetime.now() + timedelta(days=30)
+                },
+                billing_rate=450.0,
+                priority="high",
+                court_info={},
+                opposing_parties=[],
+                statute_of_limitations=None,
+                custom_fields={"deal_value": "$5M", "target_company": "TechStart Inc"}
+            ),
+            Matter(
+                id="matter_2",
+                name="Johnson Custody Modification",
+                client_id="client_2",
+                client_name="Sarah Johnson",
+                matter_type="family",
+                status="active",
+                created_date=datetime.now() - timedelta(days=30),
+                assigned_attorneys=["family@firm.com"],
+                description="Child custody modification due to relocation",
+                budget=15000.0,
+                estimated_hours=40,
+                actual_hours=18.0,
+                important_dates={
+                    "Court Hearing": datetime.now() + timedelta(days=21),
+                    "Mediation": datetime.now() + timedelta(days=7),
+                    "Response Due": datetime.now() + timedelta(days=3)
+                },
+                billing_rate=350.0,
+                priority="medium",
+                court_info={
+                    "court_name": "Superior Court of Massachusetts",
+                    "case_number": "FC-2024-001234",
+                    "judge": "Hon. Patricia Williams"
+                },
+                opposing_parties=[{"name": "Michael Johnson", "attorney": "Smith & Associates"}],
+                statute_of_limitations=None,
+                custom_fields={"children_ages": "8, 12", "current_custody": "joint"}
+            )
+        ]
+        st.session_state.matters = sample_matters
+    
+    # Sample calendar events
+    if not st.session_state.calendar_events:
+        calendar_integration = CalendarIntegration()
+        sample_events = [
+            calendar_integration.create_event(
+                "Court Hearing - Johnson",
+                "Custody modification hearing",
+                datetime.now() + timedelta(days=21, hours=9),
+                datetime.now() + timedelta(days=21, hours=11),
+                "court_date",
+                "matter_2"
+            ),
+            calendar_integration.create_event(
+                "Client Meeting - Acme Corp",
+                "M&A due diligence review",
+                datetime.now() + timedelta(days=2, hours=14),
+                datetime.now() + timedelta(days=2, hours=16),
+                "meeting",
+                "matter_1"
+            ),
+            calendar_integration.create_event(
+                "Document Filing Deadline",
+                "Submit amended complaint",
+                datetime.now() + timedelta(days=5, hours=17),
+                datetime.now() + timedelta(days=5, hours=17, minutes=30),
+                "deadline",
+                "matter_2"
+            )
+        ]
+        st.session_state.calendar_events = sample_events
+    
+    # Sample invoices
+    if not st.session_state.invoices:
+        billing_system = BillingSystem()
+        sample_invoices = [
+            Invoice(
+                id="inv_1",
+                client_id="client_1",
+                matter_id="matter_1",
+                invoice_number="INV-20241201-0001",
+                date_issued=datetime.now() - timedelta(days=30),
+                due_date=datetime.now(),
+                line_items=[
+                    {"date": datetime.now() - timedelta(days=35), "description": "Document review and analysis", "hours": 8.0, "rate": 450.0, "amount": 3600.0},
+                    {"date": datetime.now() - timedelta(days=33), "description": "Client consultation", "hours": 2.5, "rate": 450.0, "amount": 1125.0}
+                ],
+                subtotal=4725.0,
+                tax_rate=0.08,
+                tax_amount=378.0,
+                total_amount=5103.0,
+                status="paid",
+                payment_terms="Net 30",
+                notes="Thank you for your business"
+            )
+        ]
+        st.session_state.invoices = sample_invoices
+    
+    # Sample AI insights
+    if not st.session_state.ai_insights:
+        sample_insights = [
+            AIInsight(
+                id="ai_1",
+                document_id="doc_1",
+                insight_type="risk_analysis",
+                content={
+                    "risk_level": "medium",
+                    "identified_risks": ["Undefined termination clause", "Ambiguous payment terms"],
+                    "recommendations": ["Add specific termination procedures", "Clarify payment schedule"]
+                },
+                confidence_score=0.85,
+                created_date=datetime.now() - timedelta(hours=2),
+                reviewed=False,
+                action_required=True
+            ),
+            AIInsight(
+                id="ai_2",
+                document_id="doc_2",
+                insight_type="deadline_extraction",
+                content={
+                    "deadlines": [
+                        {"text": "Response due within 30 days", "date": datetime.now() + timedelta(days=30)},
+                        {"text": "Hearing scheduled for January 15", "date": datetime(2025, 1, 15)}
+                    ]
+                },
+                confidence_score=0.92,
+                created_date=datetime.now() - timedelta(hours=1),
+                reviewed=False,
+                action_required=True
+            )
+        ]
+        st.session_state.ai_insights = sample_insights
+
+# Load comprehensive sample data
+load_comprehensive_sample_data()
+
+# Initialize system components
+email_integration = EmailIntegration({
+    'smtp_server': 'smtp.gmail.com',
+    'imap_server': 'imap.gmail.com',
+    'username': 'demo@legaldocpro.com',
+    'password': 'demo_password'
+})
+
+calendar_integration = CalendarIntegration()
+billing_system = BillingSystem()
+ai_system = AIAnalysisSystem()
+client_portal = ClientPortal()
+integration_manager = IntegrationManager()
+mobile_framework = MobileAppFramework()
+business_intelligence = BusinessIntelligence()
+notification_system = NotificationSystem()
+
+# Authentication Check
 def is_logged_in():
     return st.session_state.get('user') is not None
 
 def get_user_role():
-    """Get current user's role"""
     if not is_logged_in():
         return None
-    return st.session_state.user.get('role', 'associate')  # Default to associate
+    return st.session_state.user.get('role', 'associate')
 
 def has_permission(permission: str) -> bool:
-    """Check if current user has a specific permission"""
     role = get_user_role()
     if not role:
         return False
     
     role_permissions = {
-        'partner': ['read', 'write', 'delete', 'admin', 'billing', 'manage_users'],
-        'associate': ['read', 'write', 'time_tracking'],
+        'partner': ['read', 'write', 'delete', 'admin', 'billing', 'manage_users', 'ai_insights', 'integrations'],
+        'associate': ['read', 'write', 'time_tracking', 'ai_insights'],
         'paralegal': ['read', 'time_tracking'],
-        'client': ['read']
+        'client': ['read', 'portal_access']
     }
     
     return permission in role_permissions.get(role, [])
 
-# Simplified login for demo (in production, integrate with your auth system)
-def show_enhanced_login():
-    st.markdown('<div class="main-header">⚖️ LegalDoc Pro - Advanced Legal Document Management</div>', unsafe_allow_html=True)
+# Enhanced Login System
+def show_comprehensive_login():
+    st.markdown("""
+    <div class="main-header">
+        <h1>⚖️ LegalDoc Pro Enterprise</h1>
+        <p>Complete Legal Practice Management Platform</p>
+    </div>
+    """, unsafe_allow_html=True)
     
     col1, col2, col3 = st.columns([1, 2, 1])
     
     with col2:
-        st.markdown("### 🔐 Login")
+        tab1, tab2, tab3 = st.tabs(["🔐 Login", "👥 Client Portal", "📱 Mobile Access"])
         
-        with st.form("demo_login"):
-            role = st.selectbox("Select Role (Demo)", ["partner", "associate", "paralegal", "client"])
-            email = st.text_input("Email", value=f"demo.{role}@legaldoc.com")
-            password = st.text_input("Password", type="password", value="demo123")
+        with tab1:
+            st.markdown("### Staff Login")
+            with st.form("staff_login"):
+                role = st.selectbox("Role", ["partner", "associate", "paralegal", "admin"])
+                email = st.text_input("Email", value=f"demo.{role}@legaldocpro.com")
+                password = st.text_input("Password", type="password", value="demo123")
+                
+                if st.form_submit_button("Login", use_container_width=True):
+                    st.session_state['user'] = {
+                        'email': email,
+                        'role': role,
+                        'idToken': 'demo_token'
+                    }
+                    st.success(f"Logged in as {role}!")
+                    time.sleep(1)
+                    st.rerun()
+        
+        with tab2:
+            st.markdown("### Client Portal Access")
+            with st.form("client_login"):
+                client_email = st.text_input("Client Email", value="legal@acme.com")
+                client_password = st.text_input("Password", type="password", value="demo123")
+                
+                if st.form_submit_button("Access Portal", use_container_width=True):
+                    auth_result = client_portal.authenticate_client(client_email, client_password)
+                    if auth_result:
+                        st.session_state['user'] = {
+                            'email': client_email,
+                            'role': 'client',
+                            'client_id': auth_result['client'].id,
+                            'token': auth_result['token']
+                        }
+                        st.success("Welcome to your client portal!")
+                        time.sleep(1)
+                        st.rerun()
+                    else:
+                        st.error("Invalid credentials")
+        
+        with tab3:
+            st.markdown("### Mobile App Access")
+            st.info("📱 Scan QR code to download mobile app")
             
-            if st.form_submit_button("Login", use_container_width=True):
-                st.session_state['user'] = {
-                    'email': email,
-                    'role': role,
-                    'idToken': 'demo_token'
-                }
-                st.success(f"Logged in as {role}!")
-                time.sleep(1)
-                st.rerun()
+            # Mobile app QR code (placeholder)
+            st.markdown("""
+            <div style="text-align: center; padding: 2rem;">
+                <div style="width: 150px; height: 150px; background: #f0f0f0; margin: 0 auto; display: flex; align-items: center; justify-content: center; border-radius: 10px;">
+                    📱 QR Code<br>Mobile App
+                </div>
+                <p style="margin-top: 1rem;">Available on iOS and Android</p>
+            </div>
+            """, unsafe_allow_html=True)
 
-# Check authentication
 if not is_logged_in():
-    show_enhanced_login()
+    show_comprehensive_login()
     st.stop()
 
-# Load sample data
-load_sample_data()
-
-# Enhanced Sidebar
-st.sidebar.title("⚖️ LegalDoc Pro Advanced")
-st.sidebar.markdown("*Enterprise Legal Document Management*")
+# Enhanced Sidebar with Role-Based Navigation
+st.sidebar.markdown("""
+<div style="background: linear-gradient(135deg, #2E86AB 0%, #A23B72 100%); color: white; padding: 1rem; border-radius: 10px; margin-bottom: 1rem;">
+    <h3 style="margin: 0; text-align: center;">⚖️ LegalDoc Pro</h3>
+    <p style="margin: 0.5rem 0 0 0; text-align: center; opacity: 0.9;">Enterprise Platform</p>
+</div>
+""", unsafe_allow_html=True)
 
 user_role = get_user_role()
-st.sidebar.markdown(f"**Role:** {user_role.title()}")
-st.sidebar.markdown(f"**User:** {st.session_state['user']['email']}")
+user_email = st.session_state['user']['email']
 
-# Navigation based on user role
-navigation_options = ["Dashboard", "Document Management", "Matter Management"]
+st.sidebar.markdown(f"**👤 Role:** {user_role.title()}")
+st.sidebar.markdown(f"**📧 User:** {user_email}")
 
-if has_permission('time_tracking'):
-    navigation_options.append("Time Tracking")
-if has_permission('billing'):
-    navigation_options.append("Billing & Reports")
+# Role-based navigation
+if user_role == 'client':
+    navigation_options = ["Client Dashboard", "My Documents", "Billing", "Messages", "Settings"]
+else:
+    navigation_options = ["Executive Dashboard", "Document Management", "Matter Management", "Calendar & Deadlines"]
+    
+    if has_permission('time_tracking'):
+        navigation_options.append("Time & Billing")
+    if has_permission('ai_insights'):
+        navigation_options.append("AI Insights")
+    if has_permission('integrations'):
+        navigation_options.append("Integrations")
+    if has_permission('admin'):
+        navigation_options.extend(["Business Intelligence", "User Management", "System Settings"])
+    
+    navigation_options.extend(["Advanced Search", "Mobile App", "Audit Trail"])
+
+page = st.sidebar.selectbox("🧭 Navigate", navigation_options)
+
+# Notifications in sidebar
+if user_role != 'client':
+    unread_notifications = notification_system.get_user_notifications(user_email, unread_only=True)
+    if unread_notifications:
+        st.sidebar.markdown("---")
+        st.sidebar.markdown("### 🔔 Notifications")
+        for notif in unread_notifications[:3]:  # Show top 3
+            st.sidebar.markdown(f"• {notif['title']}")
+        if len(unread_notifications) > 3:
+            st.sidebar.markdown(f"... and {len(unread_notifications) - 3} more")
+
+# System status in sidebar (for admins)
 if has_permission('admin'):
-    navigation_options.extend(["User Management", "System Settings"])
+    st.sidebar.markdown("---")
+    st.sidebar.markdown("### 📊 System Status")
+    st.sidebar.metric("Active Users", "24", "↑ 3")
+    st.sidebar.metric("System Load", "68%", "↓ 5%")
+    st.sidebar.metric("Storage Used", "2.1TB", "↑ 156GB")
 
-navigation_options.extend(["Advanced Search", "Audit Trail"])
-
-page = st.sidebar.selectbox("Navigate", navigation_options)
-
-# Logout
 if st.sidebar.button("🚪 Logout"):
     for key in list(st.session_state.keys()):
         del st.session_state[key]
     st.rerun()
 
-# Main Content Area
-if page == "Dashboard":
-    st.title("📊 Executive Dashboard")
+# Main Content Area - Client Portal
+if user_role == 'client' and page == "Client Dashboard":
+    client_id = st.session_state['user']['client_id']
+    client = next((c for c in st.session_state.clients if c.id == client_id), None)
     
-    # Key Metrics
+    st.markdown(f"""
+    <div class="main-header">
+        <h1>👋 Welcome, {client.name if client else 'Client'}</h1>
+        <p>Your Legal Matter Dashboard</p>
+    </div>
+    """, unsafe_allow_html=True)
+    
+    # Client metrics
     col1, col2, col3, col4 = st.columns(4)
     
+    client_docs = client_portal.get_client_documents(client_id)
+    client_billing = client_portal.get_client_billing_summary(client_id)
+    
     with col1:
-        st.markdown('<div class="metric-container">', unsafe_allow_html=True)
-        st.metric("Total Matters", len(st.session_state.matters), "2 active")
+        st.markdown('<div class="metric-card">', unsafe_allow_html=True)
+        st.metric("My Documents", len(client_docs))
         st.markdown('</div>', unsafe_allow_html=True)
     
     with col2:
-        st.markdown('<div class="metric-container">', unsafe_allow_html=True)
-        st.metric("Total Documents", len(st.session_state.enhanced_documents), "15 this week")
+        st.markdown('<div class="metric-card">', unsafe_allow_html=True)
+        st.metric("Outstanding Balance", f"${client_billing['outstanding_balance']:,.2f}")
         st.markdown('</div>', unsafe_allow_html=True)
     
     with col3:
-        st.markdown('<div class="metric-container">', unsafe_allow_html=True)
-        pending_docs = len([d for d in st.session_state.enhanced_documents if d.status == 'under_review'])
-        st.metric("Pending Reviews", pending_docs, "-2")
+        st.markdown('<div class="metric-card">', unsafe_allow_html=True)
+        st.metric("Active Matters", len([m for m in st.session_state.matters if m.client_id == client_id and m.status == 'active']))
         st.markdown('</div>', unsafe_allow_html=True)
     
     with col4:
-        st.markdown('<div class="metric-container">', unsafe_allow_html=True)
-        st.metric("This Week's Revenue", "$12,450", "+$2,100")
+        st.markdown('<div class="metric-card">', unsafe_allow_html=True)
+        st.metric("Total Paid", f"${client_billing['total_paid']:,.2f}")
         st.markdown('</div>', unsafe_allow_html=True)
     
     st.divider()
     
-    # Recent Activity and Matter Overview
-    col1, col2 = st.columns([1, 1])
+    # Recent activity and updates
+    col1, col2 = st.columns(2)
     
     with col1:
-        st.subheader("📋 Recent Document Activity")
-        recent_docs = sorted(st.session_state.enhanced_documents, 
-                           key=lambda x: x.last_modified, reverse=True)[:5]
-        
-        for doc in recent_docs:
-            with st.container():
-                st.markdown(f"""
-                <div class="document-card">
-                    <strong>{doc.name}</strong><br>
-                    <small>Matter: {next((m.name for m in st.session_state.matters if m.id == doc.matter_id), 'Unknown')}</small><br>
-                    <small>Modified: {doc.last_modified.strftime('%Y-%m-%d %H:%M')}</small>
-                    <span class="version-badge">{doc.current_version}</span>
-                </div>
-                """, unsafe_allow_html=True)
-    
-    with col2:
-        st.subheader("⚖️ Active Matters")
-        for matter in st.session_state.matters[:5]:
-            stats = MatterManager.get_matter_stats(matter.id, st.session_state.enhanced_documents, [])
-            
-            status_class = "status-active" if matter.status == "active" else "status-pending"
-            
+        st.subheader("📄 Recent Documents")
+        for doc in client_docs[-5:]:
             st.markdown(f"""
-            <div class="matter-card">
-                <strong>{matter.name}</strong> <span class="{status_class}">{matter.status.upper()}</span><br>
-                <small>Client: {matter.client_name}</small><br>
-                <small>Type: {matter.matter_type.replace('_', ' ').title()}</small><br>
-                <small>Documents: {stats['document_count']}</small>
+            <div class="client-portal">
+                <strong>{doc.name}</strong><br>
+                <small>Updated: {doc.last_modified.strftime('%Y-%m-%d')}</small><br>
+                <small>Status: {doc.status.replace('_', ' ').title()}</small>
             </div>
             """, unsafe_allow_html=True)
     
-    # AI Insights Section (placeholder for future ML features)
-    if has_permission('admin'):
-        st.divider()
-        st.subheader("🤖 AI Insights")
+    with col2:
+        st.subheader("📅 Upcoming Events")
+        upcoming_events = [e for e in st.session_state.calendar_events 
+                          if e.matter_id in [m.id for m in st.session_state.matters if m.client_id == client_id]]
         
-        col1, col2 = st.columns(2)
-        
-        with col1:
-            st.markdown("""
-            <div class="alert-box alert-warning">
-                <strong>⚠️ Upcoming Deadlines:</strong><br>
-                • Smith Divorce: Response due in 3 days<br>
-                • TechCorp Formation: Filing deadline in 1 week
-            </div>
-            """, unsafe_allow_html=True)
-        
-        with col2:
-            st.markdown("""
-            <div class="alert-box alert-success">
-                <strong>✅ Document Insights:</strong><br>
-                • 3 contracts ready for review<br>
-                • Average processing time: 2.3 days
+        for event in upcoming_events[:5]:
+            st.markdown(f"""
+            <div class="client-portal">
+                <strong>{event.title}</strong><br>
+                <small>{event.start_time.strftime('%Y-%m-%d %H:%M')}</small><br>
+                <small>Type: {event.event_type.replace('_', ' ').title()}</small>
             </div>
             """, unsafe_allow_html=True)
 
-elif page == "Advanced Search":
-    st.title("🔍 Advanced Document Search")
+# Main Content Area - Staff Dashboards
+elif page == "Executive Dashboard":
+    st.markdown("""
+    <div class="main-header">
+        <h1>📊 Executive Dashboard</h1>
+        <p>Strategic Overview & Key Performance Indicators</p>
+    </div>
+    """, unsafe_allow_html=True)
     
-    # Search interface
-    search_query = st.text_input("🔍 Search documents", 
-                                placeholder="Enter keywords, client names, dates, or document content...")
+    # Generate executive metrics
+    exec_metrics = business_intelligence.generate_executive_dashboard()
     
-    col1, col2, col3 = st.columns(3)
+    # Key Performance Indicators
+    col1, col2, col3, col4, col5 = st.columns(5)
     
-    with col1:
-        matter_filter = st.selectbox("Filter by Matter", 
-                                   ["All Matters"] + [m.name for m in st.session_state.matters])
+    metrics_data = [
+        ("Total Revenue", f"${exec_metrics['total_revenue']:,.0f}", f"{exec_metrics['revenue_growth']:+.1f}%"),
+        ("Active Matters", exec_metrics['active_matters'], "+2"),
+        ("Documents", exec_metrics['total_documents'], "+15"),
+        ("Avg Matter Value", f"${exec_metrics['avg_matter_value']:,.0f}", "+12%"),
+        ("Utilization", f"{exec_metrics['utilization_rate']:.1f}%", "+3.2%")
+    ]
     
-    with col2:
-        doc_type_filter = st.selectbox("Filter by Type", 
-                                     ["All Types"] + list(set(d.document_type for d in st.session_state.enhanced_documents)))
-    
-    with col3:
-        status_filter = st.selectbox("Filter by Status", 
-                                   ["All Statuses"] + [status.value for status in DocumentStatus])
-    
-    # Advanced search options
-    with st.expander("🔧 Advanced Search Options"):
-        col1, col2 = st.columns(2)
-        
-        with col1:
-            date_from = st.date_input("From Date", value=datetime.now() - timedelta(days=365))
-            search_content = st.checkbox("Search document content", value=True)
-            
-        with col2:
-            date_to = st.date_input("To Date", value=datetime.now())
-            include_archived = st.checkbox("Include archived documents")
-    
-    # Perform search
-    if search_query or matter_filter != "All Matters" or doc_type_filter != "All Types":
-        filtered_docs = st.session_state.enhanced_documents
-        
-        # Apply filters
-        if matter_filter != "All Matters":
-            matter_id = next((m.id for m in st.session_state.matters if m.name == matter_filter), None)
-            if matter_id:
-                filtered_docs = [d for d in filtered_docs if d.matter_id == matter_id]
-        
-        if doc_type_filter != "All Types":
-            filtered_docs = [d for d in filtered_docs if d.document_type == doc_type_filter]
-        
-        if status_filter != "All Statuses":
-            filtered_docs = [d for d in filtered_docs if d.status == status_filter]
-        
-        # Date range filter
-        filtered_docs = [d for d in filtered_docs if date_from <= d.created_date.date() <= date_to]
-        
-        # Text search using search engine
-        if search_query and hasattr(st.session_state, 'search_engine'):
-            search_results = st.session_state.search_engine.search(search_query, top_k=50)
-            search_doc_ids = [doc.id for doc, score in search_results]
-            filtered_docs = [d for d in filtered_docs if d.id in search_doc_ids]
-        
-        # Display results
-        st.divider()
-        st.subheader(f"🔍 Search Results ({len(filtered_docs)} documents)")
-        
-        for doc in filtered_docs:
-            matter_name = next((m.name for m in st.session_state.matters if m.id == doc.matter_id), "Unknown Matter")
-            
-            with st.expander(f"📄 {doc.name} - {doc.document_type}"):
-                col1, col2, col3 = st.columns(3)
-                
-                with col1:
-                    st.markdown(f"**Matter:** {matter_name}")
-                    st.markdown(f"**Client:** {doc.client_name}")
-                    st.markdown(f"**Type:** {doc.document_type}")
-                
-                with col2:
-                    st.markdown(f"**Status:** {doc.status.replace('_', ' ').title()}")
-                    st.markdown(f"**Version:** {doc.current_version}")
-                    st.markdown(f"**Created:** {doc.created_date.strftime('%Y-%m-%d')}")
-                
-                with col3:
-                    st.markdown(f"**Modified:** {doc.last_modified.strftime('%Y-%m-%d %H:%M')}")
-                    st.markdown(f"**Size:** {len(doc.versions[-1].file_content) if doc.versions else 0} bytes")
-                    st.markdown(f"**Tags:** {', '.join(doc.tags)}")
-                
-                # Show key information extracted
-                if doc.key_information:
-                    st.markdown("**📊 Key Information:**")
-                    col1, col2 = st.columns(2)
-                    
-                    with col1:
-                        if doc.key_information.get('dates'):
-                            st.markdown(f"**Dates:** {', '.join(doc.key_information['dates'][:3])}")
-                        if doc.key_information.get('monetary_amounts'):
-                            st.markdown(f"**Amounts:** {', '.join(doc.key_information['monetary_amounts'][:3])}")
-                    
-                    with col2:
-                        if doc.key_information.get('email_addresses'):
-                            st.markdown(f"**Emails:** {', '.join(doc.key_information['email_addresses'][:2])}")
-                        if doc.key_information.get('phone_numbers'):
-                            st.markdown(f"**Phones:** {', '.join(doc.key_information['phone_numbers'][:2])}")
-                
-                # Action buttons
-                col1, col2, col3, col4 = st.columns(4)
-                
-                with col1:
-                    if st.button("📖 View", key=f"view_search_{doc.id}"):
-                        st.info("Document viewer would open here")
-                
-                with col2:
-                    if has_permission('write') and st.button("📝 Edit", key=f"edit_search_{doc.id}"):
-                        st.info("Document editor would open here")
-                
-                with col3:
-                    if st.button("📊 Analyze", key=f"analyze_search_{doc.id}"):
-                        st.info("AI analysis would show here")
-                
-                with col4:
-                    if has_permission('delete') and st.button("🗑️ Delete", key=f"delete_search_{doc.id}"):
-                        st.error("Delete confirmation would appear here")
-
-elif page == "Document Management":
-    st.title("📁 Advanced Document Management")
-    
-    # Quick stats
-    col1, col2, col3, col4 = st.columns(4)
-    
-    with col1:
-        st.metric("Total Documents", len(st.session_state.enhanced_documents))
-    with col2:
-        draft_count = len([d for d in st.session_state.enhanced_documents if d.status == 'draft'])
-        st.metric("Draft Documents", draft_count)
-    with col3:
-        review_count = len([d for d in st.session_state.enhanced_documents if d.status == 'under_review'])
-        st.metric("Under Review", review_count)
-    with col4:
-        final_count = len([d for d in st.session_state.enhanced_documents if d.status == 'final'])
-        st.metric("Final Documents", final_count)
+    for col, (label, value, change) in zip([col1, col2, col3, col4, col5], metrics_data):
+        with col:
+            st.markdown('<div class="metric-card">', unsafe_allow_html=True)
+            st.metric(label, value, change)
+            st.markdown('</div>', unsafe_allow_html=True)
     
     st.divider()
     
-    # Document upload section
-    if has_permission('write'):
-        st.subheader("📤 Upload New Document")
+    # Charts and analytics
+    col1, col2 = st.columns(2)
+    
+    with col1:
+        st.markdown('<div class="chart-container">', unsafe_allow_html=True)
+        st.plotly_chart(business_intelligence.create_revenue_chart(), use_container_width=True)
+        st.markdown('</div>', unsafe_allow_html=True)
+    
+    with col2:
+        st.markdown('<div class="chart-container">', unsafe_allow_html=True)
+        st.plotly_chart(business_intelligence.create_matter_type_distribution(), use_container_width=True)
+        st.markdown('</div>', unsafe_allow_html=True)
+    
+    # Workload Analysis
+    st.markdown('<div class="chart-container">', unsafe_allow_html=True)
+    st.plotly_chart(business_intelligence.create_workload_analysis(), use_container_width=True)
+    st.markdown('</div>', unsafe_allow_html=True)
+    
+    # AI Insights Summary
+    if has_permission('ai_insights'):
+        st.divider()
+        st.subheader("🤖 AI Insights Summary")
         
         col1, col2, col3 = st.columns(3)
         
         with col1:
-            uploaded_file = st.file_uploader("Choose file", type=['pdf', 'docx', 'txt', 'png', 'jpg'])
+            st.markdown("""
+            <div class="ai-insight">
+                <strong>📈 Performance Insights</strong><br>
+                • Document processing speed up 23%<br>
+                • Client response time improved by 18%<br>
+                • Automated document classification: 94% accuracy
+            </div>
+            """, unsafe_allow_html=True)
         
         with col2:
-            if st.session_state.matters:
-                selected_matter = st.selectbox("Select Matter", 
-                                             [f"{m.name} - {m.client_name}" for m in st.session_state.matters])
-                matter_id = st.session_state.matters[
-                    [f"{m.name} - {m.client_name}" for m in st.session_state.matters].index(selected_matter)
-                ].id
-            else:
-                st.error("No matters available. Please create a matter first.")
-                matter_id = None
+            st.markdown("""
+            <div class="ai-insight">
+                <strong>⚠️ Risk Alerts</strong><br>
+                • 3 contracts require immediate attention<br>
+                • 5 upcoming deadlines within 7 days<br>
+                • 2 matters approaching budget limits
+            </div>
+            """, unsafe_allow_html=True)
         
         with col3:
-            document_tags = st.text_input("Tags (comma-separated)", placeholder="contract, urgent, draft")
-            is_privileged = st.checkbox("Attorney-Client Privileged")
-        
-        if uploaded_file and matter_id:
-            col1, col2 = st.columns(2)
-            
-            with col1:
-                if st.button("🚀 Upload & Process Document"):
-                    with st.spinner("Processing document..."):
-                        # Read file content
-                        file_content = uploaded_file.read()
-                        
-                        # Extract text based on file type
-                        if uploaded_file.name.lower().endswith('.pdf'):
-                            extracted_text = DocumentProcessor.extract_text_from_pdf(file_content)
-                        elif uploaded_file.name.lower().endswith(('.png', '.jpg', '.jpeg')):
-                            extracted_text = DocumentProcessor.perform_ocr(file_content)
-                        else:
-                            extracted_text = file_content.decode('utf-8', errors='ignore')
-                        
-                        # Process document
-                        doc_type = DocumentProcessor.classify_document(uploaded_file.name, extracted_text)
-                        key_info = DocumentProcessor.extract_key_information(extracted_text)
-                        
-                        # Create initial version
-                        initial_version = DocumentVersion(
-                            version_number="v1.0",
-                            created_date=datetime.now(),
-                            created_by=st.session_state['user']['email'],
-                            file_content=file_content,
-                            changes_summary="Initial document upload",
-                            file_size=len(file_content)
-                        )
-                        
-                        # Create document
-                        new_doc = Document(
-                            id=str(uuid.uuid4()),
-                            name=uploaded_file.name,
-                            matter_id=matter_id,
-                            client_name=next(m.client_name for m in st.session_state.matters if m.id == matter_id),
-                            document_type=doc_type,
-                            current_version="v1.0",
-                            versions=[initial_version],
-                            status=DocumentStatus.DRAFT.value,
-                            tags=document_tags.split(',') if document_tags else [],
-                            extracted_text=extracted_text,
-                            key_information=key_info,
-                            created_date=datetime.now(),
-                            last_modified=datetime.now(),
-                            access_permissions={"partner": ["read", "write", "delete"], "associate": ["read", "write"]},
-                            retention_date=None,
-                            is_privileged=is_privileged,
-                            digital_signatures=[]
-                        )
-                        
-                        st.session_state.enhanced_documents.append(new_doc)
-                        
-                        # Log the action
-                        AuditLogger.log_action(
-                            st.session_state['user']['email'],
-                            "document_upload",
-                            "document",
-                            new_doc.id,
-                            {"filename": uploaded_file.name, "matter_id": matter_id}
-                        )
-                        
-                        # Update search index
-                        if hasattr(st.session_state, 'search_engine'):
-                            st.session_state.search_engine.index_documents(st.session_state.enhanced_documents)
-                        
-                        st.success(f"✅ Document '{uploaded_file.name}' uploaded and processed successfully!")
-                        
-                        # Show extracted information
-                        st.subheader("🔍 Extracted Information")
-                        col1, col2 = st.columns(2)
-                        
-                        with col1:
-                            st.markdown(f"**Classified as:** {doc_type}")
-                            st.markdown(f"**Text length:** {len(extracted_text)} characters")
-                            if key_info.get('dates'):
-                                st.markdown(f"**Dates found:** {', '.join(key_info['dates'][:3])}")
-                        
-                        with col2:
-                            if key_info.get('monetary_amounts'):
-                                st.markdown(f"**Amounts:** {', '.join(key_info['monetary_amounts'][:3])}")
-                            if key_info.get('email_addresses'):
-                                st.markdown(f"**Email addresses:** {', '.join(key_info['email_addresses'][:2])}")
-                        
-                        time.sleep(2)
-                        st.rerun()
-            
-            with col2:
-                st.info("💡 **AI Processing includes:**\n- Text extraction (OCR for images)\n- Document classification\n- Key information extraction\n- Automatic tagging suggestions")
-    
-    st.divider()
-    
-    # Document library with enhanced features
-    st.subheader("📚 Document Library")
-    
-    # Filters and sorting
-    col1, col2, col3, col4 = st.columns(4)
-    
-    with col1:
-        matter_filter = st.selectbox("Filter by Matter", 
-                                   ["All"] + [m.name for m in st.session_state.matters])
-    
-    with col2:
-        status_filter = st.selectbox("Filter by Status", 
-                                   ["All"] + [status.value.replace('_', ' ').title() for status in DocumentStatus])
-    
-    with col3:
-        sort_by = st.selectbox("Sort by", ["Last Modified", "Created Date", "Name", "File Size"])
-    
-    with col4:
-        sort_order = st.selectbox("Order", ["Descending", "Ascending"])
-    
-    # Apply filters
-    filtered_docs = st.session_state.enhanced_documents
-    
-    if matter_filter != "All":
-        matter_id = next((m.id for m in st.session_state.matters if m.name == matter_filter), None)
-        if matter_id:
-            filtered_docs = [d for d in filtered_docs if d.matter_id == matter_id]
-    
-    if status_filter != "All":
-        status_value = status_filter.lower().replace(' ', '_')
-        filtered_docs = [d for d in filtered_docs if d.status == status_value]
-    
-    # Sort documents
-    sort_key_map = {
-        "Last Modified": lambda x: x.last_modified,
-        "Created Date": lambda x: x.created_date,
-        "Name": lambda x: x.name,
-        "File Size": lambda x: len(x.versions[-1].file_content) if x.versions else 0
-    }
-    
-    reverse = sort_order == "Descending"
-    filtered_docs = sorted(filtered_docs, key=sort_key_map[sort_by], reverse=reverse)
-    
-    # Display documents
-    for doc in filtered_docs:
-        matter_name = next((m.name for m in st.session_state.matters if m.id == doc.matter_id), "Unknown Matter")
-        
-        with st.expander(f"📄 {doc.name} - v{doc.current_version}"):
-            # Document metadata
-            col1, col2, col3 = st.columns(3)
-            
-            with col1:
-                st.markdown(f"**Matter:** {matter_name}")
-                st.markdown(f"**Client:** {doc.client_name}")
-                st.markdown(f"**Type:** {doc.document_type}")
-                st.markdown(f"**Status:** {doc.status.replace('_', ' ').title()}")
-            
-            with col2:
-                st.markdown(f"**Created:** {doc.created_date.strftime('%Y-%m-%d %H:%M')}")
-                st.markdown(f"**Modified:** {doc.last_modified.strftime('%Y-%m-%d %H:%M')}")
-                st.markdown(f"**Versions:** {len(doc.versions)}")
-                if doc.is_privileged:
-                    st.markdown("**🔒 PRIVILEGED**")
-            
-            with col3:
-                st.markdown(f"**Size:** {len(doc.versions[-1].file_content) if doc.versions else 0} bytes")
-                st.markdown(f"**Tags:** {', '.join(doc.tags) if doc.tags else 'None'}")
-                if doc.retention_date:
-                    st.markdown(f"**Retention:** {doc.retention_date.strftime('%Y-%m-%d')}")
-            
-            # Version history
-            if len(doc.versions) > 1:
-                st.markdown("**📚 Version History:**")
-                for version in reversed(doc.versions[-3:]):  # Show last 3 versions
-                    st.markdown(f"• {version.version_number} - {version.created_date.strftime('%Y-%m-%d')} by {version.created_by}")
-            
-            # Key information extracted by AI
-            if doc.key_information:
-                st.markdown("**🤖 AI-Extracted Information:**")
-                col1, col2 = st.columns(2)
-                
-                with col1:
-                    if doc.key_information.get('dates'):
-                        st.markdown(f"**📅 Important Dates:** {', '.join(doc.key_information['dates'][:3])}")
-                    if doc.key_information.get('monetary_amounts'):
-                        st.markdown(f"**💰 Amounts:** {', '.join(doc.key_information['monetary_amounts'][:3])}")
-                
-                with col2:
-                    if doc.key_information.get('email_addresses'):
-                        st.markdown(f"**📧 Contacts:** {', '.join(doc.key_information['email_addresses'][:2])}")
-                    if doc.key_information.get('potential_names'):
-                        st.markdown(f"**👤 Names:** {', '.join(doc.key_information['potential_names'][:3])}")
-            
-            # Document preview
-            if doc.extracted_text:
-                with st.expander("👁️ Document Preview"):
-                    preview_text = doc.extracted_text[:500] + "..." if len(doc.extracted_text) > 500 else doc.extracted_text
-                    st.text(preview_text)
-            
-            # Action buttons
-            col1, col2, col3, col4, col5 = st.columns(5)
-            
-            with col1:
-                if st.button("📖 View Full", key=f"view_full_{doc.id}"):
-                    st.info("Full document viewer would open here with annotations, comments, and collaborative features.")
-            
-            with col2:
-                if has_permission('write') and st.button("📝 Edit", key=f"edit_{doc.id}"):
-                    st.info("Document editor would open here with version control and collaborative editing.")
-            
-            with col3:
-                if st.button("🔄 Versions", key=f"versions_{doc.id}"):
-                    st.info("Version comparison and management would open here.")
-            
-            with col4:
-                if st.button("🤖 AI Analyze", key=f"ai_analyze_{doc.id}"):
-                    with st.spinner("Analyzing document with AI..."):
-                        time.sleep(1)
-                        st.success("✅ AI Analysis Complete!")
-                        st.markdown("**📊 AI Insights:**")
-                        st.markdown("• Document type: Contract with standard commercial terms")
-                        st.markdown("• Risk level: Low")
-                        st.markdown("• Suggested actions: Review section 4.2 for compliance")
-                        st.markdown("• Similar documents: 3 found in system")
-            
-            with col5:
-                if has_permission('delete') and st.button("🗑️ Delete", key=f"delete_{doc.id}"):
-                    if st.button("⚠️ Confirm Delete", key=f"confirm_delete_{doc.id}"):
-                        # Log the deletion
-                        AuditLogger.log_action(
-                            st.session_state['user']['email'],
-                            "document_delete",
-                            "document",
-                            doc.id,
-                            {"filename": doc.name}
-                        )
-                        
-                        # Remove document
-                        st.session_state.enhanced_documents = [d for d in st.session_state.enhanced_documents if d.id != doc.id]
-                        st.success("Document deleted successfully!")
-                        st.rerun()
+            st.markdown("""
+            <div class="ai-insight">
+                <strong>💡 Recommendations</strong><br>
+                • Consider expanding paralegal team<br>
+                • Automate routine document generation<br>
+                • Implement client communication templates
+            </div>
+            """, unsafe_allow_html=True)
 
-elif page == "Matter Management":
-    st.title("⚖️ Matter Management")
+elif page == "Calendar & Deadlines":
+    st.title("📅 Calendar & Deadline Management")
     
-    # Matter statistics
-    col1, col2, col3, col4 = st.columns(4)
+    # Calendar overview
+    col1, col2, col3 = st.columns(3)
+    
+    upcoming_events = calendar_integration.get_upcoming_events()
+    court_dates = calendar_integration.get_court_dates()
+    deadlines = calendar_integration.get_deadlines()
     
     with col1:
-        active_matters = len([m for m in st.session_state.matters if m.status == 'active'])
-        st.metric("Active Matters", active_matters)
+        st.markdown('<div class="metric-card">', unsafe_allow_html=True)
+        st.metric("Upcoming Events", len(upcoming_events))
+        st.markdown('</div>', unsafe_allow_html=True)
     
     with col2:
-        total_docs = len(st.session_state.enhanced_documents)
-        st.metric("Total Documents", total_docs)
+        st.markdown('<div class="metric-card">', unsafe_allow_html=True)
+        st.metric("Court Dates", len(court_dates))
+        st.markdown('</div>', unsafe_allow_html=True)
     
     with col3:
-        # Calculate total revenue (placeholder)
-        st.metric("Total Revenue", "$125,000")
-    
-    with col4:
-        # Calculate average matter value
-        st.metric("Avg. Matter Value", "$25,000")
+        st.markdown('<div class="metric-card">', unsafe_allow_html=True)
+        st.metric("Deadlines", len(deadlines))
+        st.markdown('</div>', unsafe_allow_html=True)
     
     st.divider()
     
-    # Create new matter
+    # Add new event
     if has_permission('write'):
-        st.subheader("➕ Create New Matter")
+        st.subheader("📅 Schedule New Event")
         
-        with st.form("new_matter_form"):
+        with st.form("new_event"):
             col1, col2 = st.columns(2)
             
             with col1:
-                matter_name = st.text_input("Matter Name *")
-                client_name = st.text_input("Client Name *")
-                matter_type = st.selectbox("Matter Type", [mt.value.replace('_', ' ').title() for mt in MatterType])
+                event_title = st.text_input("Event Title")
+                event_type = st.selectbox("Event Type", ["meeting", "court_date", "deadline", "reminder"])
+                matter_selection = st.selectbox("Related Matter", [f"{m.name} - {m.client_name}" for m in st.session_state.matters])
             
             with col2:
-                description = st.text_area("Description")
-                estimated_budget = st.number_input("Estimated Budget ($)", min_value=0.0, step=1000.0)
-                estimated_hours = st.number_input("Estimated Hours", min_value=0.0, step=10.0)
+                event_date = st.date_input("Date")
+                event_time = st.time_input("Time")
+                event_description = st.text_area("Description")
             
-            if st.form_submit_button("Create Matter"):
-                if matter_name and client_name:
-                    new_matter = MatterManager.create_matter(
-                        matter_name, client_name, matter_type.lower().replace(' ', '_'), description
-                    )
-                    new_matter.budget = estimated_budget
-                    new_matter.estimated_hours = estimated_hours
+            if st.form_submit_button("Create Event"):
+                if event_title and matter_selection:
+                    matter_id = st.session_state.matters[[f"{m.name} - {m.client_name}" for m in st.session_state.matters].index(matter_selection)].id
                     
-                    st.session_state.matters.append(new_matter)
-                    
-                    # Log the action
-                    AuditLogger.log_action(
-                        st.session_state['user']['email'],
-                        "matter_create",
-                        "matter",
-                        new_matter.id,
-                        {"matter_name": matter_name, "client_name": client_name}
+                    event_datetime = datetime.combine(event_date, event_time)
+                    new_event = calendar_integration.create_event(
+                        event_title, event_description, event_datetime,
+                        event_datetime + timedelta(hours=1), event_type, matter_id
                     )
                     
-                    st.success(f"Matter '{matter_name}' created successfully!")
+                    st.session_state.calendar_events.append(new_event)
+                    st.success(f"Event '{event_title}' created successfully!")
                     st.rerun()
-                else:
-                    st.error("Please fill in all required fields.")
         
         st.divider()
     
-    # Matter list with enhanced details
-    st.subheader("📋 Active Matters")
+    # Upcoming events timeline
+    st.subheader("📋 Upcoming Events")
     
-    for matter in st.session_state.matters:
-        stats = MatterManager.get_matter_stats(matter.id, st.session_state.enhanced_documents, [])
+    for event in upcoming_events[:10]:
+        matter_name = next((m.name for m in st.session_state.matters if m.id == event.matter_id), "General")
         
-        with st.expander(f"⚖️ {matter.name} - {matter.client_name}"):
-            col1, col2, col3 = st.columns(3)
-            
-            with col1:
-                st.markdown(f"**Client:** {matter.client_name}")
-                st.markdown(f"**Type:** {matter.matter_type.replace('_', ' ').title()}")
-                st.markdown(f"**Status:** {matter.status.title()}")
-                st.markdown(f"**Created:** {matter.created_date.strftime('%Y-%m-%d')}")
-            
-            with col2:
-                st.markdown(f"**Documents:** {stats['document_count']}")
-                st.markdown(f"**Budget:** ${matter.budget:,.2f}")
-                st.markdown(f"**Est. Hours:** {matter.estimated_hours}")
-                st.markdown(f"**Actual Hours:** {stats['total_hours']}")
-            
-            with col3:
-                st.markdown(f"**Revenue:** ${stats['total_revenue']:,.2f}")
-                if stats['last_activity'] != datetime.min:
-                    st.markdown(f"**Last Activity:** {stats['last_activity'].strftime('%Y-%m-%d')}")
-                else:
-                    st.markdown("**Last Activity:** No activity")
-            
-            if matter.description:
-                st.markdown(f"**Description:** {matter.description}")
-            
-            # Matter documents
-            matter_docs = MatterManager.get_matter_documents(matter.id, st.session_state.enhanced_documents)
-            if matter_docs:
-                st.markdown("**📄 Recent Documents:**")
-                for doc in matter_docs[-3:]:  # Show last 3 documents
-                    status_badge = f"<span class='status-{doc.status.replace('_', '-')}'>{doc.status.replace('_', ' ').title()}</span>"
-                    st.markdown(f"• {doc.name} - {doc.document_type} {status_badge}", unsafe_allow_html=True)
-            
-            # Matter timeline (placeholder)
-            st.markdown("**📅 Important Dates:**")
-            if matter.important_dates:
-                for event, date in matter.important_dates.items():
-                    st.markdown(f"• {event}: {date.strftime('%Y-%m-%d')}")
-            else:
-                st.markdown("• No important dates set")
-            
-            # Action buttons
-            col1, col2, col3, col4 = st.columns(4)
-            
-            with col1:
-                if st.button("📊 Analytics", key=f"analytics_{matter.id}"):
-                    st.info("Matter analytics dashboard would open here with financial reports, time tracking, and performance metrics.")
-            
-            with col2:
-                if has_permission('write') and st.button("📝 Edit", key=f"edit_matter_{matter.id}"):
-                    st.info("Matter editing interface would open here.")
-            
-            with col3:
-                if st.button("📋 Tasks", key=f"tasks_{matter.id}"):
-                    st.info("Task management for this matter would open here.")
-            
-            with col4:
-                if st.button("👥 Team", key=f"team_{matter.id}"):
-                    st.info("Team assignment and collaboration tools would open here.")
+        days_until = (event.start_time - datetime.now()).days
+        urgency_class = "priority-high" if days_until <= 3 else ("priority-medium" if days_until <= 7 else "priority-low")
+        
+        st.markdown(f"""
+        <div class="calendar-widget">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                    <strong>{event.title}</strong> <span class="status-badge status-{event.event_type.replace('_', '-')}">{event.event_type.replace('_', ' ').upper()}</span><br>
+                    <small>Matter: {matter_name}</small><br>
+                    <small>{event.start_time.strftime('%A, %B %d, %Y at %I:%M %p')}</small>
+                </div>
+                <div class="{urgency_class}">
+                    <strong>{days_until} days</strong>
+                </div>
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
 
-elif page == "Audit Trail":
-    st.title("🔍 System Audit Trail")
+elif page == "AI Insights":
+    st.title("🤖 AI-Powered Legal Intelligence")
     
-    if not has_permission('admin'):
-        st.error("🚫 Access denied. Admin privileges required.")
+    if not has_permission('ai_insights'):
+        st.error("🚫 Access denied. AI Insights requires elevated permissions.")
         st.stop()
     
-    # Audit log filters
-    col1, col2, col3 = st.columns(3)
+    # AI Dashboard metrics
+    col1, col2, col3, col4 = st.columns(4)
     
     with col1:
-        user_filter = st.selectbox("Filter by User", ["All Users"] + list(set([entry.user_email for entry in st.session_state.audit_log])))
+        st.markdown('<div class="metric-card">', unsafe_allow_html=True)
+        st.metric("Documents Analyzed", "147", "+23")
+        st.markdown('</div>', unsafe_allow_html=True)
     
     with col2:
-        action_filter = st.selectbox("Filter by Action", ["All Actions"] + list(set([entry.action for entry in st.session_state.audit_log])))
+        st.markdown('<div class="metric-card">', unsafe_allow_html=True)
+        st.metric("Risk Alerts", "8", "+2")
+        st.markdown('</div>', unsafe_allow_html=True)
     
     with col3:
-        date_filter = st.date_input("From Date", value=datetime.now() - timedelta(days=30))
+        st.markdown('<div class="metric-card">', unsafe_allow_html=True)
+        st.metric("Auto Classifications", "94%", "+3%")
+        st.markdown('</div>', unsafe_allow_html=True)
     
-    # Filter audit log
-    filtered_log = st.session_state.audit_log
-    
-    if user_filter != "All Users":
-        filtered_log = [entry for entry in filtered_log if entry.user_email == user_filter]
-    
-    if action_filter != "All Actions":
-        filtered_log = [entry for entry in filtered_log if entry.action == action_filter]
-    
-    filtered_log = [entry for entry in filtered_log if entry.timestamp.date() >= date_filter]
-    
-    # Sort by timestamp (newest first)
-    filtered_log = sorted(filtered_log, key=lambda x: x.timestamp, reverse=True)
+    with col4:
+        st.markdown('<div class="metric-card">', unsafe_allow_html=True)
+        st.metric("Time Saved", "127 hrs", "+18 hrs")
+        st.markdown('</div>', unsafe_allow_html=True)
     
     st.divider()
-    st.subheader(f"📋 Audit Entries ({len(filtered_log)} records)")
     
-    # Display audit entries
-    for entry in filtered_log[:50]:  # Show first 50 entries
-        with st.expander(f"{entry.timestamp.strftime('%Y-%m-%d %H:%M:%S')} - {entry.action} by {entry.user_email}"):
+    # AI Analysis Tools
+    tab1, tab2, tab3, tab4 = st.tabs(["📄 Document Analysis", "⚖️ Case Prediction", "🔍 Pattern Recognition", "📊 Insights Dashboard"])
+    
+    with tab1:
+        st.subheader("AI Document Analysis")
+        
+        # Document selection for analysis
+        if st.session_state.enhanced_documents:
+            selected_doc_name = st.selectbox("Select Document to Analyze", 
+                                           [d.name for d in st.session_state.enhanced_documents])
+            selected_doc = next(d for d in st.session_state.enhanced_documents if d.name == selected_doc_name)
+            
             col1, col2 = st.columns(2)
             
             with col1:
-                st.markdown(f"**User:** {entry.user_email}")
-                st.markdown(f"**Action:** {entry.action}")
-                st.markdown(f"**Resource Type:** {entry.resource_type}")
-                st.markdown(f"**Resource ID:** {entry.resource_id}")
+                if st.button("🔍 Analyze Document", type="primary"):
+                    with st.spinner("AI analyzing document..."):
+                        time.sleep(2)  # Simulate processing
+                        analysis = ai_system.analyze_contract(selected_doc.extracted_text)
+                        
+                        st.success("✅ Analysis Complete!")
+                        
+                        # Risk Assessment
+                        st.markdown("### 📊 Risk Assessment")
+                        risk_color = {"low": "🟢", "medium": "🟡", "high": "🔴", "critical": "⚫"}
+                        st.markdown(f"{risk_color.get(analysis['risk_level'], '⚪')} **Risk Level: {analysis['risk_level'].upper()}**")
+                        
+                        # Key Clauses
+                        st.markdown("### 📋 Key Clauses Identified")
+                        for clause in analysis['key_clauses']:
+                            importance_icon = "🔴" if clause['importance'] == 'high' else "🟡"
+                            st.markdown(f"{importance_icon} **{clause['type'].replace('_', ' ').title()}:** {clause['text'][:100]}...")
+                        
+                        # Missing Clauses
+                        if analysis['missing_clauses']:
+                            st.markdown("### ⚠️ Potentially Missing Clauses")
+                            for clause in analysis['missing_clauses']:
+                                st.markdown(f"• {clause}")
             
             with col2:
-                st.markdown(f"**Timestamp:** {entry.timestamp.strftime('%Y-%m-%d %H:%M:%S')}")
-                st.markdown(f"**IP Address:** {entry.ip_address}")
-                if entry.details:
-                    st.markdown("**Details:**")
-                    st.json(entry.details)
+                st.markdown("### 🎯 AI Recommendations")
+                st.markdown("Based on document analysis:")
+                
+                recommendations = [
+                    "Add explicit termination procedures to reduce ambiguity",
+                    "Include force majeure clause for better risk protection",
+                    "Clarify payment terms and penalties for late payment",
+                    "Consider adding dispute resolution mechanism",
+                    "Review limitation of liability clause"
+                ]
+                
+                for rec in recommendations:
+                    st.markdown(f"💡 {rec}")
+                
+                st.markdown("### 📈 Document Metrics")
+                st.metric("Complexity Score", "67/100")
+                st.metric("Completeness", "84%")
+                st.metric("Risk Score", "Medium")
+    
+    with tab2:
+        st.subheader("Case Outcome Prediction")
+        
+        # Matter selection for prediction
+        if st.session_state.matters:
+            selected_matter_name = st.selectbox("Select Matter for Analysis", 
+                                              [f"{m.name} - {m.client_name}" for m in st.session_state.matters])
+            selected_matter = st.session_state.matters[[f"{m.name} - {m.client_name}" for m in st.session_state.matters].index(selected_matter_name)]
+            
+            if st.button("🔮 Generate Prediction", type="primary"):
+                with st.spinner("AI analyzing case factors..."):
+                    time.sleep(2)
+                    prediction = ai_system.predict_case_outcomes(selected_matter.__dict__)
+                    
+                    col1, col2 = st.columns(2)
+                    
+                    with col1:
+                        st.markdown("### 📊 Prediction Results")
+                        st.metric("Success Probability", f"{prediction['success_probability']:.0%}")
+                        st.metric("Estimated Duration", f"{prediction['estimated_duration']} days")
+                        st.metric("Cost Estimate", f"${prediction['cost_estimate']:,.2f}")
+                    
+                    with col2:
+                        st.markdown("### ⚠️ Risk Factors")
+                        for risk in prediction['risk_factors']:
+                            st.markdown(f"• {risk}")
+                        
+                        st.markdown("### 💡 Strategic Recommendations")
+                        for rec in prediction['recommendations']:
+                            st.markdown(f"• {rec}")
+    
+    with tab3:
+        st.subheader("Pattern Recognition & Analytics")
+        
+        # Document relationship analysis
+        if st.button("🔍 Analyze Document Patterns"):
+            with st.spinner("Analyzing document relationships..."):
+                time.sleep(2)
+                relationships = ai_system.analyze_document_relationships(st.session_state.enhanced_documents)
+                
+                st.success("Pattern analysis complete!")
+                
+                col1, col2 = st.columns(2)
+                
+                with col1:
+                    st.markdown("### 📊 Document Clusters")
+                    for cluster in relationships['document_clusters']:
+                        st.markdown(f"**Cluster {cluster['cluster_id']}: {cluster['theme']}**")
+                        st.markdown(f"Documents: {len(cluster['documents'])}")
+                
+                with col2:
+                    st.markdown("### 📈 Topic Trends")
+                    st.markdown("**Trending Topics:**")
+                    for topic in relationships['topic_evolution']['trending_topics']:
+                        st.markdown(f"🔥 {topic}")
+                    
+                    st.markdown("**Emerging Topics:**")
+                    for topic in relationships['topic_evolution']['emerging_topics']:
+                        st.markdown(f"🌟 {topic}")
+    
+    with tab4:
+        st.subheader("AI Insights Dashboard")
+        
+        # Real-time AI insights
+        col1, col2 = st.columns(2)
+        
+        with col1:
+            st.markdown("### 🎯 Active Insights")
+            for insight in st.session_state.ai_insights:
+                action_icon = "🚨" if insight.action_required else "ℹ️"
+                confidence_bar = "▓" * int(insight.confidence_score * 10) + "░" * (10 - int(insight.confidence_score * 10))
+                
+                st.markdown(f"""
+                <div class="ai-insight">
+                    {action_icon} <strong>{insight.insight_type.replace('_', ' ').title()}</strong><br>
+                    Confidence: {confidence_bar} ({insight.confidence_score:.0%})<br>
+                    <small>{insight.created_date.strftime('%Y-%m-%d %H:%M')}</small>
+                </div>
+                """, unsafe_allow_html=True)
+        
+        with col2:
+            st.markdown("### 📈 AI Performance Metrics")
+            
+            # Create AI performance chart
+            ai_metrics = pd.DataFrame({
+                'Metric': ['Accuracy', 'Processing Speed', 'Risk Detection', 'Classification'],
+                'Score': [94, 87, 91, 96]
+            })
+            
+            fig = px.bar(ai_metrics, x='Metric', y='Score', 
+                        title='AI Model Performance',
+                        color='Score',
+                        color_continuous_scale='viridis')
+            fig.update_layout(height=400)
+            st.plotly_chart(fig, use_container_width=True)
 
-# Add error handling and performance monitoring
-try:
-    # Performance metrics (placeholder)
-    if has_permission('admin'):
-        with st.sidebar:
-            st.divider()
-            st.markdown("### 📊 System Health")
-            st.metric("Response Time", "0.24s", "-0.05s")
-            st.metric("Active Sessions", "12", "+3")
-            st.metric("Storage Used", "2.1GB", "+156MB")
-
-except Exception as e:
-    st.error(f"An error occurred: {str(e)}")
-    if has_permission('admin'):
-        st.exception(e)
+elif page == "Integrations":
+    st.title("🔗 Third-Party Integrations")
+    
+    if not has_permission('integrations'):
+        st.error("🚫 Access denied. Integration management requires admin privileges.")
+        st.stop()
+    
+    # Integration status overview
+    col1, col2, col3, col4 = st.columns(4)
+    
+    active_integrations = len([i for i in st.session_state.integrations if i.status == 'active'])
+    
+    with col1:
+        st.markdown('<div class="metric-card">', unsafe_allow_html=True)
+        st.metric("Active Integrations", active_integrations)
+        st.markdown('</div>', unsafe_allow_html=True)
+    
+    with col2:
+        st.markdown('<div class="metric-card">', unsafe_allow_html=True)
+        st.metric("Available Integrations", len(integration_manager.available_integrations))
+        st.markdown('</div>', unsafe_allow_html=True)
+    
+    with col3:
+        st.markdown('<div class="metric-card">', unsafe_allow_html=True)
+        st.metric("Last Sync", "2 mins ago")
+        st.markdown('</div>', unsafe_allow_html=True)
+    
+    with col4:
+        st.markdown('<div class="metric-card">', unsafe_allow_html=True)
+        st.metric("Sync Success Rate", "98.5%")
+        st.markdown('</div>', unsafe_allow_html=True)
+    
+    st.divider()
+    
+    # Available integrations
+    st.subheader("🌐 Available Integrations")
+    
+    integration_categories = {
+        'Email & Communication': ['outlook', 'gmail', 'slack'],
+        'Document & Signature': ['docusign', 'adobe_sign', 'dropbox'],
+        'Calendar & Scheduling': ['google_calendar', 'outlook_calendar', 'zoom'],
+        'Accounting & Billing': ['quickbooks', 'xero', 'stripe'],
+        'Legal Research': ['lexisnexis', 'westlaw', 'bloomberg_law'],
+        'Court & Filing': ['court_filing', 'pacer', 'state_courts']
+    }
+    
+    for category, integrations in integration_categories.items():
+        st.markdown(f"### {category}")
+        cols = st.columns(3)
+        
+        for i, integration_id in enumerate(integrations):
+            with cols[i % 3]:
+                if integration_id in integration_manager.available_integrations:
+                    integration_info = integration_manager.available_integrations[integration_id]
+                    is_active = any(integ.name == integration_info['name'] and integ.status == 'active' 
+                                  for integ in st.session_state.integrations)
+                    
+                    status_color = "#28a745" if is_active else "#6c757d"
+                    status_text = "CONNECTED" if is_active else "AVAILABLE"
+                    
+                    st.markdown(f"""
+                    <div class="integration-card">
+                        <h4>{integration_info['name']}</h4>
+                        <p style="color: {status_color}
