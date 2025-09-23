@@ -907,12 +907,12 @@ elif page == "Time & Billing":
         
         # Recent entries
         st.subheader("Recent Time Entries")
-        
+
         for entry in st.session_state.time_entries[-5:]:
             amount = entry.hours * entry.billing_rate
-            rate_display = f"{entry.billing_rate}"
-            amount_display = f"{amount:.2f}"
-            
+            rate_display = f"{entry.billing_rate:,.2f}"   # format with commas + 2 decimals
+            amount_display = f"{amount:,.2f}"             # format with commas + 2 decimals
+        
             st.markdown(f"""
             <div class="document-card">
                 <strong>{entry.activity_type}</strong> - {entry.hours} hours<br>
@@ -921,6 +921,7 @@ elif page == "Time & Billing":
                 <span class="status-badge status-{entry.status}">{entry.status.upper()}</span>
             </div>
             """, unsafe_allow_html=True)
+
     
     with tab2:
         st.subheader("Invoice Generation")
