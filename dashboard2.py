@@ -59,7 +59,7 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-                    st.markdown(f"""
+                   st.markdown(f"""
                     <div class="integration-card">
                         <h4>{integration_info['name']}</h4>
                         <p style="color: {status_color}; font-weight: bold;">{status_text}</p>
