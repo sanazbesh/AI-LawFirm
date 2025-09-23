@@ -1084,27 +1084,7 @@ elif page == "System Settings":
         fig.update_layout(title="24-Hour CPU Usage", xaxis_title="Hour", yaxis_title="Usage %")
         st.plotly_chart(fig, use_container_width=True)
 
-# Footer
-st.markdown("---")
-st.markdown("""
-<div style="text-align: center; color: #6c757d; padding: 2rem 0;">
-    <strong>LegalDoc Pro Enterprise Platform</strong> | 
-    Complete Legal Practice Management Solution<br>
-    <small>AI Analysis - Advanced Analytics - Client Portal - Mobile Access - Integration Suite</small>
-</div>
-""", unsafe_allow_html=True)
-    
-    with col2:
-        st.subheader("Active Matters")
-        for matter in st.session_state.matters[:5]:
-            st.markdown(f"""
-            <div class="matter-card">
-                <strong>{matter.name}</strong><br>
-                <small>Client: {matter.client_name}</small><br>
-                <small>Type: {matter.matter_type.replace('_', ' ').title()}</small>
-                <span class="status-badge status-{matter.status}">{matter.status.upper()}</span>
-            </div>
-            """, unsafe_allow_html=True)
+
 
 elif page == "Document Management":
     st.title("Document Management")
