@@ -909,11 +909,12 @@ elif page == "Time & Billing":
         st.subheader("Recent Time Entries")
         
         for entry in st.session_state.time_entries[-5:]:
+            amount = entry.hours * entry.billing_rate
             st.markdown(f"""
             <div class="document-card">
                 <strong>{entry.activity_type}</strong> - {entry.hours} hours<br>
                 <small>{entry.description[:80]}...</small><br>
-                <small>Rate: ${entry.billing_rate}/hr | Amount: ${entry.hours * entry.billing_rate:.2f}</small>
+                <small>Rate: ${entry.billing_rate}/hr | Amount: ${amount:.2f}</small>
                 <span class="status-badge status-{entry.status}">{entry.status.upper()}</span>
             </div>
             """, unsafe_allow_html=True)
