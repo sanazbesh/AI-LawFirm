@@ -1383,6 +1383,203 @@ elif page == "Matter Management":
                 if st.button("Tasks", key=f"tasks_{matter.id}"):
                     st.info("Task management would open here")
 
+elif page == "Calendar & Tasks":
+    st.title("Calendar & Task Management")
+    
+    # Calendar overview
+    col1, col2, col3, col4 = st.columns(4)
+    
+    with col1:
+        st.metric("Today's Events", "3")
+    
+    with col2:
+        st.metric("This Week", "8")
+    
+    with col3:
+        st.metric("Upcoming Deadlines", "5")
+    
+    with col4:
+        st.metric("Overdue Tasks", "2")
+    
+    st.divider()
+    
+    # Add new event/task
+    st.subheader("Add New Event")
+    
+    with st.form("new_event"):
+        col1, col2 = st.columns(2)
+        
+        with col1:
+            event_title = st.text_input("Event Title")
+            event_type = st.selectbox("Type", ["Meeting", "Court Date", "Deadline", "Task", "Reminder"])
+            event_date = st.date_input("Date")
+        
+        with col2:
+            event_time = st.time_input("Time")
+            matter_selection = st.selectbox("Related Matter", ["None"] + [m.name for m in st.session_state.matters])
+            event_description = st.text_area("Description")
+        
+        if st.form_submit_button("Add Event"):
+            if event_title:
+                st.success(f"Event '{event_title}' added successfully!")
+    
+    st.divider()
+    
+    # Calendar view
+    st.subheader("Upcoming Events")
+    
+    # Sample events
+    events = [
+        {"title": "Client Meeting - Acme Corp", "date": "2025-01-20", "time": "10:00 AM", "type": "Meeting"},
+        {"title": "Court Hearing - Johnson Case", "date": "2025-01-22", "time": "9:00 AM", "type": "Court Date"},
+        {"title": "Document Filing Deadline", "date": "2025-01-25", "time": "5:00 PM", "type": "Deadline"},
+        {"title": "Settlement Conference", "date": "2025-01-28", "time": "2:00 PM", "type": "Meeting"}
+    ]
+    
+    for event in events:
+        event_color = {
+            "Meeting": "#2E86AB",
+            "Court Date": "#dc3545", 
+            "Deadline": "#ffc107",
+            "Task": "#28a745"
+        }
+        
+        st.markdown(f"""
+        <div style="border-left: 4px solid {event_color.get(event['type'], '#6c757d')}; padding: 1rem; margin: 1rem 0; background: #f8f9fa; border-radius: 5px;">
+            <strong>{event['title']}</strong><br>
+            <small>{event['date']} at {event['time']} | {event['type']}</small>
+        </div>
+        """, unsafe_allow_html=True)
+    
+    # Task management
+    st.subheader("Task List")
+    
+    tasks = [
+        {"task": "Review contract amendments", "due": "2025-01-21", "priority": "High", "status": "In Progress"},
+        {"task": "Prepare discovery responses", "due": "2025-01-23", "priority": "Medium", "status": "Not Started"},
+        {"task": "Client follow-up call", "due": "2025-01-20", "priority": "Low", "status": "Completed"}
+    ]
+    
+    for task in tasks:
+        priority_colors = {"High": "#dc3545", "Medium": "#ffc107", "Low": "#28a745"}
+        status_colors = {"Completed": "#28a745", "In Progress": "#ffc107", "Not Started": "#6c757d"}
+        
+        col1, col2, col3, col4 = st.columns([3, 1, 1, 1])
+        
+        with col1:
+            st.write(f"**{task['task']}**")
+        with col2:
+            st.write(f"Due: {task['due']}")
+        with col3:
+            st.markdown(f"<span style='color: {priority_colors[task['priority']]}'>**{task['priority']}**</span>", unsafe_allow_html=True)
+        with col4:
+            st.markdown(f"<span style='color: {status_colors[task['status']]}'>**{task['status']}**</span>", unsafe_allow_html=True)
+
+elif page == "Advanced Search":
+    st.title("Advanced Document Search")
+    
+    # Search interface
+    st.subheader("Search Parameters")
+    
+    col1, col2 = st.columns(2)
+    
+    with col1:
+        search_query = st.text_input("Search Terms", placeholder="Enter keywords, phrases, or content...")
+        search_client = st.selectbox("Client", ["All Clients"] + [c.name for c in st.session_state.clients])
+        search_matter = st.selectbox("Matter", ["All Matters"] + [m.name for m in st.session_state.matters])
+    
+    with col2:
+        search_doc_type = st.selectbox("Document Type", ["All Types", "Contract/Agreement", "Court Filing", "Corporate Document", "Real Estate", "Family Law"])
+        date_from = st.date_input("From Date", value=datetime.now() - timedelta(days=365))
+        date_to = st.date_input("To Date", value=datetime.now())
+    
+    # Advanced options
+    with st.expander("Advanced Options"):
+        col1, col2 = st.columns(2)
+        
+        with col1:
+            search_content = st.checkbox("Search document content", value=True)
+            case_sensitive = st.checkbox("Case sensitive search")
+            whole_words = st.checkbox("Whole words only")
+        
+        with col2:
+            include_archived = st.checkbox("Include archived documents")
+            privileged_only = st.checkbox("Privileged documents only")
+            min_file_size = st.number_input("Min file size (KB)", min_value=0, value=0)
+    
+    # Search button
+    if st.button("Search Documents", type="primary"):
+        with st.spinner("Searching documents..."):
+            time.sleep(1)
+            
+            # Filter documents based on search criteria
+            filtered_docs = st.session_state.documents
+            
+            if search_query:
+                filtered_docs = [doc for doc in filtered_docs if search_query.lower() in doc.name.lower() or search_query.lower() in doc.extracted_text.lower()]
+            
+            if search_client != "All Clients":
+                filtered_docs = [doc for doc in filtered_docs if doc.client_name == search_client]
+            
+            if search_matter != "All Matters":
+                matter_id = next((m.id for m in st.session_state.matters if m.name == search_matter), None)
+                if matter_id:
+                    filtered_docs = [doc for doc in filtered_docs if doc.matter_id == matter_id]
+            
+            if search_doc_type != "All Types":
+                filtered_docs = [doc for doc in filtered_docs if doc.document_type == search_doc_type]
+            
+            # Display results
+            st.divider()
+            st.subheader(f"Search Results ({len(filtered_docs)} documents found)")
+            
+            for doc in filtered_docs:
+                matter_name = next((m.name for m in st.session_state.matters if m.id == doc.matter_id), "Unknown Matter")
+                
+                with st.expander(f"{doc.name} - {doc.document_type}"):
+                    col1, col2, col3 = st.columns(3)
+                    
+                    with col1:
+                        st.write(f"**Matter:** {matter_name}")
+                        st.write(f"**Client:** {doc.client_name}")
+                        st.write(f"**Type:** {doc.document_type}")
+                    
+                    with col2:
+                        st.write(f"**Status:** {doc.status.replace('_', ' ').title()}")
+                        st.write(f"**Created:** {doc.created_date.strftime('%Y-%m-%d')}")
+                        st.write(f"**Modified:** {doc.last_modified.strftime('%Y-%m-%d')}")
+                    
+                    with col3:
+                        st.write(f"**Tags:** {', '.join(doc.tags) if doc.tags else 'None'}")
+                        if doc.is_privileged:
+                            st.write("**PRIVILEGED**")
+                    
+                    # Search relevance and snippets
+                    if search_query and search_query.lower() in doc.extracted_text.lower():
+                        st.write("**Content Preview:**")
+                        # Find text around the search term
+                        text_lower = doc.extracted_text.lower()
+                        query_lower = search_query.lower()
+                        pos = text_lower.find(query_lower)
+                        if pos != -1:
+                            start = max(0, pos - 50)
+                            end = min(len(doc.extracted_text), pos + len(search_query) + 50)
+                            snippet = doc.extracted_text[start:end]
+                            st.write(f"...{snippet}...")
+                    
+                    # Action buttons
+                    col1, col2, col3 = st.columns(3)
+                    with col1:
+                        if st.button("View", key=f"view_search_{doc.id}"):
+                            st.info("Document viewer would open")
+                    with col2:
+                        if st.button("Analyze", key=f"analyze_search_{doc.id}"):
+                            st.info("AI analysis would start")
+                    with col3:
+                        if st.button("Download", key=f"download_search_{doc.id}"):
+                            st.info("Download would begin")
+
+
 elif page == "AI Insights":
     st.title("AI-Powered Legal Intelligence")
     
