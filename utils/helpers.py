@@ -126,3 +126,6 @@ def load_sample_data():
                 tax_amount=288.0,
                 total_amount=3888.0,
                 status="paid"
+                )
+        ]
+        st.session_state.invoices = sample_invoices
