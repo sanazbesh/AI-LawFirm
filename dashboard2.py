@@ -1091,13 +1091,9 @@ st.markdown("""
 <div style="text-align: center; color: #6c757d; padding: 2rem 0;">
     <strong>LegalDoc Pro Enterprise Platform</strong> | 
     Complete Legal Practice Management Solution<br>
-    <small>AI Analysis • Advanced Analytics • Client Portal • Mobile Access • Integration Suite</small>
+    <small>AI Analysis - Advanced Analytics - Client Portal - Mobile Access - Integration Suite</small>
 </div>
-""", unsafe_allow_html=True)</strong><br>
-                <small>Modified: {doc.last_modified.strftime('%Y-%m-%d')}</small>
-                <span class="status-badge status-{doc.status.replace('_', '-')}">{doc.status.upper()}</span>
-            </div>
-            """, unsafe_allow_html=True)
+""", unsafe_allow_html=True)
     
     with col2:
         st.subheader("Active Matters")
