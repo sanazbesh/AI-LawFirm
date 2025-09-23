@@ -59,24 +59,32 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-                   st.markdown(f"""
-                    <div class="integration-card">
-                        <h4>{integration_info['name']}</h4>
-                        <p style="color: {status_color}; font-weight: bold;">{status_text}</p>
-                        <p>{integration_info['type'].replace('_', ' ').title()}</p>
-                    </div>
-                    """, unsafe_allow_html=True)
-                    
-                    if not is_active:
-                        if st.button(f"Connect {integration_info['name']}", key=f"connect_{integration_id}"):
-                            # Simulate integration setup
-                            config = {"api_key": "demo_key", "endpoint": "https://api.example.com"}
-                            if integration_manager.setup_integration(integration_id, config):
-                                st.success(f"{integration_info['name']} connected successfully!")
-                                st.rerun()
-                    else:
-                        if st.button(f"Configure {integration_info['name']}", key=f"config_{integration_id}"):
-                            st.info(f"Configuration panel for {integration_info['name']} would open here.")
+# Configure page
+st.set_page_config(
+    page_title="LegalDoc Pro - Complete Enterprise Platform",
+    page_icon="⚖️",
+    layout="wide",
+    initial_sidebar_state="expanded"
+)
+
+# Custom CSS for better styling
+st.markdown("""
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+    
+    .main {
+        font-family: 'Inter', sans-serif;
+    }
+    
+    .main-header {
+        background: linear-gradient(135deg, #2E86AB 0%, #A23B72 100%);
+        color: white;
+        padding: 2rem;
+        border-radius: 15px;
+        margin-bottom: 2rem;
+        text-align: center;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    }
 
 elif page == "Mobile App":
     st.title("📱 Mobile Application")
