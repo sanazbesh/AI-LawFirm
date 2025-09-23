@@ -906,21 +906,18 @@ elif page == "Time & Billing":
         st.divider()
         
         # Recent entries
+        # Recent entries
         st.subheader("Recent Time Entries")
-
-        for entry in st.session_state.time_entries[-5:]:
-            amount = entry.hours * entry.billing_rate
-            rate_display = f"{entry.billing_rate:,.2f}"   # format with commas + 2 decimals
-            amount_display = f"{amount:,.2f}"             # format with commas + 2 decimals
         
-            st.markdown(f"""
-            <div class="document-card">
-                <strong>{entry.activity_type}</strong> - {entry.hours} hours<br>
-                <small>{entry.description[:80]}...</small><br>
-                <small>Rate: ${rate_display}/hr | Amount: ${amount_display}</small>
-                <span class="status-badge status-{entry.status}">{entry.status.upper()}</span>
-            </div>
-            """, unsafe_allow_html=True)
+        if st.session_state.time_entries:
+            for entry in st.session_state.time_entries[-5:]:
+                with st.container():
+                    st.write(f"**{entry.activity_type}** - {entry.hours} hours")
+                    st.write(f"Description: {entry.description[:80]}...")
+                    st.write(f"Status: {entry.status.upper()}")
+                    st.write("---")
+        else:
+            st.info("No time entries yet. Add your first time entry above.")
 
     
     with tab2:
