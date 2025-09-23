@@ -1,4 +1,65 @@
-st.markdown(f"""
+import streamlit as st
+import pandas as pd
+import plotly.express as px
+import plotly.graph_objects as go
+from plotly.subplots import make_subplots
+import os
+from datetime import datetime, timedelta
+import hashlib
+import json
+from pathlib import Path
+import time
+import pyrebase
+import uuid
+import re
+from typing import Dict, List, Optional, Tuple, Union
+import difflib
+from dataclasses import dataclass, asdict, field
+from enum import Enum
+import base64
+import io
+from PIL import Image
+import nltk
+from nltk.tokenize import sent_tokenize, word_tokenize
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.metrics.pairwise import cosine_similarity
+import numpy as np
+import smtplib
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
+from email.mime.base import MIMEBase
+from email import encoders
+import imaplib
+import email
+import calendar
+from icalendar import Calendar, Event
+import requests
+from cryptography.fernet import Fernet
+import qrcode
+import stripe  # For payment processing
+from twilio.rest import Client  # For SMS notifications
+import openai  # For advanced AI features
+from transformers import pipeline  # For local AI models
+import spacy  # For advanced NLP
+import networkx as nx  # For relationship mapping
+from wordcloud import WordCloud
+import matplotlib.pyplot as plt
+import seaborn as sns
+from fpdf import FPDF
+import docx
+from docx2python import docx2python
+import zipfile
+import tempfile
+
+# Configure page with enhanced settings
+st.set_page_config(
+    page_title="LegalDoc Pro - Complete Enterprise Platform",
+    page_icon="⚖️",
+    layout="wide",
+    initial_sidebar_state="expanded"
+)
+
+                    st.markdown(f"""
                     <div class="integration-card">
                         <h4>{integration_info['name']}</h4>
                         <p style="color: {status_color}; font-weight: bold;">{status_text}</p>
@@ -591,58 +652,9 @@ elif page == "Time & Billing":
             # Collections analysis
             collections_data = {
                 'Billed': 125000,
-                'Collected': 118000,import streamlit as st
-import pandas as pd
-import plotly.express as px
-import plotly.graph_objects as go
-from plotly.subplots import make_subplots
-import os
-from datetime import datetime, timedelta
-import hashlib
-import json
-from pathlib import Path
-import time
-import pyrebase
-import uuid
-import re
-from typing import Dict, List, Optional, Tuple, Union
-import difflib
-from dataclasses import dataclass, asdict, field
-from enum import Enum
-import base64
-import io
-from PIL import Image
-import nltk
-from nltk.tokenize import sent_tokenize, word_tokenize
-from sklearn.feature_extraction.text import TfidfVectorizer
-from sklearn.metrics.pairwise import cosine_similarity
-import numpy as np
-import smtplib
-from email.mime.text import MIMEText
-from email.mime.multipart import MIMEMultipart
-from email.mime.base import MIMEBase
-from email import encoders
-import imaplib
-import email
-import calendar
-from icalendar import Calendar, Event
-import requests
-from cryptography.fernet import Fernet
-import qrcode
-import stripe  # For payment processing
-from twilio.rest import Client  # For SMS notifications
-import openai  # For advanced AI features
-from transformers import pipeline  # For local AI models
-import spacy  # For advanced NLP
-import networkx as nx  # For relationship mapping
-from wordcloud import WordCloud
-import matplotlib.pyplot as plt
-import seaborn as sns
-from fpdf import FPDF
-import docx
-from docx2python import docx2python
-import zipfile
-import tempfile
+                'Collected': 118000,
+                'Outstanding': 7000
+            }
 
 # Configure page with enhanced settings
 st.set_page_config(
