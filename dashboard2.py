@@ -1760,7 +1760,7 @@ elif page == "Client Dashboard" and user_role == 'client':
         st.metric("Last Payment", "$3,888")
     
     st.divider()
-    
+
     # Recent activity
     col1, col2 = st.columns(2)
     
@@ -1769,4 +1769,24 @@ elif page == "Client Dashboard" and user_role == 'client':
         for doc in client_docs[-3:]:
             st.markdown(f"""
             <div class="client-portal">
-                <strong>{doc.name}
+                <strong>{doc.name}</strong><br>
+                <small>Updated: {doc.last_modified.strftime('%Y-%m-%d')}</small><br>
+                <small>Status: {doc.status.replace('_', ' ').title()}</small>
+            </div>
+            """, unsafe_allow_html=True)
+    
+    with col2:
+        st.subheader("Upcoming Events")
+        events = [
+            "Board meeting - Jan 25, 2025",
+            "Document review - Jan 30, 2025", 
+            "Closing preparation - Feb 5, 2025"
+        ]
+        
+        for event in events:
+            st.markdown(f"""
+            <div class="client-portal">
+                {event}
+            </div>
+            """, unsafe_allow_html=True)
+    
