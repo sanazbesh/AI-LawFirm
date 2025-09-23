@@ -803,6 +803,7 @@ if page == "Executive Dashboard":
         st.plotly_chart(business_intelligence.create_matter_type_distribution(), use_container_width=True)
     
     # Recent activity
+    # Recent activity
     col1, col2 = st.columns(2)
     
     with col1:
@@ -812,8 +813,6 @@ if page == "Executive Dashboard":
         for doc in recent_docs:
             st.markdown(f"""
             <div class="document-card">
-            st.markdown(f"""
-            <div class="client-portal">
                 <strong>{doc.name}</strong><br>
                 <small>Updated: {doc.last_modified.strftime('%Y-%m-%d')}</small><br>
                 <small>Status: {doc.status.replace('_', ' ').title()}</small>
