@@ -910,14 +910,22 @@ elif page == "Time & Billing":
         
         for entry in st.session_state.time_entries[-5:]:
             amount = entry.hours * entry.billing_rate
-            st.markdown(f"""
+            st.markdown("""
             <div class="document-card">
-                <strong>{entry.activity_type}</strong> - {entry.hours} hours<br>
-                <small>{entry.description[:80]}...</small><br>
-                <small>Rate: ${entry.billing_rate}/hr | Amount: ${amount:.2f}</small>
-                <span class="status-badge status-{entry.status}">{entry.status.upper()}</span>
+                <strong>{}</strong> - {} hours<br>
+                <small>{}...</small><br>
+                <small>Rate: ${}/hr | Amount: ${:.2f}</small>
+                <span class="status-badge status-{}">{}</span>
             </div>
-            """, unsafe_allow_html=True)
+            """.format(
+                entry.activity_type, 
+                entry.hours, 
+                entry.description[:80], 
+                entry.billing_rate, 
+                amount, 
+                entry.status, 
+                entry.status.upper()
+            ), unsafe_allow_html=True)
     
     with tab2:
         st.subheader("Invoice Generation")
