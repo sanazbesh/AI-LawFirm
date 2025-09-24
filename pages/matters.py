@@ -133,7 +133,7 @@ def initialize_matter_session_state():
     # Sample data for demo
     if not st.session_state.matters:
         sample_matters = [
-            Matter(
+            Matter{
                 id=str(uuid.uuid4()),
                 name="Software License Agreement",
                 client_id=str(uuid.uuid4()),
@@ -150,8 +150,8 @@ def initialize_matter_session_state():
                 deadline=datetime.now() + timedelta(days=15),
                 billing_contact="finance@techcorp.com",
                 tags=["contract", "technology", "urgent"]
-            ),
-            Matter(
+            },
+            Matter{
                 id=str(uuid.uuid4()),
                 name="Employment Dispute Resolution",
                 client_id=str(uuid.uuid4()),
@@ -167,8 +167,8 @@ def initialize_matter_session_state():
                 priority="medium",
                 billing_contact="hr@startupxyz.com",
                 tags=["employment", "litigation"]
-            ),
-            Matter(
+            },
+            Matter{
                 id=str(uuid.uuid4()),
                 name="Corporate Acquisition",
                 client_id=str(uuid.uuid4()),
@@ -184,7 +184,7 @@ def initialize_matter_session_state():
                 priority="critical",
                 billing_contact="legal@globalcorp.com",
                 tags=["M&A", "corporate", "high-value"]
-            )
+            }
         ]
         st.session_state.matters.extend(sample_matters)
 
