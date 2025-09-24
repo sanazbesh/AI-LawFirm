@@ -97,8 +97,25 @@ import time
 from datetime import datetime, timedelta
 import pandas as pd
 from services.auth import AuthService
-from models.matter import Matter, MatterType, MatterStatus, Priority, Task, TimeEntry, MatterExpense
-
+try:
+    from models.matter import Matter, MatterType, MatterStatus, Priority, Task, TimeEntry, MatterExpense
+except ImportError:
+    # Create fallback classes if models don't exist
+    class Task:
+        pass
+    class Matter:
+        pass
+    class MatterType:
+        pass
+    class MatterStatus:
+        pass
+    class Priority:
+        pass
+    class TimeEntry:
+        pass
+    class MatterExpense:
+        pass
+        
 def initialize_matter_session_state():
     """Initialize matter-related session state"""
     if 'matters' not in st.session_state:
