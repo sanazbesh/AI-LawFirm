@@ -1,8 +1,12 @@
-# models/matter.py
+# pages/matters.py - Enhanced Matter Management Interface
+import streamlit as st
+import uuid
+import time
+from datetime import datetime, timedelta
+import pandas as pd
 from dataclasses import dataclass, field
-from datetime import datetime
-from enum import Enum
 from typing import List, Dict, Any, Optional
+from enum import Enum
 
 class MatterType(Enum):
     LITIGATION = "litigation"
@@ -33,13 +37,13 @@ class Priority(Enum):
 
 @dataclass
 class Task:
-    id: str
-    matter_id: str
-    title: str
-    description: str
-    assigned_to: str
-    due_date: datetime
-    status: str = "pending"  # pending, in_progress, completed, cancelled
+    id: str = ""
+    matter_id: str = ""
+    title: str = ""
+    description: str = ""
+    assigned_to: str = ""
+    due_date: datetime = field(default_factory=datetime.now)
+    status: str = "pending"
     priority: str = "medium"
     created_date: datetime = field(default_factory=datetime.now)
     completed_date: Optional[datetime] = None
@@ -48,36 +52,36 @@ class Task:
 
 @dataclass
 class TimeEntry:
-    id: str
-    matter_id: str
-    attorney_email: str
-    date: datetime
-    hours: float
-    description: str
-    billable_rate: float = 0.0
+    id: str = ""
+    matter_id: str = ""
+    attorney_email: str = ""
+    date: datetime = field(default_factory=datetime.now)
+    hours: float = 0.0
+    description: str = ""
+    billable_rate: float = 250.0
     task_id: Optional[str] = None
 
 @dataclass
 class MatterExpense:
-    id: str
-    matter_id: str
-    date: datetime
-    amount: float
-    description: str
+    id: str = ""
+    matter_id: str = ""
+    date: datetime = field(default_factory=datetime.now)
+    amount: float = 0.0
+    description: str = ""
     category: str = "general"
     is_billable: bool = True
     receipt_attached: bool = False
 
 @dataclass
 class Matter:
-    id: str
-    name: str
-    client_id: str
-    client_name: str
-    matter_type: str
-    status: str
-    created_date: datetime
-    assigned_attorneys: List[str]
+    id: str = ""
+    name: str = ""
+    client_id: str = ""
+    client_name: str = ""
+    matter_type: str = ""
+    status: str = ""
+    created_date: datetime = field(default_factory=datetime.now)
+    assigned_attorneys: List[str] = field(default_factory=list)
     description: str = ""
     budget: float = 0.0
     estimated_hours: float = 0.0
@@ -90,31 +94,13 @@ class Matter:
     tags: List[str] = field(default_factory=list)
     custom_fields: Dict[str, Any] = field(default_factory=dict)
 
-# matter_management.py - Enhanced Matter Management Interface
-import streamlit as st
-import uuid
-import time
-from datetime import datetime, timedelta
-import pandas as pd
-from services.auth import AuthService
+# Import auth service
 try:
-    from models.matter import Matter, MatterType, MatterStatus, Priority, Task, TimeEntry, MatterExpense
+    from services.auth import AuthService
 except ImportError:
-    # Create fallback classes if models don't exist
-    class Task:
-        pass
-    class Matter:
-        pass
-    class MatterType:
-        pass
-    class MatterStatus:
-        pass
-    class Priority:
-        pass
-    class TimeEntry:
-        pass
-    class MatterExpense:
-        pass
+    class AuthService:
+        def has_permission(self, perm):
+            return True
         
 def initialize_matter_session_state():
     """Initialize matter-related session state"""
@@ -133,9 +119,9 @@ def initialize_matter_session_state():
     # Sample data for demo
     if not st.session_state.matters:
         sample_matters = [
-            Matter{
-                "id": str(uuid.uuid4()),
-                "name": "Software License Agreement",
+            Matter(
+                id=str(uuid.uuid4()),
+                name="Software License Agreement",
                 client_id=str(uuid.uuid4()),
                 client_name="TechCorp Inc",
                 matter_type="contract",
@@ -150,10 +136,10 @@ def initialize_matter_session_state():
                 deadline=datetime.now() + timedelta(days=15),
                 billing_contact="finance@techcorp.com",
                 tags=["contract", "technology", "urgent"]
-            },
-            Matter{
-                "id": str(uuid.uuid4()),
-                "name": "Employment Dispute Resolution",
+            ),
+            Matter(
+                id=str(uuid.uuid4()),
+                name="Employment Dispute Resolution",
                 client_id=str(uuid.uuid4()),
                 client_name="StartupXYZ",
                 matter_type="employment",
@@ -167,10 +153,10 @@ def initialize_matter_session_state():
                 priority="medium",
                 billing_contact="hr@startupxyz.com",
                 tags=["employment", "litigation"]
-            },
-            Matter{
-                "id": str(uuid.uuid4()),
-                "name": "Corporate Acquisition",
+            ),
+            Matter(
+                id=str(uuid.uuid4()),
+                name="Corporate Acquisition",
                 client_id=str(uuid.uuid4()),
                 client_name="GlobalCorp",
                 matter_type="mergers_acquisitions",
@@ -184,7 +170,7 @@ def initialize_matter_session_state():
                 priority="critical",
                 billing_contact="legal@globalcorp.com",
                 tags=["M&A", "corporate", "high-value"]
-            }
+            )
         ]
         st.session_state.matters.extend(sample_matters)
 
@@ -458,7 +444,8 @@ def _show_matter_card(matter, auth_service):
     priority_colors = {"low": "🟢", "medium": "🟡", "high": "🟠", "critical": "🔴"}
     status_colors = {"active": "🟢", "on_hold": "🟡", "closed": "✅", "archived": "📦", "cancelled": "❌"}
     
-    matter_docs = [doc for doc in st.session_state.get('documents', []) if doc.matter_id == matter.id]
+    matter_docs = [doc for doc in st.session_state.get('documents', []) 
+                   if hasattr(doc, 'matter_id') and doc.matter_id == matter.id]
     
     # Check if overdue
     is_overdue = matter.deadline and matter.deadline < datetime.now() and matter.status == 'active'
@@ -508,8 +495,12 @@ def _show_matter_card(matter, auth_service):
         if matter_docs:
             st.markdown("**📂 Recent Documents:**")
             for doc in matter_docs[-3:]:
+                doc_name = getattr(doc, 'name', 'Unknown Document')
+                doc_type = getattr(doc, 'document_type', getattr(doc, 'type', 'Unknown'))
+                doc_status = getattr(doc, 'status', 'unknown')
+                
                 status_emoji = {"draft": "✏️", "under_review": "🔍", "final": "✅"}
-                st.markdown(f"• {status_emoji.get(doc.status, '📄')} {doc.name} ({doc.document_type})")
+                st.markdown(f"• {status_emoji.get(doc_status, '📄')} {doc_name} ({doc_type})")
         
         # Progress bar for budget utilization
         if matter.budget > 0:
@@ -694,9 +685,13 @@ def _show_task_management(auth_service):
             with col1:
                 task_title = st.text_input("Task Title *")
                 matter_options = [(m.id, f"{m.name} - {m.client_name}") for m in st.session_state.matters]
-                selected_matter = st.selectbox("Select Matter *", 
-                                             options=matter_options, 
-                                             format_func=lambda x: x[1])
+                if matter_options:
+                    selected_matter = st.selectbox("Select Matter *", 
+                                                 options=matter_options, 
+                                                 format_func=lambda x: x[1])
+                else:
+                    st.warning("No matters available. Create a matter first.")
+                    selected_matter = None
                 task_priority = st.selectbox("Priority", [p.value.title() for p in Priority], index=1)
             
             with col2:
@@ -847,9 +842,13 @@ def _show_time_tracking(auth_service):
             
             with col1:
                 matter_options = [(m.id, f"{m.name} - {m.client_name}") for m in st.session_state.matters]
-                selected_matter = st.selectbox("Select Matter *", 
-                                             options=matter_options, 
-                                             format_func=lambda x: x[1])
+                if matter_options:
+                    selected_matter = st.selectbox("Select Matter *", 
+                                                 options=matter_options, 
+                                                 format_func=lambda x: x[1])
+                else:
+                    st.warning("No matters available. Create a matter first.")
+                    selected_matter = None
                 attorney_email = st.text_input("Attorney Email *", value="current@firm.com")
                 date = st.date_input("Date", value=datetime.now().date())
             
@@ -985,9 +984,13 @@ def _show_expense_tracking(auth_service):
             
             with col1:
                 matter_options = [(m.id, f"{m.name} - {m.client_name}") for m in st.session_state.matters]
-                selected_matter = st.selectbox("Select Matter *", 
-                                             options=matter_options, 
-                                             format_func=lambda x: x[1])
+                if matter_options:
+                    selected_matter = st.selectbox("Select Matter *", 
+                                                 options=matter_options, 
+                                                 format_func=lambda x: x[1])
+                else:
+                    st.warning("No matters available. Create a matter first.")
+                    selected_matter = None
                 amount = st.number_input("Amount ($) *", min_value=0.0, step=1.0)
                 date = st.date_input("Date", value=datetime.now().date())
             
@@ -1111,7 +1114,8 @@ def _show_matter_analytics_modal(matter):
     st.subheader(f"📊 Analytics: {matter.name}")
     
     # Get related data
-    matter_docs = [doc for doc in st.session_state.get('documents', []) if doc.matter_id == matter.id]
+    matter_docs = [doc for doc in st.session_state.get('documents', []) 
+                   if hasattr(doc, 'matter_id') and doc.matter_id == matter.id]
     matter_tasks = [task for task in st.session_state.tasks if task.matter_id == matter.id]
     matter_time = [entry for entry in st.session_state.time_entries if entry.matter_id == matter.id]
     matter_expenses = [exp for exp in st.session_state.matter_expenses if exp.matter_id == matter.id]
