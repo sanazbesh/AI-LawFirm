@@ -549,12 +549,13 @@ def show_contract_intelligence():
             'Percentage': [68.7, 13.4, 7.9, 3.6, 6.5]
         })
         
-        fig4 = px.donut(
+        fig4 = px.pie(
             status_data,
             values='Count',
             names='Status',
             title='Contract Status Overview',
-            color_discrete_sequence=px.colors.qualitative.Pastel
+            color_discrete_sequence=px.colors.qualitative.Pastel,
+            hole=0.4
         )
         fig4.update_layout(height=300)
         st.plotly_chart(fig4, use_container_width=True)
