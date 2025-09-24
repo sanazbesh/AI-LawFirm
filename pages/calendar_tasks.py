@@ -307,7 +307,30 @@ def show_court_deadlines():
                 urgency_color = "🟢"
                 border_color = "green"
             
-            st.markdown("</div>", unsafe_allow_html=True)
+            st.markdown(f"""
+            <div style="border-left: 4px solid {border_color}; padding-left: 10px; margin: 10px 0;">
+            </div>
+            """, unsafe_allow_html=True)
+            
+            with st.expander(f"{urgency_color} {deadline['deadline']} - {deadline['case']} (Due: {deadline['due_date']})"):
+                col_x, col_y = st.columns(2)
+                with col_x:
+                    st.write(f"**Court:** {deadline['court']}")
+                    st.write(f"**Assigned:** {deadline['assigned']}")
+                with col_y:
+                    st.write(f"**Status:** {deadline['status']}")
+                    st.write(f"**Days Remaining:** {deadline['days_remaining']}")
+                
+                # Action buttons
+                col_btn1, col_btn2, col_btn3, col_btn4 = st.columns(4)
+                with col_btn1:
+                    st.button("📄 View Details", key=f"view_{deadline['case'][:10]}")
+                with col_btn2:
+                    st.button("📝 Update Status", key=f"status_{deadline['case'][:10]}")
+                with col_btn3:
+                    st.button("📧 Send Reminder", key=f"remind_{deadline['case'][:10]}")
+                with col_btn4:
+                    st.button("📎 Attach File", key=f"attach_{deadline['case'][:10]}")
     
     with col2:
         st.markdown("#### Deadline Alerts")
@@ -467,28 +490,8 @@ def show_matter_schedule():
             st.write(f"**{name}** - {role}")
         
         if st.button("➕ Add Team Member"):
-            st.info("Opening team member form...")(f"""
-            <div style="border-left: 4px solid {border_color}; padding-left: 10px; margin: 10px 0;">
-            """, unsafe_allow_html=True)
-            
-            with st.expander(f"{urgency_color} {deadline['deadline']} - {deadline['case']} (Due: {deadline['due_date']})"):
-                col_x, col_y = st.columns(2)
-                with col_x:
-                    st.write(f"**Court:** {deadline['court']}")
-                    st.write(f"**Assigned:** {deadline['assigned']}")
-                with col_y:
-                    st.write(f"**Status:** {deadline['status']}")
-                    st.write(f"**Days Remaining:** {deadline['days_remaining']}")
-                
-                # Action buttons
-                col_btn1, col_btn2, col_btn3, col_btn4 = st.columns(4)
-                with col_btn1:
-                    st.button("📄 View Details", key=f"view_{deadline['case'][:10]}")
-                with col_btn2:
-                    st.button("📝 Update Status", key=f"status_{deadline['case'][:10]}")
-                with col_btn3:
-                    st.button("📧 Send Reminder", key=f"remind_{deadline['case'][:10]}")
-                with col_btn4:
-                    st.button("📎 Attach File", key=f"attach_{deadline['case'][:10]}")
-            
-            st.markdown
+            st.info("Opening team member form...")
+
+# Main application entry point
+if __name__ == "__main__":
+    show()
