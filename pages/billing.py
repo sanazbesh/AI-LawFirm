@@ -806,7 +806,7 @@ def _show_revenue_tracking_tab():
         
         fig_quality = px.bar(quality_factors, x='Factor', y='Score',
                             title='Revenue Quality Factors')
-        fig_quality.update_xaxis(tickangle=45)
+        fig_quality.update_layout(xaxis=dict(tickangle=45))
         st.plotly_chart(fig_quality, use_container_width=True)
     
     # Revenue action items
