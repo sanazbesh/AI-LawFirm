@@ -80,13 +80,12 @@ class BusinessIntelligence:
             title='Monthly Revenue Trend',
             xaxis_title='Month',
             yaxis_title='Revenue ($)',
+            yaxis=dict(tickformat='$,.0f'),  # FIXED: Moved tickformat into update_layout
             height=400,
             showlegend=False,
             plot_bgcolor='rgba(0,0,0,0)',
             paper_bgcolor='rgba(0,0,0,0)'
         )
-        
-        fig.update_yaxis(tickformat='$,.0f')
         
         return fig
     
