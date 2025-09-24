@@ -787,7 +787,7 @@ def _show_revenue_tracking_tab():
         fig_profit = px.bar(matter_profit, x='Matter', y='Profit',
                            color='Margin', color_continuous_scale='RdYlGn',
                            title='Matter Profitability Analysis')
-        fig_profit.update_xaxis(tickangle=45)
+        fig_profit.update_layout(xaxis=dict(tickangle=45))
         st.plotly_chart(fig_profit, use_container_width=True)
     
     with col_analysis2:
