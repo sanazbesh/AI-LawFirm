@@ -1,4 +1,50 @@
-# Search and filter
+import streamlit as st
+import pandas as pd
+import plotly.express as px
+from datetime import datetime, timedelta
+
+def show():
+    st.markdown("""
+    <div class="main-header">
+        <h1>🏛️ Client Portal Management</h1>
+        <p>Manage client access, permissions, and self-service capabilities</p>
+    </div>
+    """, unsafe_allow_html=True)
+    
+    # Client Portal tabs
+    tab1, tab2, tab3, tab4, tab5 = st.tabs([
+        "👥 Client Access", 
+        "📄 Document Sharing", 
+        "💬 Communications", 
+        "🔧 Portal Settings", 
+        "📊 Usage Analytics"
+    ])
+    
+    with tab1:
+        show_client_access()
+    
+    with tab2:
+        show_document_sharing()
+    
+    with tab3:
+        show_communications()
+    
+    with tab4:
+        show_portal_settings()
+    
+    with tab5:
+        show_usage_analytics()
+
+def show_client_access():
+    st.subheader("👥 Client Access Management")
+    
+    col1, col2 = st.columns([3, 1])
+    
+    with col1:
+        # Client access overview
+        st.markdown("#### Active Client Portal Users")
+        
+        # Search and filter
         col_search1, col_search2, col_search3 = st.columns(3)
         with col_search1:
             client_search = st.text_input("Search Clients:", placeholder="Name, email, or company...")
@@ -630,7 +676,6 @@ def show_usage_analytics():
             'Messages Sent': [25 + i*1 + (i%7)*5 for i in range(len(dates))]
         })
         
-        import plotly.express as px
         fig = px.line(usage_data, x='Date', y=['Daily Logins', 'Document Views', 'Messages Sent'],
                      title='Portal Activity Trends')
         st.plotly_chart(fig, use_container_width=True)
@@ -722,50 +767,7 @@ def show_usage_analytics():
             st.info("Compiling monthly analytics...")
         if st.button("📋 Export Data"):
             st.info("Preparing data export...")
-import streamlit as st
-import pandas as pd
-from datetime import datetime, timedelta
 
-def show():
-    st.markdown("""
-    <div class="main-header">
-        <h1>🏛️ Client Portal Management</h1>
-        <p>Manage client access, permissions, and self-service capabilities</p>
-    </div>
-    """, unsafe_allow_html=True)
-    
-    # Client Portal tabs
-    tab1, tab2, tab3, tab4, tab5 = st.tabs([
-        "👥 Client Access", 
-        "📄 Document Sharing", 
-        "💬 Communications", 
-        "🔧 Portal Settings", 
-        "📊 Usage Analytics"
-    ])
-    
-    with tab1:
-        show_client_access()
-    
-    with tab2:
-        show_document_sharing()
-    
-    with tab3:
-        show_communications()
-    
-    with tab4:
-        show_portal_settings()
-    
-    with tab5:
-        show_usage_analytics()
-
-def show_client_access():
-    st.subheader("👥 Client Access Management")
-    
-    col1, col2 = st.columns([3, 1])
-    
-    with col1:
-        # Client access overview
-        st.markdown("#### Active Client Portal Users")
-        
-        # Search and filter
-        col_search
+# Main execution
+if __name__ == "__main__":
+    show()
