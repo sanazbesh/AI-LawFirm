@@ -296,7 +296,7 @@ def _show_dashboard_stats():
     col5, col6, col7, col8 = st.columns(4)
     
     with col5:
-        privileged_count = len([d for d in st.session_state.documents if d.is_privileged])
+        privileged_count = len([d for d in st.session_state.documents if getattr(d, 'is_privileged', False)])
         st.metric("🔒 Privileged Docs", privileged_count)
     
     with col6:
