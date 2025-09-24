@@ -281,7 +281,7 @@ def _show_dashboard_stats():
         st.metric("📄 Total Documents", total_docs, delta=None)
     
     with col2:
-        draft_count = len([d for d in st.session_state.documents if d.status == 'draft'])
+        draft_count = len([d for d in st.session_state.documents if (d.status if hasattr(d, 'status') else d.get('status', '')) == 'draft'])
         st.metric("✏️ Draft Documents", draft_count)
     
     with col3:
