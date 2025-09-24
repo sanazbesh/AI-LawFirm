@@ -134,7 +134,7 @@ def initialize_matter_session_state():
     if not st.session_state.matters:
         sample_matters = [
             Matter{
-                id=str(uuid.uuid4()),
+                "id": str(uuid.uuid4()),
                 name="Software License Agreement",
                 client_id=str(uuid.uuid4()),
                 client_name="TechCorp Inc",
