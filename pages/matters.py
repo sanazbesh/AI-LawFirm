@@ -135,7 +135,7 @@ def initialize_matter_session_state():
         sample_matters = [
             Matter{
                 "id": str(uuid.uuid4()),
-                name="Software License Agreement",
+                "name": "Software License Agreement",
                 client_id=str(uuid.uuid4()),
                 client_name="TechCorp Inc",
                 matter_type="contract",
@@ -152,8 +152,8 @@ def initialize_matter_session_state():
                 tags=["contract", "technology", "urgent"]
             },
             Matter{
-                id=str(uuid.uuid4()),
-                name="Employment Dispute Resolution",
+                "id": str(uuid.uuid4()),
+                "name": "Employment Dispute Resolution",
                 client_id=str(uuid.uuid4()),
                 client_name="StartupXYZ",
                 matter_type="employment",
@@ -169,8 +169,8 @@ def initialize_matter_session_state():
                 tags=["employment", "litigation"]
             },
             Matter{
-                id=str(uuid.uuid4()),
-                name="Corporate Acquisition",
+                "id": str(uuid.uuid4()),
+                "name": "Corporate Acquisition",
                 client_id=str(uuid.uuid4()),
                 client_name="GlobalCorp",
                 matter_type="mergers_acquisitions",
