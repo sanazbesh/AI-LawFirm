@@ -1,4 +1,29 @@
-with tab2:
+import streamlit as st
+import pandas as pd
+from datetime import datetime
+
+def show():
+    st.markdown("""
+    <div class="main-header">
+        <h1>⚙️ System Settings & Configuration</h1>
+        <p>Comprehensive system administration, security settings, and platform configuration</p>
+    </div>
+    """, unsafe_allow_html=True)
+    
+    # Settings tabs
+    tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs([
+        "🏢 General Settings", 
+        "🔒 Security & Access", 
+        "📧 Email & Notifications", 
+        "🔗 Integrations", 
+        "🗄️ Data Management", 
+        "🛡️ System Maintenance"
+    ])
+    
+    with tab1:
+        show_general_settings()
+    
+    with tab2:
         show_security_access()
     
     with tab3:
@@ -1075,30 +1100,8 @@ def show_system_maintenance():
         if st.button("🔧 Safe Mode"):
             st.warning("This will restart system in safe mode!")
         if st.button("📞 Contact Support"):
-            st.info("Opening support ticket...")import streamlit as st
-import pandas as pd
-from datetime import datetime
+            st.info("Opening support ticket...")
 
-def show():
-    st.markdown("""
-    <div class="main-header">
-        <h1>⚙️ System Settings & Configuration</h1>
-        <p>Comprehensive system administration, security settings, and platform configuration</p>
-    </div>
-    """, unsafe_allow_html=True)
-    
-    # Settings tabs
-    tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs([
-        "🏢 General Settings", 
-        "🔒 Security & Access", 
-        "📧 Email & Notifications", 
-        "🔗 Integrations", 
-        "🗄️ Data Management", 
-        "🛡️ System Maintenance"
-    ])
-    
-    with tab1:
-        show_general_settings()
-    
-    with tab2:
-        show_security_access()
+# Main execution
+if __name__ == "__main__":
+    show()
