@@ -1,4 +1,60 @@
-# Usage trends
+import streamlit as st
+import pandas as pd
+from datetime import datetime, timedelta
+import plotly.express as px
+import plotly.graph_objects as go
+
+def show():
+    st.markdown("""
+    <div class="main-header">
+        <h1>📱 Mobile App Management</h1>
+        <p>Monitor and manage mobile application usage, features, and user experience</p>
+    </div>
+    """, unsafe_allow_html=True)
+    
+    # Mobile app tabs
+    tab1, tab2, tab3, tab4, tab5 = st.tabs([
+        "📊 App Analytics", 
+        "👥 User Management", 
+        "🔧 Feature Control", 
+        "📲 Push Notifications", 
+        "🏪 App Store Management"
+    ])
+    
+    with tab1:
+        show_app_analytics()
+    
+    with tab2:
+        show_user_management()
+    
+    with tab3:
+        show_feature_control()
+    
+    with tab4:
+        show_push_notifications()
+    
+    with tab5:
+        show_app_store_management()
+
+def show_app_analytics():
+    st.subheader("📊 Mobile App Analytics Dashboard")
+    
+    col1, col2 = st.columns([3, 1])
+    
+    with col1:
+        # Key metrics
+        col_metric1, col_metric2, col_metric3, col_metric4 = st.columns(4)
+        
+        with col_metric1:
+            st.metric("Total Downloads", "12,847", "+847")
+        with col_metric2:
+            st.metric("Active Users", "8,234", "+234")
+        with col_metric3:
+            st.metric("Session Duration", "18.4 min", "+2.1 min")
+        with col_metric4:
+            st.metric("App Rating", "4.7/5", "+0.1")
+        
+        # Usage trends
         st.markdown("#### Usage Trends")
         
         # Generate sample data for charts
@@ -410,8 +466,7 @@ def show_feature_control():
         if st.button("📊 Download Reports"):
             st.info("Generating app store reports...")
         if st.button("🔔 Review Alerts"):
-            st.info("Checking for new reviews and alerts...") Actions")
-        
+            st.info("Checking for new reviews and alerts...")
         if st.button("🚨 Emergency Disable"):
             st.warning("Emergency feature disable activated!")
         if st.button("📋 Feature Report"):
@@ -743,60 +798,60 @@ def show_app_store_management():
             with col_health2:
                 st.write(status)
         
-        st.markdown("#### Quickimport streamlit as st
-import pandas as pd
-from datetime import datetime
-import plotly.express as px
-import plotly.graph_objects as go
-
-def show():
-    st.markdown("""
-    <div class="main-header">
-        <h1>📱 Mobile App Management</h1>
-        <p>Monitor and manage mobile application usage, features, and user experience</p>
-    </div>
-    """, unsafe_allow_html=True)
-    
-    # Mobile app tabs
-    tab1, tab2, tab3, tab4, tab5 = st.tabs([
-        "📊 App Analytics", 
-        "👥 User Management", 
-        "🔧 Feature Control", 
-        "📲 Push Notifications", 
-        "🏪 App Store Management"
-    ])
-    
-    with tab1:
-        show_app_analytics()
-    
-    with tab2:
-        show_user_management()
-    
-    with tab3:
-        show_feature_control()
-    
-    with tab4:
-        show_push_notifications()
-    
-    with tab5:
-        show_app_store_management()
-
-def show_app_analytics():
-    st.subheader("📊 Mobile App Analytics Dashboard")
-    
-    col1, col2 = st.columns([3, 1])
-    
-    with col1:
-        # Key metrics
-        col_metric1, col_metric2, col_metric3, col_metric4 = st.columns(4)
+        st.markdown("#### Quick Actions")
         
-        with col_metric1:
-            st.metric("Total Downloads", "12,847", "+847")
-        with col_metric2:
-            st.metric("Active Users", "8,234", "+234")
-        with col_metric3:
-            st.metric("Session Duration", "18.4 min", "+2.1 min")
-        with col_metric4:
-            st.metric("App Rating", "4.7/5", "+0.1")
+        quick_actions = [
+            ("📈 View Analytics", "View detailed app analytics"),
+            ("🔄 Refresh Data", "Update all app store data"),
+            ("📊 Export Report", "Download performance report"),
+            ("⚠️ Check Issues", "Review any app store issues"),
+            ("🎯 ASO Optimization", "Run ASO analysis"),
+            ("📱 Version Compare", "Compare version performance")
+        ]
         
-        # Usage trends
+        for action, description in quick_actions:
+            if st.button(action, key=f"quick_{action[:5]}"):
+                st.info(f"{description}")
+
+# Additional utility functions for the mobile app dashboard
+def get_app_health_score():
+    """Calculate overall app health score based on various metrics"""
+    crash_rate = 0.02
+    rating = 4.6
+    user_retention = 78.5
+    
+    # Simple health score calculation
+    health_score = (100 - crash_rate) * 0.3 + (rating / 5 * 100) * 0.4 + user_retention * 0.3
+    return round(health_score, 1)
+
+def generate_user_engagement_data():
+    """Generate sample user engagement data for charts"""
+    dates = pd.date_range('2024-08-01', '2024-09-23', freq='D')
+    
+    engagement_data = pd.DataFrame({
+        'Date': dates,
+        'Daily Active Users': [3200 + i*30 + (i%7)*150 + (i%30)*10 for i in range(len(dates))],
+        'Session Duration': [16.5 + (i%14)*0.5 - (i%7)*0.2 for i in range(len(dates))],
+        'Screen Views': [45 + i*2 + (i%7)*8 for i in range(len(dates))],
+        'Retention Rate': [82.5 + (i%21)*0.3 - (i%14)*0.1 for i in range(len(dates))]
+    })
+    
+    return engagement_data
+
+def calculate_feature_adoption_rate(feature_name, total_users=8234):
+    """Calculate adoption rate for specific features"""
+    adoption_rates = {
+        'Document Scanner': 0.89,
+        'Voice Dictation': 0.25,
+        'Offline Mode': 1.0,
+        'Dark Mode': 0.95,
+        'Biometric Login': 0.45,
+        'AI Legal Assistant': 0.0
+    }
+    
+    rate = adoption_rates.get(feature_name, 0.5)
+    return int(total_users * rate), f"{rate*100:.1f}%"
+
+# Main execution
+if __name__ == "__main__":
+    show()
