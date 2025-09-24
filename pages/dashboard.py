@@ -226,14 +226,29 @@ def show_recent_activity():
             bi = BusinessIntelligence()
             bi.setup_sample_data()
         
-        recent_docs = sorted(st.session_state.documents, key=lambda x: x.last_modified, reverse=True)[:5]
+        # Handle both dict and Document object formats
+        recent_docs = sorted(st.session_state.documents, 
+                            key=lambda x: x.last_modified if hasattr(x, 'last_modified') else datetime.now(), 
+                            reverse=True)[:5]
         
         for doc in recent_docs:
+            # Handle both dict and Document object formats
+            if hasattr(doc, 'name'):
+                # Document object
+                name = doc.name
+                date = doc.last_modified.strftime('%Y-%m-%d')
+                status = doc.status.replace('_', ' ').title()
+            else:
+                # Dictionary format
+                name = doc.get('name', 'Unknown Document')
+                date = datetime.now().strftime('%Y-%m-%d')
+                status = doc.get('status', 'unknown').replace('_', ' ').title()
+    
             st.markdown(f"""
             <div class="document-card">
-                <strong>{doc.name}</strong><br>
-                <small>Updated: {doc.last_modified.strftime('%Y-%m-%d')}</small><br>
-                <small>Status: {doc.status.replace('_', ' ').title()}</small>
+                <strong>{name}</strong><br>
+                <small>Updated: {date}</small><br>
+                <small>Status: {status}</small>
             </div>
             """, unsafe_allow_html=True)
     
