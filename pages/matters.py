@@ -101,7 +101,26 @@ except ImportError:
     class AuthService:
         def has_permission(self, perm):
             return True
+
+
+def create_new_user():
+    from services.subscription_manager import EnhancedAuthService
+    auth_service = EnhancedAuthService()
+    
+    if not auth_service.check_user_limit_before_invite():
+        st.error("User limit reached for your current plan.")
+        current_plan = st.session_state.user_data.get('organization_code')
+        subscription = auth_service.subscription_manager.get_organization_subscription(current_plan)
+        limits = auth_service.subscription_manager.get_plan_limits(subscription['plan'])
         
+        st.info(f"Your {subscription['plan'].title()} plan allows {limits['max_users']} users.")
+        
+        if st.button("Upgrade Plan"):
+            st.session_state['show_upgrade_modal'] = True
+            st.rerun()
+        return
+
+
 def initialize_matter_session_state():
     """Initialize matter-related session state"""
     if 'matters' not in st.session_state:
