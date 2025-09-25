@@ -1,989 +1,957 @@
-# main.py
 import streamlit as st
-from datetime import datetime
+import pandas as pd
+import plotly.express as px
+import plotly.graph_objects as go
+from datetime import datetime, timedelta
 import uuid
+import os
 
-# Import all required modules
-from services.auth import AuthService
-from services.document_processor import DocumentProcessor
-from services.ai_analysis import AIAnalysisSystem
-from models.document import Document, DocumentStatus
-from models.matter import Matter
-
-# Initialize session state
-def initialize_session_state():
+def show():
+    """Main document management interface with subscription enforcement"""
+    
+    # Subscription check for document management
+    from services.subscription_manager import EnhancedAuthService
+    auth_service = EnhancedAuthService()
+    
+    user_data = st.session_state.get('user_data', {})
+    org_code = user_data.get('organization_code')
+    
+    if not org_code:
+        st.error("No organization found. Please log in again.")
+        return
+    
+    # Check if subscription is active
+    if not auth_service.subscription_manager.is_subscription_active(org_code):
+        st.error("Your subscription has expired. Please renew to continue using document management.")
+        if st.button("Renew Subscription"):
+            st.session_state['show_upgrade_modal'] = True
+            st.rerun()
+        return
+    
+    st.markdown("""
+    <div class="main-header">
+        <h1>📁 Document Management</h1>
+        <p>Secure document storage, organization, and collaboration platform</p>
+    </div>
+    """, unsafe_allow_html=True)
+    
+    # Initialize documents in session state if not exists
     if 'documents' not in st.session_state:
         st.session_state.documents = []
     
-    if 'matters' not in st.session_state:
-        # Sample matters for demo
-        st.session_state.matters = [
-            Matter(
-                id=str(uuid.uuid4()),
-                name="Contract Negotiation",
-                client_name="TechCorp Inc",
-                description="Software licensing agreement",
-                created_date=datetime.now()
-            ),
-            Matter(
-                id=str(uuid.uuid4()),
-                name="Employment Dispute",
-                client_name="StartupXYZ",
-                description="Wrongful termination case",
-                created_date=datetime.now()
-            ),
-            Matter(
-                id=str(uuid.uuid4()),
-                name="Merger & Acquisition",
-                client_name="GlobalCorp",
-                description="Asset purchase agreement",
-                created_date=datetime.now()
-            )
-        ]
+    # Main tabs
+    tab1, tab2, tab3, tab4, tab5 = st.tabs([
+        "📋 Dashboard", 
+        "📤 Upload", 
+        "🔍 Search & Filter", 
+        "📊 Analytics", 
+        "⚙️ Settings"
+    ])
+    
+    with tab1:
+        show_dashboard_stats(auth_service, org_code)
+    
+    with tab2:
+        show_upload_interface(auth_service, org_code)
+    
+    with tab3:
+        show_search_and_filter()
+    
+    with tab4:
+        show_document_analytics(auth_service, org_code)
+    
+    with tab5:
+        show_document_settings()
 
-# models/document.py
-from dataclasses import dataclass
-from datetime import datetime
-from enum import Enum
-from typing import List, Dict, Any, Optional
-
-class DocumentStatus(Enum):
-    DRAFT = "draft"
-    UNDER_REVIEW = "under_review"
-    FINAL = "final"
-    ARCHIVED = "archived"
-
-@dataclass
-class Document:
-    id: str
-    name: str
-    matter_id: str
-    client_name: str
-    document_type: str
-    current_version: str
-    status: str
-    tags: List[str]
-    extracted_text: str
-    key_information: Dict[str, Any]
-    created_date: datetime
-    last_modified: datetime
-    is_privileged: bool = False
-    file_size: Optional[int] = None
-    file_path: Optional[str] = None
-
-# models/matter.py
-@dataclass
-class Matter:
-    id: str
-    name: str
-    client_name: str
-    description: str
-    created_date: datetime
-    status: str = "active"
-
-# services/auth.py
-class AuthService:
-    def __init__(self):
-        # Mock user with full permissions for demo
-        self.current_user = {
-            'id': '1',
-            'username': 'demo_user',
-            'role': 'admin',
-            'permissions': ['read', 'write', 'delete', 'admin']
-        }
+def show_dashboard_stats(auth_service, org_code):
+    """Show document management dashboard with subscription-aware stats"""
     
-    def has_permission(self, permission: str) -> bool:
-        return permission in self.current_user.get('permissions', [])
+    # Get subscription info for display
+    subscription = auth_service.subscription_manager.get_organization_subscription(org_code)
+    limits = auth_service.subscription_manager.get_plan_limits(subscription["plan"])
     
-    def get_current_user(self):
-        return self.current_user
+    # Storage usage display
+    storage_used = subscription.get("storage_used_gb", 0)
+    max_storage = limits.get("storage_gb", 0)
+    storage_percentage = (storage_used / max_storage * 100) if max_storage > 0 else 0
     
-    def is_authenticated(self) -> bool:
-        return True
-
-# services/document_processor.py
-import re
-from typing import Dict, List, Any
-
-class DocumentProcessor:
-    def __init__(self):
-        self.document_types = {
-            'contract': ['agreement', 'contract', 'terms', 'conditions'],
-            'legal_brief': ['brief', 'motion', 'pleading', 'filing'],
-            'correspondence': ['letter', 'email', 'memo', 'correspondence'],
-            'financial': ['invoice', 'receipt', 'statement', 'financial'],
-            'regulatory': ['compliance', 'regulatory', 'filing', 'report']
-        }
-    
-    def classify_document(self, filename: str, content: str) -> str:
-        """Classify document based on filename and content"""
-        filename_lower = filename.lower()
-        content_lower = content.lower()
-        
-        scores = {}
-        for doc_type, keywords in self.document_types.items():
-            score = 0
-            for keyword in keywords:
-                if keyword in filename_lower:
-                    score += 3
-                if keyword in content_lower:
-                    score += content_lower.count(keyword)
-            scores[doc_type] = score
-        
-        return max(scores, key=scores.get) if scores else 'general'
-    
-    def extract_key_information(self, content: str) -> Dict[str, Any]:
-        """Extract key information from document content"""
-        key_info = {}
-        
-        # Extract dates
-        date_patterns = [
-            r'\b\d{1,2}/\d{1,2}/\d{4}\b',
-            r'\b\d{1,2}-\d{1,2}-\d{4}\b',
-            r'\b\w+ \d{1,2}, \d{4}\b'
-        ]
-        dates = []
-        for pattern in date_patterns:
-            dates.extend(re.findall(pattern, content))
-        key_info['dates'] = list(set(dates))[:5]
-        
-        # Extract monetary amounts
-        money_pattern = r'\$[\d,]+\.?\d*'
-        amounts = re.findall(money_pattern, content)
-        key_info['monetary_amounts'] = list(set(amounts))[:5]
-        
-        # Extract email addresses
-        email_pattern = r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b'
-        emails = re.findall(email_pattern, content)
-        key_info['email_addresses'] = list(set(emails))[:5]
-        
-        # Extract phone numbers
-        phone_pattern = r'\b\d{3}[-.]?\d{3}[-.]?\d{4}\b'
-        phones = re.findall(phone_pattern, content)
-        key_info['phone_numbers'] = list(set(phones))[:5]
-        
-        # Extract company names (simple heuristic)
-        company_pattern = r'\b[A-Z][a-zA-Z\s]+(Inc|LLC|Corp|Corporation|Company|Ltd|Limited)\b'
-        companies = re.findall(company_pattern, content)
-        key_info['companies'] = list(set(companies))[:5]
-        
-        return key_info
-    
-    def extract_text_from_file(self, file_content: bytes, filename: str) -> str:
-        """Extract text content from uploaded file"""
-        if filename.endswith('.txt'):
-            return file_content.decode('utf-8', errors='ignore')
-        elif filename.endswith('.pdf'):
-            # In a real implementation, you'd use PyPDF2 or similar
-            return "Sample PDF content extracted for demo purposes"
-        elif filename.endswith('.docx'):
-            # In a real implementation, you'd use python-docx
-            return "Sample DOCX content extracted for demo purposes"
-        else:
-            return "Unsupported file type"
-
-# services/ai_analysis.py
-import random
-from typing import Dict, List, Any
-
-class AIAnalysisSystem:
-    def __init__(self):
-        self.risk_levels = ['low', 'medium', 'high']
-        self.clause_types = ['termination', 'payment', 'liability', 'confidentiality', 'intellectual_property']
-    
-    def analyze_contract(self, content: str) -> Dict[str, Any]:
-        """Simulate AI contract analysis"""
-        analysis = {
-            'risk_level': random.choice(self.risk_levels),
-            'complexity_score': random.uniform(20, 95),
-            'key_clauses': self._extract_key_clauses(content),
-            'recommendations': self._generate_recommendations(),
-            'compliance_issues': self._check_compliance(),
-            'summary': self._generate_summary(content)
-        }
-        return analysis
-    
-    def _extract_key_clauses(self, content: str) -> List[Dict[str, str]]:
-        """Extract and classify key clauses"""
-        clauses = []
-        for i in range(random.randint(3, 7)):
-            clause_type = random.choice(self.clause_types)
-            clauses.append({
-                'type': clause_type,
-                'text': f"Sample {clause_type} clause extracted from document",
-                'confidence': random.uniform(0.7, 0.95)
-            })
-        return clauses
-    
-    def _generate_recommendations(self) -> List[str]:
-        """Generate AI recommendations"""
-        recommendations = [
-            "Consider adding force majeure clause",
-            "Review payment terms for clarity",
-            "Ensure compliance with local regulations",
-            "Add dispute resolution mechanism",
-            "Clarify intellectual property rights"
-        ]
-        return random.sample(recommendations, k=random.randint(2, 4))
-    
-    def _check_compliance(self) -> List[Dict[str, str]]:
-        """Check compliance issues"""
-        issues = [
-            {"type": "GDPR", "status": "compliant", "notes": "Data processing clauses are adequate"},
-            {"type": "CCPA", "status": "needs_review", "notes": "Consumer rights section requires update"},
-            {"type": "SOX", "status": "compliant", "notes": "Financial reporting requirements met"}
-        ]
-        return random.sample(issues, k=random.randint(1, 3))
-    
-    def _generate_summary(self, content: str) -> str:
-        """Generate document summary"""
-        return f"This document contains approximately {len(content.split())} words and appears to be a legal document with standard commercial terms."
-
-# Document Management UI (Enhanced)
-import streamlit as st
-import uuid
-import time
-from datetime import datetime
-
-def show():
-    # Initialize session state
-    initialize_session_state()
-    
-    auth_service = AuthService()
-    document_processor = DocumentProcessor()
-    ai_system = AIAnalysisSystem()
-    
-    st.title("🏛️ Legal Document Management System")
-    st.markdown("---")
-    
-    # Quick stats dashboard
-    _show_dashboard_stats()
-    
-    st.divider()
-    
-    # Upload section
-    if auth_service.has_permission('write'):
-        _show_upload_section(document_processor, auth_service)
-    else:
-        st.warning("You don't have permission to upload documents.")
-    
-    st.divider()
-    
-    # Document library
-    _show_document_library(ai_system, auth_service)
-
-def _show_dashboard_stats():
-    """Enhanced dashboard with more statistics"""
+    # Dashboard metrics
     col1, col2, col3, col4 = st.columns(4)
     
     with col1:
         total_docs = len(st.session_state.documents)
-        st.metric("📄 Total Documents", total_docs, delta=None)
+        st.metric("Total Documents", total_docs)
     
     with col2:
-        draft_count = len([d for d in st.session_state.documents if (d.status if hasattr(d, 'status') else d.get('status', '')) == 'draft'])
-        st.metric("✏️ Draft Documents", draft_count)
+        draft_count = len([d for d in st.session_state.documents 
+                          if getattr(d, 'status', d.get('status') if isinstance(d, dict) else None) == 'draft'])
+        st.metric("Draft Documents", draft_count)
     
     with col3:
-        review_count = len([d for d in st.session_state.documents if d.status == 'under_review'])
-        st.metric("🔍 Under Review", review_count)
+        st.metric("Storage Used", f"{storage_used:.1f}GB / {max_storage}GB")
+        if storage_percentage > 90:
+            st.error("Storage almost full!")
+        elif storage_percentage > 75:
+            st.warning("Storage getting full")
     
     with col4:
-        final_count = len([d for d in st.session_state.documents if d.status == 'final'])
-        st.metric("✅ Final Documents", final_count)
+        privileged_count = len([d for d in st.session_state.documents 
+                               if getattr(d, 'is_privileged', False)])
+        st.metric("Privileged Documents", privileged_count)
     
-    # Additional stats row
-    col5, col6, col7, col8 = st.columns(4)
+    # Storage usage progress bar
+    st.subheader("Storage Usage")
+    progress_color = "red" if storage_percentage > 90 else "orange" if storage_percentage > 75 else "green"
+    st.progress(min(storage_percentage / 100, 1.0), text=f"{storage_percentage:.1f}% of {max_storage}GB used")
     
-    with col5:
-        privileged_count = len([d for d in st.session_state.documents if getattr(d, 'is_privileged', False)])
-        st.metric("🔒 Privileged Docs", privileged_count)
+    if storage_percentage > 80:
+        st.warning("Consider upgrading your storage plan or removing old documents.")
+        if st.button("Upgrade Storage Plan"):
+            st.session_state['show_upgrade_modal'] = True
+            st.rerun()
     
-    with col6:
-        matters_count = len(st.session_state.matters)
-        st.metric("📋 Active Matters", matters_count)
+    # Recent documents
+    st.subheader("Recent Documents")
     
-    with col7:
-        contract_count = len([d for d in st.session_state.documents if d.document_type == 'contract'])
-        st.metric("📝 Contracts", contract_count)
-    
-    with col8:
-        # Calculate documents created this week (mock)
-        this_week = len([d for d in st.session_state.documents if 
-                        (datetime.now() - d.created_date).days <= 7])
-        st.metric("📅 This Week", this_week)
+    if st.session_state.documents:
+        # Sort documents by date if available
+        recent_docs = sorted(
+            st.session_state.documents, 
+            key=lambda x: getattr(x, 'upload_date', datetime.now()) if hasattr(x, 'upload_date') else datetime.now(),
+            reverse=True
+        )[:10]
+        
+        for doc in recent_docs:
+            doc_name = getattr(doc, 'name', 'Unknown Document')
+            doc_status = getattr(doc, 'status', 'unknown')
+            doc_size = getattr(doc, 'size', 'Unknown size')
+            
+            with st.expander(f"📄 {doc_name}"):
+                col1, col2, col3 = st.columns(3)
+                
+                with col1:
+                    st.write(f"**Status:** {doc_status.title()}")
+                
+                with col2:
+                    st.write(f"**Size:** {doc_size}")
+                
+                with col3:
+                    if st.button("View", key=f"view_{doc_name}"):
+                        st.info("Document viewer would open here")
+    else:
+        st.info("No documents uploaded yet. Use the Upload tab to add your first document.")
 
-def _show_upload_section(document_processor, auth_service):
-    st.subheader("📤 Upload New Document")
+def show_upload_interface(auth_service, org_code):
+    """Document upload interface with subscription-based storage limits"""
     
-    col1, col2 = st.columns(2)
+    st.subheader("📤 Upload Documents")
+    
+    # Get current subscription limits
+    subscription = auth_service.subscription_manager.get_organization_subscription(org_code)
+    limits = auth_service.subscription_manager.get_plan_limits(subscription["plan"])
+    
+    # Display storage info
+    storage_used = subscription.get("storage_used_gb", 0)
+    max_storage = limits.get("storage_gb", 0)
+    available_storage = max_storage - storage_used
+    
+    st.info(f"Available storage: {available_storage:.1f}GB / {max_storage}GB")
+    
+    # File upload interface
+    col1, col2 = st.columns([3, 1])
     
     with col1:
+        # Single file upload
+        st.markdown("#### Single File Upload")
         uploaded_file = st.file_uploader(
-            "Choose file", 
-            type=['pdf', 'docx', 'txt'],
-            help="Supported formats: PDF, DOCX, TXT"
+            "Choose a file",
+            type=['pdf', 'docx', 'txt', 'png', 'jpg', 'jpeg', 'xlsx', 'pptx'],
+            help="Supported formats: PDF, Word, Text, Images, Excel, PowerPoint"
         )
-    
-    with col2:
-        if st.session_state.matters:
-            matter_options = [f"{m.name} - {m.client_name}" for m in st.session_state.matters]
-            selected_matter = st.selectbox("Select Matter", matter_options)
-            matter_id = st.session_state.matters[matter_options.index(selected_matter)].id
+        
+        if uploaded_file:
+            file_size_mb = uploaded_file.size / (1024 * 1024)
+            st.write(f"**File:** {uploaded_file.name}")
+            st.write(f"**Size:** {file_size_mb:.1f} MB")
+            st.write(f"**Type:** {uploaded_file.type}")
+            
+            # Check storage limits before upload
+            if not auth_service.check_storage_before_upload(file_size_mb):
+                st.error("❌ Storage limit exceeded! Cannot upload this file.")
+                st.warning(f"File size: {file_size_mb:.1f}MB | Available space: {available_storage*1024:.1f}MB")
+                
+                col_error1, col_error2 = st.columns(2)
+                with col_error1:
+                    if st.button("🗑️ Delete Old Files"):
+                        st.info("File management interface would open here")
+                
+                with col_error2:
+                    if st.button("⬆️ Upgrade Storage"):
+                        st.session_state['show_upgrade_modal'] = True
+                        st.rerun()
+            
+            else:
+                # File metadata form
+                with st.form("file_upload_form"):
+                    st.markdown("#### File Details")
+                    
+                    col_form1, col_form2 = st.columns(2)
+                    
+                    with col_form1:
+                        document_title = st.text_input("Document Title", value=uploaded_file.name)
+                        document_type = st.selectbox("Document Type", [
+                            "Contract", "Legal Brief", "Correspondence", 
+                            "Court Filing", "Research", "Template", 
+                            "Invoice", "Other"
+                        ])
+                        matter_id = st.selectbox("Associated Matter", 
+                                               options=["None"] + [f"Matter {i+1}" for i in range(5)])
+                    
+                    with col_form2:
+                        tags = st.text_input("Tags (comma-separated)", placeholder="urgent, contract, client-a")
+                        is_privileged = st.checkbox("Attorney-Client Privileged")
+                        description = st.text_area("Description", height=100)
+                    
+                    # Upload button
+                    if st.form_submit_button("📤 Upload Document", type="primary"):
+                        # Process the upload
+                        success = process_document_upload(
+                            uploaded_file, document_title, document_type, 
+                            matter_id, tags, is_privileged, description,
+                            auth_service, org_code
+                        )
+                        
+                        if success:
+                            st.success(f"✅ Successfully uploaded: {document_title}")
+                            st.info("Document has been processed and added to your document library.")
+                            
+                            # Update storage usage
+                            auth_service.subscription_manager.update_storage_usage(org_code, file_size_mb, "add")
+                            
+                            # Refresh the page to show updated stats
+                            st.rerun()
+        
+        # Batch upload (Professional+ only)
+        st.divider()
+        
+        if auth_service.can_use_feature(org_code, "batch_processing"):
+            st.markdown("#### Batch Upload")
+            batch_files = st.file_uploader(
+                "Upload multiple files",
+                accept_multiple_files=True,
+                type=['pdf', 'docx', 'txt', 'png', 'jpg', 'jpeg'],
+                help="Professional and Enterprise plans support batch upload"
+            )
+            
+            if batch_files:
+                total_size_mb = sum(file.size for file in batch_files) / (1024 * 1024)
+                st.write(f"**Files selected:** {len(batch_files)}")
+                st.write(f"**Total size:** {total_size_mb:.1f} MB")
+                
+                # Check if batch upload fits within storage limits
+                if auth_service.check_storage_before_upload(total_size_mb):
+                    if st.button("📤 Upload All Files", type="primary"):
+                        process_batch_upload(batch_files, auth_service, org_code)
+                else:
+                    st.error(f"❌ Batch upload exceeds storage limit ({total_size_mb:.1f}MB)")
         else:
-            st.error("No matters available. Please create a matter first.")
-            matter_id = None
-    
-    # Additional metadata
-    col3, col4 = st.columns(2)
-    
-    with col3:
-        document_tags = st.text_input(
-            "Tags (comma-separated)", 
-            placeholder="contract, urgent, draft, confidential"
-        )
-        is_privileged = st.checkbox("🔒 Attorney-Client Privileged", value=False)
-    
-    with col4:
-        document_status = st.selectbox(
-            "Initial Status",
-            [status.value.replace('_', ' ').title() for status in DocumentStatus],
-            index=0
-        )
-        priority = st.selectbox("Priority", ["Low", "Medium", "High", "Critical"])
-    
-    if uploaded_file and matter_id:
-        if st.button("🚀 Upload Document", type="primary"):
-            with st.spinner("Processing document..."):
-                # Read file content
-                file_content = uploaded_file.read()
-                extracted_text = document_processor.extract_text_from_file(file_content, uploaded_file.name)
-                
-                # Process document
-                doc_type = document_processor.classify_document(uploaded_file.name, extracted_text)
-                key_info = document_processor.extract_key_information(extracted_text)
-                
-                # Create new document
-                new_doc = Document(
-                    id=str(uuid.uuid4()),
-                    name=uploaded_file.name,
-                    matter_id=matter_id,
-                    client_name=next(m.client_name for m in st.session_state.matters if m.id == matter_id),
-                    document_type=doc_type,
-                    current_version="v1.0",
-                    status=document_status.lower().replace(' ', '_'),
-                    tags=[tag.strip() for tag in document_tags.split(',') if tag.strip()] + [priority.lower()],
-                    extracted_text=extracted_text,
-                    key_information=key_info,
-                    created_date=datetime.now(),
-                    last_modified=datetime.now(),
-                    is_privileged=is_privileged,
-                    file_size=len(file_content)
-                )
-                
-                st.session_state.documents.append(new_doc)
-                st.success(f"✅ Document '{uploaded_file.name}' uploaded successfully!")
-                
-                # Show extracted information
-                _show_extracted_info(doc_type, key_info)
-                
-                time.sleep(1)
+            st.info("🔒 Batch upload requires Professional plan or higher.")
+            if st.button("Upgrade for Batch Upload"):
+                st.session_state['show_upgrade_modal'] = True
                 st.rerun()
-
-def _show_extracted_info(doc_type, key_info):
-    st.subheader("🔍 AI-Extracted Information")
-    
-    col1, col2, col3 = st.columns(3)
-    
-    with col1:
-        st.info(f"**Document Type:** {doc_type.title()}")
-        if key_info.get('dates'):
-            with st.expander("📅 Important Dates"):
-                for date in key_info['dates'][:5]:
-                    st.write(f"• {date}")
     
     with col2:
-        if key_info.get('monetary_amounts'):
-            with st.expander("💰 Monetary Amounts"):
-                for amount in key_info['monetary_amounts'][:5]:
-                    st.write(f"• {amount}")
+        # Upload guidelines and limits
+        st.markdown("#### Upload Guidelines")
         
-        if key_info.get('companies'):
-            with st.expander("🏢 Companies"):
-                for company in key_info['companies'][:3]:
-                    st.write(f"• {company}")
-    
-    with col3:
-        if key_info.get('email_addresses'):
-            with st.expander("📧 Email Addresses"):
-                for email in key_info['email_addresses'][:3]:
-                    st.write(f"• {email}")
+        st.markdown(f"**Plan:** {subscription['plan'].title()}")
+        st.markdown(f"**Max file size:** 100MB")
+        st.markdown(f"**Storage limit:** {max_storage}GB")
         
-        if key_info.get('phone_numbers'):
-            with st.expander("📞 Phone Numbers"):
-                for phone in key_info['phone_numbers'][:3]:
-                    st.write(f"• {phone}")
+        st.markdown("#### Supported Formats")
+        formats = [
+            "📄 PDF documents",
+            "📝 Word documents", 
+            "📊 Excel spreadsheets",
+            "🖼️ Images (JPG, PNG)",
+            "📑 Text files",
+            "📋 PowerPoint presentations"
+        ]
+        
+        for format_type in formats:
+            st.write(format_type)
+        
+        # Quick actions
+        st.markdown("#### Quick Actions")
+        
+        if st.button("📁 View All Documents"):
+            st.session_state['current_page'] = 'Document Management'
+            st.rerun()
+        
+        if st.button("🔍 Search Documents"):
+            st.info("Search interface would open here")
+        
+        if st.button("📊 Storage Report"):
+            show_storage_report(auth_service, org_code)
 
-def _show_document_library(ai_system, auth_service):
-    st.subheader("📚 Document Library")
+def process_document_upload(uploaded_file, title, doc_type, matter_id, tags, is_privileged, description, auth_service, org_code):
+    """Process single document upload"""
+    try:
+        # Create document object
+        new_document = {
+            'id': str(uuid.uuid4()),
+            'name': title,
+            'original_filename': uploaded_file.name,
+            'type': doc_type,
+            'matter_id': matter_id if matter_id != "None" else None,
+            'tags': [tag.strip() for tag in tags.split(',') if tag.strip()],
+            'is_privileged': is_privileged,
+            'description': description,
+            'size': f"{uploaded_file.size / (1024 * 1024):.1f} MB",
+            'upload_date': datetime.now(),
+            'uploaded_by': st.session_state.user_data.get('name', 'Unknown'),
+            'status': 'active',
+            'organization_code': org_code
+        }
+        
+        # Add to session state
+        st.session_state.documents.append(new_document)
+        
+        # In a real app, you would save the file to storage here
+        # For demo purposes, we just track the metadata
+        
+        return True
+        
+    except Exception as e:
+        st.error(f"Upload failed: {str(e)}")
+        return False
+
+def process_batch_upload(batch_files, auth_service, org_code):
+    """Process multiple file uploads"""
+    progress_bar = st.progress(0)
+    status_text = st.empty()
     
-    # Enhanced filters
-    col1, col2, col3, col4 = st.columns(4)
+    successful_uploads = 0
+    total_files = len(batch_files)
+    
+    for i, file in enumerate(batch_files):
+        status_text.text(f"Uploading {file.name}...")
+        
+        # Process each file
+        success = process_document_upload(
+            file, file.name, "Other", "None", "", False, "",
+            auth_service, org_code
+        )
+        
+        if success:
+            successful_uploads += 1
+            # Update storage for each file
+            file_size_mb = file.size / (1024 * 1024)
+            auth_service.subscription_manager.update_storage_usage(org_code, file_size_mb, "add")
+        
+        # Update progress
+        progress_bar.progress((i + 1) / total_files)
+    
+    status_text.text(f"Batch upload complete: {successful_uploads}/{total_files} files uploaded successfully")
+    
+    if successful_uploads == total_files:
+        st.success(f"✅ All {total_files} files uploaded successfully!")
+    else:
+        st.warning(f"⚠️ {successful_uploads}/{total_files} files uploaded. Some uploads failed.")
+
+def show_search_and_filter():
+    """Document search and filtering interface"""
+    st.subheader("🔍 Search & Filter Documents")
+    
+    # Search interface
+    col1, col2, col3 = st.columns([2, 1, 1])
     
     with col1:
-        matter_filter = st.selectbox("Filter by Matter", ["All"] + [m.name for m in st.session_state.matters])
+        search_query = st.text_input("🔍 Search documents", placeholder="Enter keywords, tags, or document names...")
     
     with col2:
-        status_filter = st.selectbox("Filter by Status", 
-                                   ["All"] + [status.value.replace('_', ' ').title() for status in DocumentStatus])
+        doc_type_filter = st.selectbox("Document Type", 
+                                     ["All Types"] + ["Contract", "Legal Brief", "Correspondence", 
+                                                     "Court Filing", "Research", "Template", "Invoice", "Other"])
     
     with col3:
-        type_filter = st.selectbox("Filter by Type", 
-                                 ["All", "Contract", "Legal Brief", "Correspondence", "Financial", "Regulatory"])
+        date_filter = st.selectbox("Date Range", 
+                                 ["All Time", "Last 7 days", "Last 30 days", "Last 90 days", "This Year"])
     
-    with col4:
-        sort_by = st.selectbox("Sort by", ["Last Modified", "Created Date", "Name", "File Size"])
-    
-    # Search functionality
-    search_term = st.text_input("🔍 Search documents", placeholder="Search by name, content, or tags...")
-    
-    # Apply filters
-    filtered_docs = _apply_filters(st.session_state.documents, matter_filter, status_filter, 
-                                 type_filter, search_term)
-    
-    # Sort documents
-    filtered_docs = _sort_documents(filtered_docs, sort_by)
-    
-    if not filtered_docs:
-        st.info("No documents found matching your filters.")
-        return
-    
-    st.markdown(f"**Showing {len(filtered_docs)} documents**")
-    
-    # Display documents in a more organized way
-    for i, doc in enumerate(filtered_docs):
-        matter_name = next((m.name for m in st.session_state.matters if m.id == doc.matter_id), "Unknown Matter")
+    # Advanced filters
+    with st.expander("🔧 Advanced Filters"):
+        col1, col2, col3 = st.columns(3)
         
-        with st.expander(f"{doc.name} - v{doc.current_version} ({'🔒 PRIVILEGED' if doc.is_privileged else ''})"):
-            _show_document_details(doc, matter_name, ai_system, auth_service)
+        with col1:
+            matter_filter = st.selectbox("Matter", ["All Matters"] + [f"Matter {i+1}" for i in range(5)])
+            privileged_filter = st.selectbox("Privilege Status", ["All", "Privileged Only", "Non-Privileged Only"])
+        
+        with col2:
+            size_filter = st.selectbox("File Size", ["All Sizes", "< 1MB", "1-10MB", "10-100MB", "> 100MB"])
+            status_filter = st.selectbox("Status", ["All Status", "Active", "Draft", "Archived"])
+        
+        with col3:
+            uploaded_by_filter = st.selectbox("Uploaded By", ["All Users", "Me", "Others"])
+            tags_filter = st.text_input("Tags", placeholder="Enter tags to filter by")
+    
+    # Apply filters and show results
+    filtered_documents = apply_document_filters(
+        st.session_state.documents, search_query, doc_type_filter, 
+        date_filter, matter_filter, privileged_filter
+    )
+    
+    # Results
+    st.markdown(f"### Search Results ({len(filtered_documents)} documents)")
+    
+    if filtered_documents:
+        # Display options
+        col1, col2 = st.columns([1, 1])
+        
+        with col1:
+            view_mode = st.radio("View Mode", ["List", "Grid", "Table"], horizontal=True)
+        
+        with col2:
+            sort_by = st.selectbox("Sort By", ["Upload Date", "Name", "Size", "Type", "Last Modified"])
+        
+        # Sort documents
+        filtered_documents = sort_documents(filtered_documents, sort_by)
+        
+        # Display documents
+        if view_mode == "List":
+            show_document_list(filtered_documents)
+        elif view_mode == "Grid":
+            show_document_grid(filtered_documents)
+        else:
+            show_document_table(filtered_documents)
+    
+    else:
+        st.info("No documents match your search criteria.")
 
-def _apply_filters(documents, matter_filter, status_filter, type_filter, search_term):
-    """Apply various filters to the document list"""
+def apply_document_filters(documents, search_query, doc_type, date_filter, matter_filter, privileged_filter):
+    """Apply filters to document list"""
     filtered = documents.copy()
     
-    # Matter filter
-    if matter_filter != "All":
-        matter_id = next((m.id for m in st.session_state.matters if m.name == matter_filter), None)
-        if matter_id:
-            filtered = [d for d in filtered if d.matter_id == matter_id]
+    # Search query filter
+    if search_query:
+        search_lower = search_query.lower()
+        filtered = [doc for doc in filtered 
+                   if search_lower in doc.get('name', '').lower() or 
+                      search_lower in doc.get('description', '').lower() or
+                      any(search_lower in tag.lower() for tag in doc.get('tags', []))]
     
-    # Status filter
-    if status_filter != "All":
-        status_value = status_filter.lower().replace(' ', '_')
-        filtered = [d for d in filtered if d.status == status_value]
+    # Document type filter
+    if doc_type != "All Types":
+        filtered = [doc for doc in filtered if doc.get('type') == doc_type]
     
-    # Type filter
-    if type_filter != "All":
-        type_value = type_filter.lower().replace(' ', '_')
-        filtered = [d for d in filtered if d.document_type == type_value]
-    
-    # Search filter
-    if search_term:
-        search_lower = search_term.lower()
-        filtered = [d for d in filtered if 
-                   search_lower in d.name.lower() or
-                   search_lower in d.extracted_text.lower() or
-                   any(search_lower in tag.lower() for tag in d.tags)]
+    # Date filter
+    if date_filter != "All Time":
+        cutoff_date = get_date_cutoff(date_filter)
+        filtered = [doc for doc in filtered 
+                   if doc.get('upload_date', datetime.now()) >= cutoff_date]
     
     return filtered
 
-def _sort_documents(documents, sort_by):
-    """Sort documents based on selected criteria"""
-    if sort_by == "Last Modified":
-        return sorted(documents, key=lambda x: x.last_modified, reverse=True)
-    elif sort_by == "Created Date":
-        return sorted(documents, key=lambda x: x.created_date, reverse=True)
-    elif sort_by == "Name":
-        return sorted(documents, key=lambda x: x.name.lower())
-    elif sort_by == "File Size":
-        return sorted(documents, key=lambda x: x.file_size or 0, reverse=True)
-    else:
-        return documents
+def get_date_cutoff(date_filter):
+    """Get cutoff date based on filter selection"""
+    now = datetime.now()
+    
+    if date_filter == "Last 7 days":
+        return now - timedelta(days=7)
+    elif date_filter == "Last 30 days":
+        return now - timedelta(days=30)
+    elif date_filter == "Last 90 days":
+        return now - timedelta(days=90)
+    elif date_filter == "This Year":
+        return now.replace(month=1, day=1, hour=0, minute=0, second=0)
+    
+    return datetime.min
 
-def _show_document_details(doc, matter_name, ai_system, auth_service):
-    # Document metadata
+def sort_documents(documents, sort_by):
+    """Sort documents based on criteria"""
+    if sort_by == "Name":
+        return sorted(documents, key=lambda x: x.get('name', '').lower())
+    elif sort_by == "Upload Date":
+        return sorted(documents, key=lambda x: x.get('upload_date', datetime.min), reverse=True)
+    elif sort_by == "Size":
+        return sorted(documents, key=lambda x: x.get('size', '0'), reverse=True)
+    elif sort_by == "Type":
+        return sorted(documents, key=lambda x: x.get('type', ''))
+    
+    return documents
+
+def show_document_list(documents):
+    """Show documents in list view"""
+    for doc in documents:
+        with st.expander(f"📄 {doc.get('name', 'Unknown')} - {doc.get('type', 'Unknown Type')}"):
+            col1, col2, col3 = st.columns(3)
+            
+            with col1:
+                st.write(f"**Type:** {doc.get('type', 'Unknown')}")
+                st.write(f"**Size:** {doc.get('size', 'Unknown')}")
+                st.write(f"**Uploaded:** {doc.get('upload_date', 'Unknown').strftime('%Y-%m-%d') if isinstance(doc.get('upload_date'), datetime) else 'Unknown'}")
+            
+            with col2:
+                st.write(f"**Status:** {doc.get('status', 'Unknown')}")
+                st.write(f"**Privileged:** {'Yes' if doc.get('is_privileged') else 'No'}")
+                st.write(f"**Uploaded by:** {doc.get('uploaded_by', 'Unknown')}")
+            
+            with col3:
+                if doc.get('tags'):
+                    st.write(f"**Tags:** {', '.join(doc['tags'])}")
+                if doc.get('description'):
+                    st.write(f"**Description:** {doc['description'][:100]}...")
+            
+            # Action buttons
+            col_action1, col_action2, col_action3, col_action4 = st.columns(4)
+            
+            with col_action1:
+                if st.button("👁️ View", key=f"view_{doc['id']}"):
+                    st.info("Document viewer would open here")
+            
+            with col_action2:
+                if st.button("📥 Download", key=f"download_{doc['id']}"):
+                    st.info("Download would start here")
+            
+            with col_action3:
+                if st.button("✏️ Edit", key=f"edit_{doc['id']}"):
+                    st.info("Edit interface would open here")
+            
+            with col_action4:
+                if st.button("🗑️ Delete", key=f"delete_{doc['id']}"):
+                    delete_document(doc, st.session_state.user_data.get('organization_code'))
+
+def show_document_grid(documents):
+    """Show documents in grid view"""
+    cols_per_row = 3
+    for i in range(0, len(documents), cols_per_row):
+        cols = st.columns(cols_per_row)
+        for j, doc in enumerate(documents[i:i+cols_per_row]):
+            with cols[j]:
+                with st.container():
+                    st.markdown(f"**📄 {doc.get('name', 'Unknown')[:20]}...**")
+                    st.write(f"Type: {doc.get('type', 'Unknown')}")
+                    st.write(f"Size: {doc.get('size', 'Unknown')}")
+                    
+                    if st.button("View", key=f"grid_view_{doc['id']}"):
+                        st.info("Document viewer would open here")
+
+def show_document_table(documents):
+    """Show documents in table view"""
+    if documents:
+        # Create DataFrame for table display
+        table_data = []
+        for doc in documents:
+            table_data.append({
+                "Name": doc.get('name', 'Unknown'),
+                "Type": doc.get('type', 'Unknown'),
+                "Size": doc.get('size', 'Unknown'),
+                "Upload Date": doc.get('upload_date', datetime.now()).strftime('%Y-%m-%d') if isinstance(doc.get('upload_date'), datetime) else 'Unknown',
+                "Status": doc.get('status', 'Unknown'),
+                "Privileged": "Yes" if doc.get('is_privileged') else "No"
+            })
+        
+        df = pd.DataFrame(table_data)
+        st.dataframe(df, use_container_width=True)
+
+def delete_document(doc, org_code):
+    """Delete a document and update storage usage"""
+    try:
+        # Remove from session state
+        st.session_state.documents = [d for d in st.session_state.documents if d['id'] != doc['id']]
+        
+        # Update storage usage
+        from services.subscription_manager import EnhancedAuthService
+        auth_service = EnhancedAuthService()
+        
+        # Parse size string and update storage
+        size_str = doc.get('size', '0 MB')
+        size_mb = float(size_str.split()[0]) if 'MB' in size_str else 0
+        auth_service.subscription_manager.update_storage_usage(org_code, size_mb, "remove")
+        
+        st.success(f"Document '{doc['name']}' deleted successfully!")
+        st.rerun()
+        
+    except Exception as e:
+        st.error(f"Error deleting document: {str(e)}")
+
+def show_document_analytics(auth_service, org_code):
+    """Show document analytics dashboard"""
+    
+    # Check if advanced analytics are available
+    if not auth_service.can_use_feature(org_code, "advanced_analytics"):
+        st.warning("📊 Advanced Document Analytics requires Professional plan or higher.")
+        if st.button("Upgrade to Professional"):
+            st.session_state['show_upgrade_modal'] = True
+            st.rerun()
+        
+        # Show basic analytics only
+        show_basic_document_analytics()
+        return
+    
+    st.subheader("📊 Document Analytics")
+    
+    # Analytics dashboard
+    if st.session_state.documents:
+        # Document type distribution
+        col1, col2 = st.columns(2)
+        
+        with col1:
+            doc_types = {}
+            for doc in st.session_state.documents:
+                doc_type = doc.get('type', 'Unknown')
+                doc_types[doc_type] = doc_types.get(doc_type, 0) + 1
+            
+            if doc_types:
+                fig1 = px.pie(values=list(doc_types.values()), names=list(doc_types.keys()),
+                             title="Document Distribution by Type")
+                st.plotly_chart(fig1, use_container_width=True)
+        
+        with col2:
+            # Upload trends (mock data)
+            dates = pd.date_range('2024-01-01', '2024-09-01', freq='M')
+            upload_counts = [5, 8, 12, 15, 20, 18, 22, 25, 30]
+            
+            fig2 = px.line(x=dates, y=upload_counts, title="Document Upload Trends")
+            fig2.update_layout(xaxis_title="Month", yaxis_title="Documents Uploaded")
+            st.plotly_chart(fig2, use_container_width=True)
+        
+        # Storage analytics
+        show_storage_analytics(auth_service, org_code)
+    
+    else:
+        st.info("No documents available for analytics.")
+
+def show_basic_document_analytics():
+    """Show basic analytics for Starter plan users"""
+    st.subheader("📊 Basic Document Analytics")
+    
+    if st.session_state.documents:
+        # Basic stats
+        total_docs = len(st.session_state.documents)
+        doc_types = {}
+        
+        for doc in st.session_state.documents:
+            doc_type = doc.get('type', 'Unknown')
+            doc_types[doc_type] = doc_types.get(doc_type, 0) + 1
+        
+        col1, col2 = st.columns(2)
+        
+        with col1:
+            st.metric("Total Documents", total_docs)
+            st.metric("Document Types", len(doc_types))
+        
+        with col2:
+            most_common_type = max(doc_types.items(), key=lambda x: x[1]) if doc_types else ("None", 0)
+            st.metric("Most Common Type", most_common_type[0])
+            st.metric("Count", most_common_type[1])
+    
+    else:
+        st.info("No documents available for analytics.")
+
+def show_storage_analytics(auth_service, org_code):
+    """Show detailed storage analytics"""
+    subscription = auth_service.subscription_manager.get_organization_subscription(org_code)
+    limits = auth_service.subscription_manager.get_plan_limits(subscription["plan"])
+    
+    st.subheader("💾 Storage Analytics")
+    
+    col1, col2, col3 = st.columns(3)
+    
+    storage_used = subscription.get("storage_used_gb", 0)
+    max_storage = limits.get("storage_gb", 0)
+    
+    with col1:
+        st.metric("Storage Used", f"{storage_used:.2f} GB")
+    
+    with col2:
+        st.metric("Storage Limit", f"{max_storage} GB")
+    
+    with col3:
+        remaining = max_storage - storage_used
+        st.metric("Remaining", f"{remaining:.2f} GB")
+    
+    # Storage usage over time (mock data)
+    dates = pd.date_range('2024-01-01', periods=30, freq='D')
+    usage_data = [min(i * 0.1 + storage_used, max_storage) for i in range(30)]
+    
+    fig = px.line(x=dates, y=usage_data, title="Storage Usage Over Time")
+    fig.update_layout(xaxis_title="Date", yaxis_title="Storage Used (GB)")
+    st.plotly_chart(fig, use_container_width=True)
+
+def show_storage_report(auth_service, org_code):
+    """Show detailed storage report"""
+    st.subheader("📊 Storage Usage Report")
+    
+    subscription = auth_service.subscription_manager.get_organization_subscription(org_code)
+    limits = auth_service.subscription_manager.get_plan_limits(subscription["plan"])
+    
+    # Current usage
+    storage_used = subscription.get("storage_used_gb", 0)
+    max_storage = limits.get("storage_gb", 0)
+    
+    st.write(f"**Current Plan:** {subscription['plan'].title()}")
+    st.write(f"**Storage Used:** {storage_used:.2f} GB / {max_storage} GB")
+    st.write(f"**Usage Percentage:** {(storage_used/max_storage*100):.1f}%")
+    
+    # Recommendations
+    if storage_used / max_storage > 0.9:
+        st.error("⚠️ Storage is 90% full! Consider:")
+        st.write("• Delete old or unnecessary documents")
+        st.write("• Archive completed matters")
+        st.write("• Upgrade to a higher storage plan")
+    elif storage_used / max_storage > 0.75:
+        st.warning("Storage is 75% full. Plan ahead for additional storage needs.")
+
+def show_document_settings():
+    """Document management settings and preferences"""
+    st.subheader("⚙️ Document Settings")
+    
+    # Get current user and organization
+    user_data = st.session_state.get('user_data', {})
+    org_code = user_data.get('organization_code')
+    
+    from services.subscription_manager import EnhancedAuthService
+    auth_service = EnhancedAuthService()
+    subscription = auth_service.subscription_manager.get_organization_subscription(org_code)
+    
+    # Document preferences
+    col1, col2 = st.columns(2)
+    
+    with col1:
+        st.markdown("#### Default Settings")
+        
+        default_doc_type = st.selectbox(
+            "Default Document Type",
+            ["Contract", "Legal Brief", "Correspondence", "Court Filing", "Research", "Template", "Invoice", "Other"],
+            index=0
+        )
+        
+        auto_extract_text = st.checkbox("Auto-extract text from uploaded documents", value=True)
+        auto_tag_documents = st.checkbox("Enable automatic document tagging", value=True)
+        
+        # Notification preferences
+        st.markdown("#### Notifications")
+        notify_upload = st.checkbox("Notify on document upload", value=True)
+        notify_share = st.checkbox("Notify when documents are shared", value=True)
+        notify_expire = st.checkbox("Notify before document expiration", value=False)
+    
+    with col2:
+        st.markdown("#### Security Settings")
+        
+        require_approval = st.checkbox("Require approval for document sharing", value=False)
+        watermark_documents = st.checkbox("Add watermark to downloaded documents", value=False)
+        
+        # Retention settings
+        st.markdown("#### Document Retention")
+        auto_archive_days = st.number_input("Auto-archive documents after (days)", min_value=0, value=365)
+        auto_delete_days = st.number_input("Auto-delete archived documents after (days)", min_value=0, value=0)
+        
+        if auto_delete_days > 0:
+            st.warning("Auto-deletion is permanent and cannot be undone!")
+    
+    # Advanced settings for higher tier plans
+    if auth_service.can_use_feature(org_code, "white_label"):
+        st.markdown("#### White Label Customization")
+        
+        col1, col2 = st.columns(2)
+        
+        with col1:
+            company_logo = st.file_uploader("Upload Company Logo", type=['png', 'jpg', 'jpeg'])
+            company_name = st.text_input("Company Name", value=user_data.get('organization_name', ''))
+        
+        with col2:
+            primary_color = st.color_picker("Primary Color", "#2E86AB")
+            secondary_color = st.color_picker("Secondary Color", "#A23B72")
+        
+        if st.button("Apply Branding"):
+            st.success("Branding settings saved!")
+    else:
+        st.info("🎨 White label customization available with Professional plan or higher.")
+        if st.button("Upgrade for White Label"):
+            st.session_state['show_upgrade_modal'] = True
+            st.rerun()
+    
+    # Storage management
+    st.markdown("#### Storage Management")
+    
+    storage_used = subscription.get("storage_used_gb", 0)
+    limits = auth_service.subscription_manager.get_plan_limits(subscription["plan"])
+    max_storage = limits.get("storage_gb", 0)
+    
     col1, col2, col3 = st.columns(3)
     
     with col1:
-        st.markdown(f"**⚖️ Matter:** {matter_name}")
-        st.markdown(f"**👤 Client:** {doc.client_name}")
-        st.markdown(f"**📋 Type:** {doc.document_type.title()}")
-        if doc.file_size:
-            st.markdown(f"**📊 Size:** {doc.file_size:,} bytes")
+        st.metric("Current Usage", f"{storage_used:.1f}GB")
     
     with col2:
-        status_emoji = {"draft": "✏️", "under_review": "🔍", "final": "✅", "archived": "📦"}
-        st.markdown(f"**Status:** {status_emoji.get(doc.status, '📄')} {doc.status.replace('_', ' ').title()}")
-        st.markdown(f"**📅 Created:** {doc.created_date.strftime('%Y-%m-%d %H:%M')}")
-        st.markdown(f"**📝 Modified:** {doc.last_modified.strftime('%Y-%m-%d %H:%M')}")
+        st.metric("Plan Limit", f"{max_storage}GB")
     
     with col3:
-        if doc.tags:
-            st.markdown(f"**🏷️ Tags:** {', '.join(doc.tags)}")
-        if doc.is_privileged:
-            st.markdown("**🔒 ATTORNEY-CLIENT PRIVILEGED**")
+        remaining = max_storage - storage_used
+        st.metric("Available", f"{remaining:.1f}GB")
     
-    # Key information in an organized layout
-    if doc.key_information:
-        st.markdown("**🤖 AI-Extracted Information:**")
-        
-        info_tabs = st.tabs(["📅 Dates", "💰 Financial", "👥 Contacts", "🏢 Entities"])
-        
-        with info_tabs[0]:
-            if doc.key_information.get('dates'):
-                for date in doc.key_information['dates'][:5]:
-                    st.write(f"• {date}")
-        
-        with info_tabs[1]:
-            if doc.key_information.get('monetary_amounts'):
-                for amount in doc.key_information['monetary_amounts'][:5]:
-                    st.write(f"• {amount}")
-        
-        with info_tabs[2]:
-            if doc.key_information.get('email_addresses'):
-                st.write("**Emails:**")
-                for email in doc.key_information['email_addresses'][:3]:
-                    st.write(f"• {email}")
-            if doc.key_information.get('phone_numbers'):
-                st.write("**Phones:**")
-                for phone in doc.key_information['phone_numbers'][:3]:
-                    st.write(f"• {phone}")
-        
-        with info_tabs[3]:
-            if doc.key_information.get('companies'):
-                for company in doc.key_information['companies'][:5]:
-                    st.write(f"• {company}")
+    # Storage cleanup tools
+    st.markdown("#### Cleanup Tools")
     
-    # Action buttons
-    col1, col2, col3, col4, col5 = st.columns(5)
+    col1, col2, col3 = st.columns(3)
     
     with col1:
-        if st.button("👁️ View", key=f"view_{doc.id}", help="View document content"):
-            _show_document_viewer(doc)
+        if st.button("🧹 Clean Duplicate Files"):
+            st.info("Scanning for duplicate documents...")
+            # Mock duplicate detection
+            st.success("No duplicate files found!")
     
     with col2:
-        if auth_service.has_permission('write'):
-            if st.button("✏️ Edit", key=f"edit_{doc.id}", help="Edit document"):
-                _show_document_editor(doc)
+        if st.button("📦 Archive Old Documents"):
+            old_docs_count = len([d for d in st.session_state.documents 
+                                if (datetime.now() - d.get('upload_date', datetime.now())).days > 365])
+            if old_docs_count > 0:
+                st.info(f"Found {old_docs_count} documents older than 1 year")
+                if st.button("Archive These Documents"):
+                    st.success(f"Archived {old_docs_count} old documents!")
+            else:
+                st.success("No old documents to archive")
     
     with col3:
-        if st.button("🤖 AI Analyze", key=f"analyze_{doc.id}", help="Run AI analysis"):
-            _run_ai_analysis(doc, ai_system)
+        if st.button("🗑️ Delete Unused Files"):
+            st.warning("This will permanently delete unused documents!")
+            if st.button("Confirm Delete", type="primary"):
+                st.success("Cleanup completed!")
     
-    with col4:
-        if st.button("📊 Report", key=f"report_{doc.id}", help="Generate report"):
-            _generate_document_report(doc)
+    # Backup and export
+    st.markdown("#### Backup & Export")
     
-    with col5:
-        if auth_service.has_permission('delete'):
-            if st.button("🗑️ Delete", key=f"delete_{doc.id}", type="secondary", help="Delete document"):
-                _delete_document(doc.id)
+    col1, col2 = st.columns(2)
+    
+    with col1:
+        if st.button("📥 Export All Documents"):
+            st.info("Preparing document export...")
+            st.success("Export will be sent to your email when ready!")
+    
+    with col2:
+        if st.button("☁️ Backup to Cloud"):
+            if auth_service.can_use_feature(org_code, "custom_integrations"):
+                st.success("Backup initiated to cloud storage!")
+            else:
+                st.error("Cloud backup requires Professional plan or higher")
+    
+    # Save settings
+    if st.button("💾 Save All Settings", type="primary"):
+        # In a real app, these settings would be saved to database
+        st.success("All document settings saved successfully!")
+        
+        # Mock settings save
+        settings = {
+            'default_doc_type': default_doc_type,
+            'auto_extract_text': auto_extract_text,
+            'auto_tag_documents': auto_tag_documents,
+            'notify_upload': notify_upload,
+            'notify_share': notify_share,
+            'notify_expire': notify_expire,
+            'require_approval': require_approval,
+            'watermark_documents': watermark_documents,
+            'auto_archive_days': auto_archive_days,
+            'auto_delete_days': auto_delete_days
+        }
+        
+        # Store in session state for persistence during session
+        st.session_state['document_settings'] = settings
 
-def _show_document_viewer(doc):
-    """Display document content in a viewer"""
-    st.subheader(f"📄 Document Viewer: {doc.name}")
-    
-    # Show first 1000 characters of content
-    content_preview = doc.extracted_text[:1000]
-    if len(doc.extracted_text) > 1000:
-        content_preview += "..."
-    
-    st.text_area("Document Content", content_preview, height=300, disabled=True)
-    
-    if len(doc.extracted_text) > 1000:
-        st.info(f"Showing first 1000 characters of {len(doc.extracted_text)} total characters.")
+# Helper functions for document management
 
-def _show_document_editor(doc):
-    """Simple document editor interface"""
-    st.subheader(f"✏️ Edit Document: {doc.name}")
-    st.info("Document editing interface would be implemented here with version control.")
-
-def _run_ai_analysis(doc, ai_system):
-    """Run and display AI analysis results"""
-    with st.spinner("🤖 Running AI analysis..."):
-        time.sleep(2)  # Simulate processing time
-        analysis = ai_system.analyze_contract(doc.extracted_text)
-        
-        st.success("✅ AI Analysis Complete!")
-        
-        # Display analysis results in tabs
-        analysis_tabs = st.tabs(["📊 Overview", "⚠️ Risk Analysis", "📋 Key Clauses", "💡 Recommendations"])
-        
-        with analysis_tabs[0]:
-            col1, col2 = st.columns(2)
-            with col1:
-                risk_colors = {"low": "🟢", "medium": "🟡", "high": "🔴"}
-                st.markdown(f"**Risk Level:** {risk_colors.get(analysis['risk_level'], '⚪')} {analysis['risk_level'].upper()}")
-                st.markdown(f"**Complexity Score:** {analysis['complexity_score']:.1f}/100")
-            
-            with col2:
-                st.markdown(f"**Summary:** {analysis['summary']}")
-        
-        with analysis_tabs[1]:
-            for issue in analysis['compliance_issues']:
-                status_emoji = {"compliant": "✅", "needs_review": "⚠️", "non_compliant": "❌"}
-                st.markdown(f"{status_emoji.get(issue['status'], '❓')} **{issue['type']}**: {issue['notes']}")
-        
-        with analysis_tabs[2]:
-            for clause in analysis['key_clauses'][:5]:
-                with st.expander(f"{clause['type'].replace('_', ' ').title()} Clause"):
-                    st.write(clause['text'])
-                    st.write(f"Confidence: {clause['confidence']:.1%}")
-        
-        with analysis_tabs[3]:
-            for rec in analysis['recommendations']:
-                st.markdown(f"• {rec}")
-
-def _generate_document_report(doc):
-    """Generate a comprehensive document report"""
-    st.subheader(f"📊 Document Report: {doc.name}")
-    
-    report_data = {
-        "Document Name": doc.name,
-        "Document Type": doc.document_type.title(),
-        "Client": doc.client_name,
-        "Status": doc.status.replace('_', ' ').title(),
-        "Created": doc.created_date.strftime('%Y-%m-%d %H:%M'),
-        "Last Modified": doc.last_modified.strftime('%Y-%m-%d %H:%M'),
-        "Word Count": len(doc.extracted_text.split()) if doc.extracted_text else 0,
-        "Character Count": len(doc.extracted_text) if doc.extracted_text else 0,
-        "Is Privileged": "Yes" if doc.is_privileged else "No",
-        "Tags": ", ".join(doc.tags) if doc.tags else "None"
+def get_file_icon(file_type):
+    """Get appropriate icon for file type"""
+    icons = {
+        'pdf': '📄',
+        'docx': '📝', 
+        'txt': '📑',
+        'xlsx': '📊',
+        'pptx': '📋',
+        'jpg': '🖼️',
+        'jpeg': '🖼️',
+        'png': '🖼️',
+        'contract': '📋',
+        'legal brief': '⚖️',
+        'correspondence': '💌',
+        'court filing': '🏛️',
+        'research': '🔍',
+        'template': '📄',
+        'invoice': '💰',
+        'other': '📁'
     }
     
-    for key, value in report_data.items():
-        st.write(f"**{key}:** {value}")
+    return icons.get(file_type.lower(), '📄')
 
-def _delete_document(doc_id):
-    """Delete a document with confirmation"""
-    if st.button("⚠️ Confirm Delete", key=f"confirm_delete_{doc_id}", type="secondary"):
-        st.session_state.documents = [d for d in st.session_state.documents if d.id != doc_id]
-        st.success("🗑️ Document deleted successfully!")
-        time.sleep(1)
-        st.rerun()
+def validate_file_upload(uploaded_file, max_size_mb=100):
+    """Validate uploaded file"""
+    if not uploaded_file:
+        return False, "No file selected"
+    
+    file_size_mb = uploaded_file.size / (1024 * 1024)
+    
+    if file_size_mb > max_size_mb:
+        return False, f"File size ({file_size_mb:.1f}MB) exceeds limit ({max_size_mb}MB)"
+    
+    allowed_types = ['pdf', 'docx', 'txt', 'png', 'jpg', 'jpeg', 'xlsx', 'pptx']
+    file_extension = uploaded_file.name.split('.')[-1].lower()
+    
+    if file_extension not in allowed_types:
+        return False, f"File type '{file_extension}' not supported"
+    
+    return True, "File validation passed"
 
-# Additional utility functions for enhanced functionality
+def generate_document_summary():
+    """Generate summary statistics for documents"""
+    docs = st.session_state.documents
+    
+    if not docs:
+        return {
+            'total_documents': 0,
+            'total_size_mb': 0,
+            'document_types': {},
+            'privileged_count': 0,
+            'recent_uploads': 0
+        }
+    
+    # Calculate statistics
+    total_docs = len(docs)
+    doc_types = {}
+    privileged_count = 0
+    recent_uploads = 0
+    total_size_mb = 0
+    
+    week_ago = datetime.now() - timedelta(days=7)
+    
+    for doc in docs:
+        # Document type distribution
+        doc_type = doc.get('type', 'Unknown')
+        doc_types[doc_type] = doc_types.get(doc_type, 0) + 1
+        
+        # Privileged documents
+        if doc.get('is_privileged', False):
+            privileged_count += 1
+        
+        # Recent uploads
+        upload_date = doc.get('upload_date')
+        if upload_date and upload_date >= week_ago:
+            recent_uploads += 1
+        
+        # Total size calculation
+        size_str = doc.get('size', '0 MB')
+        try:
+            size_mb = float(size_str.split()[0])
+            total_size_mb += size_mb
+        except:
+            pass
+    
+    return {
+        'total_documents': total_docs,
+        'total_size_mb': total_size_mb,
+        'document_types': doc_types,
+        'privileged_count': privileged_count,
+        'recent_uploads': recent_uploads
+    }
 
-def export_documents_csv():
-    """Export document metadata to CSV"""
-    import pandas as pd
-    import io
-    
-    if not st.session_state.documents:
-        st.warning("No documents to export.")
-        return
-    
-    # Prepare data for export
-    export_data = []
-    for doc in st.session_state.documents:
-        matter_name = next((m.name for m in st.session_state.matters if m.id == doc.matter_id), "Unknown")
-        export_data.append({
-            'Document Name': doc.name,
-            'Matter': matter_name,
-            'Client': doc.client_name,
-            'Type': doc.document_type,
-            'Status': doc.status,
-            'Version': doc.current_version,
-            'Created Date': doc.created_date.strftime('%Y-%m-%d'),
-            'Last Modified': doc.last_modified.strftime('%Y-%m-%d'),
-            'Tags': ', '.join(doc.tags),
-            'Is Privileged': 'Yes' if doc.is_privileged else 'No',
-            'Word Count': len(doc.extracted_text.split()) if doc.extracted_text else 0
-        })
-    
-    df = pd.DataFrame(export_data)
-    
-    # Convert to CSV
-    buffer = io.StringIO()
-    df.to_csv(buffer, index=False)
-    
-    st.download_button(
-        label="📥 Download Document Report (CSV)",
-        data=buffer.getvalue(),
-        file_name=f"document_report_{datetime.now().strftime('%Y%m%d_%H%M%S')}.csv",
-        mime="text/csv"
-    )
-
-def show_analytics_dashboard():
-    """Show analytics dashboard with charts"""
-    st.subheader("📈 Document Analytics")
-    
-    if not st.session_state.documents:
-        st.info("No documents available for analytics.")
-        return
-    
-    # Document type distribution
-    col1, col2 = st.columns(2)
-    
-    with col1:
-        st.markdown("**📊 Document Types Distribution**")
-        type_counts = {}
-        for doc in st.session_state.documents:
-            doc_type = doc.document_type.title()
-            type_counts[doc_type] = type_counts.get(doc_type, 0) + 1
-        
-        for doc_type, count in type_counts.items():
-            st.write(f"• {doc_type}: {count}")
-    
-    with col2:
-        st.markdown("**📈 Documents by Status**")
-        status_counts = {}
-        for doc in st.session_state.documents:
-            status = doc.status.replace('_', ' ').title()
-            status_counts[status] = status_counts.get(status, 0) + 1
-        
-        for status, count in status_counts.items():
-            st.write(f"• {status}: {count}")
-    
-    # Timeline analysis
-    st.markdown("**📅 Document Creation Timeline (Last 30 Days)**")
-    recent_docs = [d for d in st.session_state.documents 
-                   if (datetime.now() - d.created_date).days <= 30]
-    
-    if recent_docs:
-        st.write(f"Created {len(recent_docs)} documents in the last 30 days")
-        
-        # Group by date
-        date_counts = {}
-        for doc in recent_docs:
-            date_str = doc.created_date.strftime('%Y-%m-%d')
-            date_counts[date_str] = date_counts.get(date_str, 0) + 1
-        
-        sorted_dates = sorted(date_counts.items())
-        for date, count in sorted_dates[-10:]:  # Show last 10 days with activity
-            st.write(f"• {date}: {count} document(s)")
-    else:
-        st.write("No documents created in the last 30 days")
-
-def show_bulk_operations():
-    """Show bulk operations interface"""
-    st.subheader("🔄 Bulk Operations")
-    
-    if not st.session_state.documents:
-        st.info("No documents available for bulk operations.")
-        return
-    
-    # Bulk status update
-    col1, col2 = st.columns(2)
-    
-    with col1:
-        st.markdown("**📝 Bulk Status Update**")
-        selected_docs = st.multiselect(
-            "Select Documents",
-            options=[(doc.id, doc.name) for doc in st.session_state.documents],
-            format_func=lambda x: x[1]
-        )
-        
-        if selected_docs:
-            new_status = st.selectbox(
-                "New Status",
-                [status.value.replace('_', ' ').title() for status in DocumentStatus]
-            )
-            
-            if st.button("🔄 Update Status", key="bulk_status"):
-                status_value = new_status.lower().replace(' ', '_')
-                updated_count = 0
-                for doc in st.session_state.documents:
-                    if any(doc.id == doc_id for doc_id, _ in selected_docs):
-                        doc.status = status_value
-                        doc.last_modified = datetime.now()
-                        updated_count += 1
-                
-                st.success(f"Updated status for {updated_count} documents!")
-                time.sleep(1)
-                st.rerun()
-    
-    with col2:
-        st.markdown("**🏷️ Bulk Tag Addition**")
-        tag_selected_docs = st.multiselect(
-            "Select Documents for Tagging",
-            options=[(doc.id, doc.name) for doc in st.session_state.documents],
-            format_func=lambda x: x[1],
-            key="tag_multiselect"
-        )
-        
-        if tag_selected_docs:
-            new_tags = st.text_input(
-                "Add Tags (comma-separated)",
-                placeholder="urgent, reviewed, important"
-            )
-            
-            if st.button("🏷️ Add Tags", key="bulk_tags") and new_tags:
-                tags_to_add = [tag.strip() for tag in new_tags.split(',') if tag.strip()]
-                updated_count = 0
-                
-                for doc in st.session_state.documents:
-                    if any(doc.id == doc_id for doc_id, _ in tag_selected_docs):
-                        # Add new tags without duplicates
-                        existing_tags = set(doc.tags)
-                        for tag in tags_to_add:
-                            if tag not in existing_tags:
-                                doc.tags.append(tag)
-                        doc.last_modified = datetime.now()
-                        updated_count += 1
-                
-                st.success(f"Added tags to {updated_count} documents!")
-                time.sleep(1)
-                st.rerun()
-
-def show_document_comparison():
-    """Show document comparison interface"""
-    st.subheader("🔍 Document Comparison")
-    
-    if len(st.session_state.documents) < 2:
-        st.info("Need at least 2 documents for comparison.")
-        return
-    
-    col1, col2 = st.columns(2)
-    
-    with col1:
-        doc1 = st.selectbox(
-            "Select First Document",
-            options=st.session_state.documents,
-            format_func=lambda x: f"{x.name} ({x.document_type})",
-            key="compare_doc1"
-        )
-    
-    with col2:
-        doc2 = st.selectbox(
-            "Select Second Document",
-            options=[d for d in st.session_state.documents if d.id != doc1.id],
-            format_func=lambda x: f"{x.name} ({x.document_type})",
-            key="compare_doc2"
-        )
-    
-    if doc1 and doc2:
-        if st.button("🔍 Compare Documents"):
-            st.markdown("**📊 Comparison Results**")
-            
-            # Basic comparison
-            comparison_data = [
-                ["Document Name", doc1.name, doc2.name],
-                ["Document Type", doc1.document_type, doc2.document_type],
-                ["Client", doc1.client_name, doc2.client_name],
-                ["Status", doc1.status, doc2.status],
-                ["Word Count", len(doc1.extracted_text.split()), len(doc2.extracted_text.split())],
-                ["Character Count", len(doc1.extracted_text), len(doc2.extracted_text)],
-                ["Tags", ', '.join(doc1.tags), ', '.join(doc2.tags)],
-                ["Created Date", doc1.created_date.strftime('%Y-%m-%d'), doc2.created_date.strftime('%Y-%m-%d')],
-                ["Is Privileged", "Yes" if doc1.is_privileged else "No", "Yes" if doc2.is_privileged else "No"]
-            ]
-            
-            # Display comparison table
-            for row in comparison_data:
-                col1, col2, col3 = st.columns([2, 3, 3])
-                with col1:
-                    st.write(f"**{row[0]}**")
-                with col2:
-                    st.write(row[1])
-                with col3:
-                    st.write(row[2])
-            
-            # Content similarity (basic)
-            st.markdown("**📝 Content Analysis**")
-            doc1_words = set(doc1.extracted_text.lower().split())
-            doc2_words = set(doc2.extracted_text.lower().split())
-            common_words = doc1_words.intersection(doc2_words)
-            
-            if doc1_words and doc2_words:
-                similarity = len(common_words) / len(doc1_words.union(doc2_words)) * 100
-                st.write(f"Content Similarity: {similarity:.1f}%")
-                st.write(f"Common Words: {len(common_words)}")
-
-# Enhanced main application with additional features
-def show_enhanced():
-    """Enhanced main application with additional features"""
-    # Initialize session state
-    initialize_session_state()
-    
-    auth_service = AuthService()
-    document_processor = DocumentProcessor()
-    ai_system = AIAnalysisSystem()
-    
-    # Sidebar for navigation
-    with st.sidebar:
-        st.title("🏛️ Legal DMS")
-        
-        page = st.radio(
-            "Navigate to:",
-            ["📄 Documents", "📈 Analytics", "🔄 Bulk Ops", "🔍 Compare", "⚙️ Settings"]
-        )
-        
-        st.divider()
-        
-        # Quick actions
-        st.markdown("**Quick Actions:**")
-        export_documents_csv()
-        
-        st.divider()
-        
-        # User info
-        user = auth_service.get_current_user()
-        st.markdown(f"**User:** {user['username']}")
-        st.markdown(f"**Role:** {user['role'].title()}")
-    
-    # Main content based on selected page
-    if page == "📄 Documents":
-        st.title("🏛️ Legal Document Management System")
-        st.markdown("---")
-        
-        # Quick stats dashboard
-        _show_dashboard_stats()
-        st.divider()
-        
-        # Upload section
-        if auth_service.has_permission('write'):
-            _show_upload_section(document_processor, auth_service)
-        else:
-            st.warning("You don't have permission to upload documents.")
-        
-        st.divider()
-        
-        # Document library
-        _show_document_library(ai_system, auth_service)
-    
-    elif page == "📈 Analytics":
-        show_analytics_dashboard()
-    
-    elif page == "🔄 Bulk Ops":
-        show_bulk_operations()
-    
-    elif page == "🔍 Compare":
-        show_document_comparison()
-    
-    elif page == "⚙️ Settings":
-        st.subheader("⚙️ System Settings")
-        st.info("Settings interface would be implemented here.")
-        
-        # Sample settings
-        st.checkbox("Enable automatic document classification", value=True)
-        st.checkbox("Require approval for document deletion", value=True)
-        st.selectbox("Default document status", ["Draft", "Under Review", "Final"])
-        st.slider("AI analysis confidence threshold", 0.5, 1.0, 0.8)
-
-# Main application entry point
+# Main execution
 if __name__ == "__main__":
-    st.set_page_config(
-        page_title="Legal Document Management",
-        page_icon="🏛️",
-        layout="wide",
-        initial_sidebar_state="expanded"
-    )
-    
-    # Choose between basic and enhanced version
-    enhanced_mode = st.query_params.get("enhanced", "false").lower() == "true"
-    
-    if enhanced_mode:
-        show_enhanced()
-    else:
-        show()
+    show()
