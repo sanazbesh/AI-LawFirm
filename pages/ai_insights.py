@@ -667,9 +667,10 @@ def show_risk_assessment():
     
     # Risk trends over time
     dates = pd.date_range('2024-01-01', '2024-09-01', freq='M')
+    risk_values = [3.2, 3.5, 3.1, 2.9, 3.4, 3.8, 3.2, 3.0, 2.8][:len(dates)]
     risk_data = pd.DataFrame({
         'Month': dates,
-        'Average Risk': [3.2, 3.5, 3.1, 2.9, 3.4, 3.8, 3.2, 3.0, 2.8]
+        'Average Risk': risk_values
     })
     
     fig = px.line(risk_data, x='Month', y='Average Risk', 
