@@ -143,7 +143,7 @@ st.markdown("""
 
 # Import services with error handling
 try:
-    from services.auth import MultiTenantAuthService as AuthService
+    from services.subscription_manager import EnhancedAuthService as AuthService
 except ImportError:
     st.error("Authentication service not found. Please check the services/auth.py file.")
     st.stop()
