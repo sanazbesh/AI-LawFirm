@@ -281,6 +281,7 @@ class EnhancedAuthService:
     def __init__(self):
         self.subscription_manager = SubscriptionManager()
         self.initialize_session_state()
+        initialize_demo_data()
     
     def initialize_session_state(self):
         """Initialize session state"""
@@ -1057,6 +1058,10 @@ def get_auth_service():
 # Demo data initialization for testing
 def initialize_demo_data():
     """Initialize demo subscription data"""
+    # Initialize subscriptions if not exists
+    if 'subscriptions' not in st.session_state:
+        st.session_state.subscriptions = {}
+    
     if 'demo_initialized' not in st.session_state:
         demo_subscriptions = {
             'demo': {
@@ -1111,8 +1116,6 @@ def initialize_demo_data():
         
         st.session_state.demo_initialized = True
 
-# Initialize demo data when module loads
-initialize_demo_data()
 
 # Main execution for testing
 if __name__ == "__main__":
