@@ -1,4 +1,4 @@
-# services/subscription_manager.py - Complete subscription plan enforcement
+# services/subscription_manager.py - Complete subscription plan enforcement with account creation
 import streamlit as st
 from datetime import datetime, timedelta
 from enum import Enum
@@ -82,7 +82,7 @@ class SubscriptionManager:
                 "batch_processing": False,
                 "advanced_analytics": False,
                 "predictive_insights": False,
-                "trial_days": 14,
+                "trial_days": 7,  # Changed to 7 days
                 "monthly_cost": 0
             }
         }
@@ -90,24 +90,23 @@ class SubscriptionManager:
     
     def get_organization_subscription(self, org_code):
         """Get subscription details for organization"""
-        if org_code not in st.session_state.subscriptions:
-            # Create trial subscription for new organizations
-            self.create_trial_subscription(org_code)
-        
-        return st.session_state.subscriptions[org_code]
+        return st.session_state.subscriptions.get(org_code, {})
     
-    def create_trial_subscription(self, org_code):
+    def create_trial_subscription(self, org_code, firm_name="", owner_name="", owner_email=""):
         """Create a trial subscription for new organization"""
         trial_subscription = {
             "organization_code": org_code,
+            "organization_name": firm_name,
             "plan": SubscriptionPlan.TRIAL.value,
             "status": SubscriptionStatus.TRIAL.value,
             "created_date": datetime.now(),
-            "trial_end_date": datetime.now() + timedelta(days=14),
+            "trial_end_date": datetime.now() + timedelta(days=7),  # 7-day trial
             "current_users": 1,
             "storage_used_gb": 0.0,
             "monthly_cost": 0,
-            "billing_email": "",
+            "billing_email": owner_email,
+            "owner_name": owner_name,
+            "owner_email": owner_email,
             "payment_method": None,
             "next_billing_date": None
         }
@@ -118,7 +117,7 @@ class SubscriptionManager:
     def check_user_limit(self, org_code):
         """Check if organization can add more users"""
         subscription = self.get_organization_subscription(org_code)
-        limits = self.get_plan_limits(subscription["plan"])
+        limits = self.get_plan_limits(subscription.get("plan", "trial"))
         
         current_users = subscription.get("current_users", 0)
         max_users = limits.get("max_users", 0)
@@ -128,7 +127,7 @@ class SubscriptionManager:
     def check_storage_limit(self, org_code, file_size_mb):
         """Check if organization can upload more files"""
         subscription = self.get_organization_subscription(org_code)
-        limits = self.get_plan_limits(subscription["plan"])
+        limits = self.get_plan_limits(subscription.get("plan", "trial"))
         
         current_storage_gb = subscription.get("storage_used_gb", 0)
         max_storage_gb = limits.get("storage_gb", 0)
@@ -140,7 +139,7 @@ class SubscriptionManager:
     def has_ai_feature(self, org_code, feature_name):
         """Check if organization has access to specific AI feature"""
         subscription = self.get_organization_subscription(org_code)
-        limits = self.get_plan_limits(subscription["plan"])
+        limits = self.get_plan_limits(subscription.get("plan", "trial"))
         
         allowed_features = limits.get("ai_features", [])
         
@@ -153,7 +152,7 @@ class SubscriptionManager:
     def can_use_feature(self, org_code, feature_name):
         """Check if organization can use specific platform feature"""
         subscription = self.get_organization_subscription(org_code)
-        limits = self.get_plan_limits(subscription["plan"])
+        limits = self.get_plan_limits(subscription.get("plan", "trial"))
         
         feature_map = {
             "batch_processing": limits.get("batch_processing", False),
@@ -192,6 +191,9 @@ class SubscriptionManager:
     def is_subscription_active(self, org_code):
         """Check if subscription is active"""
         subscription = self.get_organization_subscription(org_code)
+        if not subscription:
+            return False
+            
         status = subscription.get("status")
         
         if status == SubscriptionStatus.TRIAL.value:
@@ -207,6 +209,9 @@ class SubscriptionManager:
     def get_subscription_status_message(self, org_code):
         """Get user-friendly subscription status message"""
         subscription = self.get_organization_subscription(org_code)
+        if not subscription:
+            return "No subscription found"
+            
         status = subscription.get("status")
         plan = subscription.get("plan", "").title()
         
@@ -230,7 +235,10 @@ class SubscriptionManager:
     def show_subscription_widget(self, org_code):
         """Show subscription status widget in sidebar"""
         subscription = self.get_organization_subscription(org_code)
-        limits = self.get_plan_limits(subscription["plan"])
+        if not subscription:
+            return
+            
+        limits = self.get_plan_limits(subscription.get("plan", "trial"))
         
         with st.sidebar:
             st.markdown("### Subscription Status")
@@ -263,139 +271,12 @@ class SubscriptionManager:
             st.progress(storage_percentage, text=f"Storage: {storage_used:.1f}GB/{max_storage}GB")
             
             # Upgrade button for non-enterprise plans
-            if subscription["plan"] != SubscriptionPlan.ENTERPRISE.value:
-                if st.button("⬆️ Upgrade Plan"):
+            if subscription.get("plan") != SubscriptionPlan.ENTERPRISE.value:
+                if st.button("Upgrade Plan"):
                     st.session_state['show_upgrade_modal'] = True
                     st.rerun()
-    
-    def show_upgrade_modal(self, org_code):
-        """Show subscription upgrade interface"""
-        st.subheader("Upgrade Your Subscription")
-        
-        current_subscription = self.get_organization_subscription(org_code)
-        current_plan = current_subscription["plan"]
-        
-        # Plan comparison
-        col1, col2, col3 = st.columns(3)
-        
-        plans = [
-            (SubscriptionPlan.STARTER.value, "Starter", "$99/month"),
-            (SubscriptionPlan.PROFESSIONAL.value, "Professional", "$299/month"),
-            (SubscriptionPlan.ENTERPRISE.value, "Enterprise", "$599/month")
-        ]
-        
-        for i, (plan_id, plan_name, price) in enumerate(plans):
-            with [col1, col2, col3][i]:
-                limits = self.get_plan_limits(plan_id)
-                
-                # Plan card
-                if plan_id == current_plan:
-                    st.success(f"**{plan_name}** (Current)")
-                else:
-                    st.info(f"**{plan_name}**")
-                
-                st.write(f"**{price}**")
-                st.write(f"• {limits['max_users']} users" if limits['max_users'] != 999999 else "• Unlimited users")
-                st.write(f"• {limits['storage_gb']}GB storage")
-                st.write(f"• {limits['support_level'].title()} support")
-                
-                if plan_id != current_plan:
-                    if st.button(f"Select {plan_name}", key=f"select_{plan_id}"):
-                        self.upgrade_subscription(org_code, plan_id)
-                        st.success(f"Upgraded to {plan_name} plan!")
-                        st.rerun()
-        
-        if st.button("Cancel"):
-            st.session_state['show_upgrade_modal'] = False
-            st.rerun()
-    
-    def upgrade_subscription(self, org_code, new_plan):
-        """Upgrade organization subscription"""
-        subscription = self.get_organization_subscription(org_code)
-        
-        subscription["plan"] = new_plan
-        subscription["status"] = SubscriptionStatus.ACTIVE.value
-        subscription["next_billing_date"] = datetime.now() + timedelta(days=30)
-        
-        new_limits = self.get_plan_limits(new_plan)
-        subscription["monthly_cost"] = new_limits["monthly_cost"]
-        
-        st.session_state.subscriptions[org_code] = subscription
-    
-    def show_billing_interface(self, org_code):
-        """Show billing and payment interface"""
-        subscription = self.get_organization_subscription(org_code)
-        
-        st.subheader("Billing & Payment")
-        
-        # Current plan info
-        col1, col2, col3 = st.columns(3)
-        
-        with col1:
-            st.metric("Current Plan", subscription["plan"].title())
-        with col2:
-            st.metric("Monthly Cost", f"${subscription.get('monthly_cost', 0)}")
-        with col3:
-            next_billing = subscription.get("next_billing_date")
-            if next_billing:
-                st.metric("Next Billing", next_billing.strftime("%Y-%m-%d"))
-        
-        # Payment method
-        st.markdown("#### Payment Method")
-        payment_method = subscription.get("payment_method")
-        
-        if payment_method:
-            st.success(f"Card ending in {payment_method}")
-        else:
-            st.warning("No payment method on file")
-        
-        # Mock payment form
-        with st.form("payment_form"):
-            st.markdown("#### Update Payment Method")
-            
-            card_number = st.text_input("Card Number", placeholder="**** **** **** 1234")
-            
-            col1, col2 = st.columns(2)
-            with col1:
-                expiry = st.text_input("Expiry", placeholder="MM/YY")
-            with col2:
-                cvv = st.text_input("CVV", placeholder="123")
-            
-            billing_email = st.text_input("Billing Email", 
-                                        value=subscription.get("billing_email", ""))
-            
-            if st.form_submit_button("Update Payment Method"):
-                # Mock payment processing
-                subscription["payment_method"] = card_number[-4:] if card_number else None
-                subscription["billing_email"] = billing_email
-                st.session_state.subscriptions[org_code] = subscription
-                st.success("Payment method updated successfully!")
-        
-        # Billing history
-        st.markdown("#### Billing History")
-        
-        # Mock billing data
-        billing_history = [
-            {"date": "2024-10-01", "amount": "$299", "status": "Paid", "invoice": "INV-001"},
-            {"date": "2024-09-01", "amount": "$299", "status": "Paid", "invoice": "INV-002"},
-            {"date": "2024-08-01", "amount": "$99", "status": "Paid", "invoice": "INV-003"}
-        ]
-        
-        for bill in billing_history:
-            col1, col2, col3, col4 = st.columns(4)
-            with col1:
-                st.write(bill["date"])
-            with col2:
-                st.write(bill["amount"])
-            with col3:
-                if bill["status"] == "Paid":
-                    st.success(bill["status"])
-                else:
-                    st.error(bill["status"])
-            with col4:
-                st.button(f"📄 {bill['invoice']}", key=f"invoice_{bill['invoice']}")
 
-# Enhanced auth service with subscription enforcement
+# Enhanced auth service with subscription enforcement and account creation
 class EnhancedAuthService:
     def __init__(self):
         self.subscription_manager = SubscriptionManager()
@@ -409,60 +290,423 @@ class EnhancedAuthService:
             st.session_state.user_data = {}
     
     def show_login(self):
-        """Login interface with subscription validation"""
+        """Login interface with subscription validation and account creation"""
         st.markdown("""
         <div class="main-header">
-            <h1>⚖️ LegalDoc Pro</h1>
+            <h1>LegalDoc Pro</h1>
             <p>Enterprise Legal Management Platform</p>
         </div>
         """, unsafe_allow_html=True)
         
+        # Show signup form if triggered
+        if st.session_state.get('show_signup', False):
+            self.show_subscription_signup()
+            return
+
+        if st.session_state.get('show_trial_signup', False):
+            self.show_trial_signup()
+            return
+        
         col1, col2, col3 = st.columns([1, 2, 1])
         
         with col2:
+            # Existing customer login
+            st.subheader("Existing Customers")
             org_code = st.text_input("Organization Code", 
-                                    placeholder="Enter your firm's code")
+                                    placeholder="Enter your firm's code (e.g., 'smithlaw')")
             
             if org_code:
-                # Check subscription status
-                if self.subscription_manager.is_subscription_active(org_code):
+                # Check if organization exists
+                if org_code.lower() in ['demo', 'smithlaw', 'testfirm']:
+                    # Mock validation for demo
                     status_msg = self.subscription_manager.get_subscription_status_message(org_code)
-                    st.success(f"✅ {status_msg}")
-                    
-                    # Login form
-                    with st.form("login_form"):
-                        username = st.text_input("Username")
-                        password = st.text_input("Password", type="password")
-                        
-                        col_login1, col_login2 = st.columns(2)
-                        
-                        with col_login1:
-                            login_button = st.form_submit_button("Login", type="primary")
-                        with col_login2:
-                            demo_button = st.form_submit_button("Demo Login")
-                        
-                        if login_button or demo_button:
-                            if self.authenticate_user(org_code, username, password, demo_button):
-                                st.rerun()
-                            else:
-                                st.error("Invalid credentials")
-                
+                    if self.subscription_manager.is_subscription_active(org_code):
+                        st.success(f"Organization found: {status_msg}")
+                    else:
+                        st.error("Subscription expired or inactive")
+                        if st.button("Renew Subscription"):
+                            st.session_state['show_upgrade_modal'] = True
+                            st.rerun()
+                        return
+                elif org_code in st.session_state.subscriptions:
+                    # Check subscription status
+                    if self.subscription_manager.is_subscription_active(org_code):
+                        status_msg = self.subscription_manager.get_subscription_status_message(org_code)
+                        st.success(f"Organization found: {status_msg}")
+                    else:
+                        st.error("Subscription expired or inactive. Please renew.")
+                        if st.button("Renew Subscription"):
+                            st.session_state['show_upgrade_modal'] = True
+                            st.session_state['upgrade_org_code'] = org_code
+                            st.rerun()
+                        return
                 else:
-                    st.error("Subscription expired or inactive. Please contact support.")
-                    if st.button("Renew Subscription"):
-                        st.session_state['show_upgrade_modal'] = True
-                        st.session_state['upgrade_org_code'] = org_code
+                    st.error("Organization not found. Please check your code or create a new account.")
+                    return
+                
+                # Login form for existing organizations
+                with st.form("login_form"):
+                    username = st.text_input("Username")
+                    password = st.text_input("Password", type="password")
+                    
+                    col_login1, col_login2 = st.columns(2)
+                    
+                    with col_login1:
+                        login_button = st.form_submit_button("Login", type="primary")
+                    with col_login2:
+                        demo_button = st.form_submit_button("Demo Login")
+                    
+                    if login_button or demo_button:
+                        if self.authenticate_user(org_code, username, password, demo_button):
+                            st.rerun()
+                        else:
+                            st.error("Invalid credentials")
+            
+            # Account creation section
+            st.divider()
+            
+            # Two-column layout for new customers
+            col_existing, col_new = st.columns(2)
+            
+            with col_existing:
+                st.markdown("### Already a Customer?")
+                st.write("Enter your organization code above to access your account.")
+                st.info("Contact your administrator if you don't have your organization code.")
+            
+            with col_new:
+                st.markdown("### New Customer?")
+                st.write("Get started with LegalDoc Pro today!")
+                
+                col_trial, col_paid = st.columns(2)
+                
+                with col_trial:
+                    if st.button("Start 7-Day Free Trial", type="primary", use_container_width=True):
+                        st.session_state['show_trial_signup'] = True
                         st.rerun()
+                
+                with col_paid:
+                    if st.button("Create Paid Account", use_container_width=True):
+                        st.session_state['show_signup'] = True
+                        st.rerun()
+            
+            # Features preview
+            st.divider()
+            st.markdown("### Why Choose LegalDoc Pro?")
+            
+            col_feat1, col_feat2, col_feat3 = st.columns(3)
+            
+            with col_feat1:
+                st.markdown("""
+                **AI-Powered Analysis**
+                - Document review & analysis
+                - Contract risk assessment
+                - Automated legal insights
+                """)
+            
+            with col_feat2:
+                st.markdown("""
+                **Complete Practice Management**
+                - Matter & case management
+                - Time tracking & billing
+                - Document organization
+                """)
+            
+            with col_feat3:
+                st.markdown("""
+                **Secure & Compliant**
+                - Bank-level security
+                - Attorney-client privilege
+                - GDPR compliant
+                """)
+    
+    def show_trial_signup(self):
+        """7-day trial signup process"""
+        st.subheader("Start Your 7-Day Free Trial")
+        
+        if st.button("← Back to Login"):
+            st.session_state['show_trial_signup'] = False
+            st.rerun()
+        
+        st.info("No credit card required. Get full access to all features for 7 days.")
+        
+        with st.form("trial_signup_form"):
+            st.markdown("#### Organization Information")
+            col1, col2 = st.columns(2)
+            
+            with col1:
+                firm_name = st.text_input("Law Firm/Company Name *", placeholder="Smith & Associates Law Firm")
+                owner_name = st.text_input("Your Full Name *", placeholder="John Smith")
+                owner_email = st.text_input("Email Address *", placeholder="john@smithlaw.com")
+            
+            with col2:
+                org_code = st.text_input("Choose Organization Code *", 
+                                        placeholder="e.g., 'smithlaw'",
+                                        help="This will be your unique login code")
+                phone = st.text_input("Phone Number", placeholder="+1 (555) 123-4567")
+                firm_size = st.selectbox("Firm Size", [
+                    "Solo practice (1 attorney)",
+                    "Small firm (2-10 attorneys)", 
+                    "Medium firm (11-50 attorneys)",
+                    "Large firm (51+ attorneys)",
+                    "Corporate legal department",
+                    "Other"
+                ])
+            
+            st.markdown("#### Your Trial Includes")
+            col_trial1, col_trial2 = st.columns(2)
+            
+            with col_trial1:
+                st.markdown("""
+                - Full platform access for 7 days
+                - Up to 3 users
+                - 1GB storage
+                - AI document analysis
+                - Email support
+                """)
+            
+            with col_trial2:
+                st.markdown("""
+                - Matter management
+                - Time tracking & billing
+                - Document organization
+                - Client portal access
+                - No setup fees
+                """)
+            
+            # Legal checkboxes
+            marketing_consent = st.checkbox("I'd like to receive product updates and legal industry insights")
+            terms_accepted = st.checkbox("I agree to the Terms of Service and Privacy Policy *")
+            
+            # Submit button
+            if st.form_submit_button("Start My Free Trial", type="primary"):
+                if self.validate_trial_signup(firm_name, owner_name, owner_email, org_code, terms_accepted):
+                    success = self.create_trial_account(org_code, firm_name, owner_name, owner_email)
+                    if success:
+                        st.success("Trial account created successfully!")
+                        st.info("You can now login with your organization code and any username/password.")
+                        
+                        # Show login details
+                        st.markdown("### Your Login Details")
+                        st.code(f"""
+Organization Code: {org_code}
+Username: Any username
+Password: Any password (or use Demo Login)
+                        """)
+                        
+                        if st.button("Continue to Login"):
+                            st.session_state['show_trial_signup'] = False
+                            st.rerun()
+                else:
+                    st.error("Please correct the errors above")
+    
+    def show_subscription_signup(self):
+        """Paid subscription signup process"""
+        st.subheader("Create Your LegalDoc Pro Account")
+        
+        if st.button("← Back to Login"):
+            st.session_state['show_signup'] = False
+            st.rerun()
+        
+        # Plan selection
+        st.markdown("#### Choose Your Plan")
+        
+        col1, col2, col3 = st.columns(3)
+        
+        plans = [
+            {
+                "name": "Starter",
+                "price": "$99/month",
+                "users": "5 users",
+                "storage": "10GB storage",
+                "features": ["Basic AI features", "Standard support", "Mobile app"],
+                "plan_id": "starter"
+            },
+            {
+                "name": "Professional", 
+                "price": "$299/month",
+                "users": "25 users",
+                "storage": "50GB storage", 
+                "features": ["Advanced AI analytics", "Priority support", "Custom integrations", "White-label options"],
+                "plan_id": "professional",
+                "popular": True
+            },
+            {
+                "name": "Enterprise",
+                "price": "$599/month", 
+                "users": "Unlimited users",
+                "storage": "200GB storage",
+                "features": ["Full AI suite", "Dedicated account manager", "Custom development", "On-premises deployment"],
+                "plan_id": "enterprise"
+            }
+        ]
+        
+        selected_plan = None
+        
+        for i, plan in enumerate(plans):
+            with [col1, col2, col3][i]:
+                # Plan card styling
+                if plan.get("popular"):
+                    st.success(f"**{plan['name']}** (Most Popular)")
+                else:
+                    st.info(f"**{plan['name']}**")
+                
+                st.write(f"**{plan['price']}**")
+                st.write(f"• {plan['users']}")
+                st.write(f"• {plan['storage']}")
+                
+                for feature in plan['features']:
+                    st.write(f"• {feature}")
+                
+                if st.button(f"Select {plan['name']}", key=f"select_{plan['plan_id']}"):
+                    selected_plan = plan['plan_id']
+        
+        # If plan selected, show signup form
+        if selected_plan or st.session_state.get('selected_plan'):
+            if selected_plan:
+                st.session_state['selected_plan'] = selected_plan
+            
+            selected_plan_info = next(p for p in plans if p['plan_id'] == st.session_state['selected_plan'])
+            
+            st.success(f"Selected: {selected_plan_info['name']} Plan - {selected_plan_info['price']}")
+            
+            # Organization details form
+            with st.form("paid_signup_form"):
+                st.markdown("#### Organization Information")
+                
+                col1, col2 = st.columns(2)
+                
+                with col1:
+                    firm_name = st.text_input("Law Firm/Company Name *")
+                    owner_name = st.text_input("Your Full Name *") 
+                    owner_email = st.text_input("Email Address *")
+                    phone = st.text_input("Phone Number *")
+                
+                with col2:
+                    org_code = st.text_input("Choose Organization Code *", 
+                                            placeholder="e.g., 'smithlaw'")
+                    address = st.text_input("Business Address")
+                    city_state = st.text_input("City, State")
+                    zip_code = st.text_input("ZIP Code")
+                
+                st.markdown("#### Payment Information")
+                st.info("This is a demo - no real payment will be processed")
+                
+                col_pay1, col_pay2 = st.columns(2)
+                
+                with col_pay1:
+                    card_number = st.text_input("Card Number", placeholder="**** **** **** 1234")
+                    cardholder_name = st.text_input("Cardholder Name")
+                
+                with col_pay2:
+                    col_exp, col_cvv = st.columns(2)
+                    with col_exp:
+                        card_expiry = st.text_input("MM/YY", placeholder="12/25")
+                    with col_cvv:
+                        card_cvv = st.text_input("CVV", placeholder="123")
+                    
+                    billing_zip = st.text_input("Billing ZIP")
+                
+                # Agreement checkboxes
+                terms_accepted = st.checkbox("I agree to the Terms of Service and Privacy Policy *")
+                
+                # Create account button
+                if st.form_submit_button("Create Account & Start Subscription", type="primary"):
+                    if self.validate_paid_signup(firm_name, owner_name, owner_email, org_code, terms_accepted):
+                        success = self.create_paid_account(
+                            org_code, firm_name, owner_name, owner_email, 
+                            st.session_state['selected_plan']
+                        )
+                        if success:
+                            st.success("Account created successfully!")
+                            st.info("You can now login with your organization code.")
+                            
+                            if st.button("Continue to Login"):
+                                st.session_state['show_signup'] = False
+                                if 'selected_plan' in st.session_state:
+                                    del st.session_state['selected_plan']
+                                st.rerun()
+    
+    def validate_trial_signup(self, firm_name, owner_name, owner_email, org_code, terms_accepted):
+        """Validate trial signup form"""
+        valid = True
+        
+        if not firm_name:
+            st.error("Firm name is required")
+            valid = False
+        
+        if not owner_name:
+            st.error("Your name is required")
+            valid = False
+        
+        if not owner_email or "@" not in owner_email:
+            st.error("Valid email address is required")
+            valid = False
+        
+        if not org_code or len(org_code) < 3:
+            st.error("Organization code must be at least 3 characters")
+            valid = False
+        
+        if org_code and org_code.lower() in st.session_state.subscriptions:
+            st.error("Organization code already exists. Please choose a different one.")
+            valid = False
+        
+        if not terms_accepted:
+            st.error("You must accept the Terms of Service")
+            valid = False
+        
+        return valid
+    
+    def validate_paid_signup(self, firm_name, owner_name, owner_email, org_code, terms_accepted):
+        """Validate paid signup form"""
+        return self.validate_trial_signup(firm_name, owner_name, owner_email, org_code, terms_accepted)
+    
+    def create_trial_account(self, org_code, firm_name, owner_name, owner_email):
+        """Create a trial account"""
+        try:
+            self.subscription_manager.create_trial_subscription(
+                org_code, firm_name, owner_name, owner_email
+            )
+            return True
+        except Exception as e:
+            st.error(f"Error creating trial account: {str(e)}")
+            return False
+    
+    def create_paid_account(self, org_code, firm_name, owner_name, owner_email, plan):
+        """Create a paid account"""
+        try:
+            # Create subscription with selected plan
+            subscription = {
+                "organization_code": org_code,
+                "organization_name": firm_name,
+                "plan": plan,
+                "status": SubscriptionStatus.ACTIVE.value,
+                "created_date": datetime.now(),
+                "trial_end_date": None,
+                "current_users": 1,
+                "storage_used_gb": 0.0,
+                "monthly_cost": self.subscription_manager.get_plan_limits(plan)["monthly_cost"],
+                "billing_email": owner_email,
+                "owner_name": owner_name,
+                "owner_email": owner_email,
+                "payment_method": "****1234",  # Mock payment method
+                "next_billing_date": datetime.now() + timedelta(days=30)
+            }
+            
+            st.session_state.subscriptions[org_code] = subscription
+            return True
+        except Exception as e:
+            st.error(f"Error creating paid account: {str(e)}")
+            return False
     
     def authenticate_user(self, org_code, username, password, is_demo=False):
         """Authenticate user with subscription validation"""
-        # Mock authentication
-        if is_demo or (username and password):
+        # Mock authentication - in real app, check database
+        if is_demo or (username and password) or org_code.lower() in ['demo', 'smithlaw', 'testfirm']:
             user_data = {
                 'user_id': str(uuid.uuid4()),
                 'username': username or 'demo',
                 'organization_code': org_code,
-                'name': 'Demo User',
+                'name': f'User from {org_code}',
                 'email': f'{username or "demo"}@{org_code}.com',
                 'role': 'subscription_owner',
                 'is_subscription_owner': True,
@@ -481,11 +725,11 @@ class EnhancedAuthService:
         org_code = user_data.get('organization_code')
         
         with st.sidebar:
-            st.markdown(f"**👤 {user_data.get('name', 'User')}**")
-            st.markdown(f"**🏢 {org_code}**")
-            
-            # Show subscription widget
+            st.markdown(f"**{user_data.get('name', 'User')}**")
             if org_code:
+                st.markdown(f"**{org_code}**")
+                
+                # Show subscription widget
                 self.subscription_manager.show_subscription_widget(org_code)
             
             st.divider()
@@ -497,63 +741,67 @@ class EnhancedAuthService:
             
             # Management options for subscription owners
             if user_data.get('is_subscription_owner'):
-                if st.button("💳 Billing & Subscription"):
+                if st.button("Billing & Subscription"):
                     st.session_state['show_billing'] = True
                     st.rerun()
             
-            if st.button("🚪 Logout"):
+            if st.button("Logout"):
                 self.logout()
                 st.rerun()
     
     def show_navigation(self, org_code):
         """Show navigation with subscription-based restrictions"""
+        if not org_code:
+            return
+            
         subscription = self.subscription_manager.get_organization_subscription(org_code)
+        if not subscription:
+            return
         
         # Basic pages (available to all plans)
         basic_pages = [
-            ("📊", "Executive Dashboard"),
-            ("📁", "Document Management"),
-            ("⚖️", "Matter Management"),
-            ("⏰", "Time & Billing"),
-            ("📅", "Calendar & Tasks")
+            ("Dashboard", "Executive Dashboard"),
+            ("Documents", "Document Management"),
+            ("Matters", "Matter Management"),
+            ("Billing", "Time & Billing"),
+            ("Calendar", "Calendar & Tasks")
         ]
         
-        for icon, page_name in basic_pages:
-            if st.button(f"{icon} {page_name}", key=f"nav_{page_name}"):
+        for icon_text, page_name in basic_pages:
+            if st.button(f"{icon_text}", key=f"nav_{page_name}"):
                 st.session_state['current_page'] = page_name
                 st.rerun()
         
         # AI features (gated by subscription)
         if self.subscription_manager.has_ai_feature(org_code, "basic_analysis"):
-            if st.button("🤖 AI Insights", key="nav_AI Insights"):
+            if st.button("AI Insights", key="nav_AI Insights"):
                 st.session_state['current_page'] = "AI Insights"
                 st.rerun()
         else:
-            st.button("🤖 AI Insights 🔒", disabled=True, 
-                     help="Upgrade to access AI features")
+            st.button("AI Insights (Upgrade Required)", disabled=True)
         
         # Advanced features (Professional/Enterprise only)
         if self.subscription_manager.can_use_feature(org_code, "advanced_analytics"):
             advanced_pages = [
-                ("🔍", "Advanced Search"),
-                ("📈", "Business Intelligence")
+                ("Advanced Search", "Advanced Search"),
+                ("Business Intel", "Business Intelligence")
             ]
             
-            for icon, page_name in advanced_pages:
-                if st.button(f"{icon} {page_name}", key=f"nav_{page_name}"):
+            for page_text, page_name in advanced_pages:
+                if st.button(page_text, key=f"nav_{page_name}"):
                     st.session_state['current_page'] = page_name
                     st.rerun()
         
         # Enterprise-only features
-        if subscription["plan"] == "enterprise":
+        if subscription.get("plan") == "enterprise":
             enterprise_pages = [
-                ("🔗", "Integrations"),
-                ("📱", "Mobile App"),
-                ("⚙️", "System Settings")
+                ("Integrations", "Integrations"),
+                ("Mobile App", "Mobile App"),
+                ("Settings", "System Settings")
             ]
             
-            for icon, page_name in enterprise_pages:
-                if st.button(f"{icon} {page_name}", key=f"nav_{page_name}"):
+            for page_text, page_name in enterprise_pages:
+                if st.button(page_text, key=f"nav_{page_name}"):
                     st.session_state['current_page'] = page_name
                     st.rerun()
     
@@ -603,9 +851,196 @@ class EnhancedAuthService:
         
         return False
     
+    def show_upgrade_modal(self, org_code):
+        """Show subscription upgrade interface"""
+        st.subheader("Upgrade Your Subscription")
+        
+        if st.button("← Back"):
+            st.session_state['show_upgrade_modal'] = False
+            st.rerun()
+        
+        current_subscription = self.subscription_manager.get_organization_subscription(org_code)
+        current_plan = current_subscription.get("plan", "trial")
+        
+        # Plan comparison
+        col1, col2, col3 = st.columns(3)
+        
+        plans = [
+            (SubscriptionPlan.STARTER.value, "Starter", "$99/month", "5 users, 10GB storage"),
+            (SubscriptionPlan.PROFESSIONAL.value, "Professional", "$299/month", "25 users, 50GB storage"), 
+            (SubscriptionPlan.ENTERPRISE.value, "Enterprise", "$599/month", "Unlimited users, 200GB storage")
+        ]
+        
+        for i, (plan_id, plan_name, price, description) in enumerate(plans):
+            with [col1, col2, col3][i]:
+                limits = self.subscription_manager.get_plan_limits(plan_id)
+                
+                # Plan card
+                if plan_id == current_plan:
+                    st.success(f"**{plan_name}** (Current)")
+                else:
+                    st.info(f"**{plan_name}**")
+                
+                st.write(f"**{price}**")
+                st.write(description)
+                
+                # Feature list
+                if plan_id == SubscriptionPlan.STARTER.value:
+                    features = ["Basic AI analysis", "Standard support", "Mobile access"]
+                elif plan_id == SubscriptionPlan.PROFESSIONAL.value:
+                    features = ["Advanced AI analytics", "Batch processing", "Priority support", "Custom integrations"]
+                else:
+                    features = ["Full AI suite", "Dedicated support", "White-label options", "On-premises deployment"]
+                
+                for feature in features:
+                    st.write(f"• {feature}")
+                
+                if plan_id != current_plan:
+                    if st.button(f"Upgrade to {plan_name}", key=f"upgrade_{plan_id}"):
+                        self.upgrade_subscription(org_code, plan_id)
+                        st.success(f"Successfully upgraded to {plan_name} plan!")
+                        st.balloons()
+                        st.rerun()
+    
+    def upgrade_subscription(self, org_code, new_plan):
+        """Upgrade organization subscription"""
+        subscription = self.subscription_manager.get_organization_subscription(org_code)
+        
+        subscription["plan"] = new_plan
+        subscription["status"] = SubscriptionStatus.ACTIVE.value
+        subscription["next_billing_date"] = datetime.now() + timedelta(days=30)
+        
+        new_limits = self.subscription_manager.get_plan_limits(new_plan)
+        subscription["monthly_cost"] = new_limits["monthly_cost"]
+        
+        st.session_state.subscriptions[org_code] = subscription
+    
+    def show_billing_interface(self, org_code):
+        """Show billing and payment interface"""
+        subscription = self.subscription_manager.get_organization_subscription(org_code)
+        
+        st.subheader("Billing & Subscription Management")
+        
+        if st.button("← Back"):
+            st.session_state['show_billing'] = False
+            st.rerun()
+        
+        # Current plan info
+        col1, col2, col3 = st.columns(3)
+        
+        with col1:
+            st.metric("Current Plan", subscription.get("plan", "Unknown").title())
+        with col2:
+            st.metric("Monthly Cost", f"${subscription.get('monthly_cost', 0)}")
+        with col3:
+            next_billing = subscription.get("next_billing_date")
+            if next_billing:
+                st.metric("Next Billing", next_billing.strftime("%Y-%m-%d"))
+            else:
+                st.metric("Next Billing", "N/A")
+        
+        # Subscription status
+        status = subscription.get("status")
+        if status == SubscriptionStatus.TRIAL.value:
+            trial_end = subscription.get("trial_end_date")
+            if trial_end:
+                days_left = (trial_end - datetime.now()).days
+                if days_left > 0:
+                    st.warning(f"Trial ends in {days_left} days")
+                    if st.button("Upgrade Before Trial Ends", type="primary"):
+                        st.session_state['show_upgrade_modal'] = True
+                        st.rerun()
+                else:
+                    st.error("Trial has expired")
+        
+        # Payment method
+        st.markdown("#### Payment Method")
+        payment_method = subscription.get("payment_method")
+        
+        if payment_method:
+            st.success(f"Card ending in {payment_method}")
+        else:
+            st.warning("No payment method on file")
+        
+        # Mock payment form
+        with st.form("payment_form"):
+            st.markdown("#### Update Payment Method")
+            
+            card_number = st.text_input("Card Number", placeholder="**** **** **** 1234")
+            
+            col1, col2 = st.columns(2)
+            with col1:
+                expiry = st.text_input("Expiry", placeholder="MM/YY")
+            with col2:
+                cvv = st.text_input("CVV", placeholder="123")
+            
+            billing_email = st.text_input("Billing Email", 
+                                        value=subscription.get("billing_email", ""))
+            
+            if st.form_submit_button("Update Payment Method"):
+                # Mock payment processing
+                subscription["payment_method"] = card_number[-4:] if card_number else None
+                subscription["billing_email"] = billing_email
+                st.session_state.subscriptions[org_code] = subscription
+                st.success("Payment method updated successfully!")
+        
+        # Usage summary
+        st.markdown("#### Current Usage")
+        
+        limits = self.subscription_manager.get_plan_limits(subscription.get("plan", "trial"))
+        
+        col1, col2 = st.columns(2)
+        
+        with col1:
+            current_users = subscription.get("current_users", 0)
+            max_users = limits.get("max_users", 0)
+            
+            if max_users == 999999:
+                st.write(f"**Users:** {current_users} (Unlimited)")
+            else:
+                user_percent = (current_users / max_users * 100) if max_users > 0 else 0
+                st.write(f"**Users:** {current_users}/{max_users} ({user_percent:.0f}%)")
+                st.progress(min(user_percent / 100, 1.0))
+        
+        with col2:
+            storage_used = subscription.get("storage_used_gb", 0)
+            max_storage = limits.get("storage_gb", 0)
+            
+            storage_percent = (storage_used / max_storage * 100) if max_storage > 0 else 0
+            st.write(f"**Storage:** {storage_used:.1f}GB/{max_storage}GB ({storage_percent:.0f}%)")
+            st.progress(min(storage_percent / 100, 1.0))
+        
+        # Billing history
+        st.markdown("#### Billing History")
+        
+        # Mock billing data
+        billing_history = [
+            {"date": "2024-10-01", "amount": f"${subscription.get('monthly_cost', 0)}", "status": "Paid", "invoice": "INV-001"},
+            {"date": "2024-09-01", "amount": f"${subscription.get('monthly_cost', 0)}", "status": "Paid", "invoice": "INV-002"},
+            {"date": "2024-08-01", "amount": f"${subscription.get('monthly_cost', 0)}", "status": "Paid", "invoice": "INV-003"}
+        ]
+        
+        for bill in billing_history:
+            col1, col2, col3, col4 = st.columns(4)
+            with col1:
+                st.write(bill["date"])
+            with col2:
+                st.write(bill["amount"])
+            with col3:
+                if bill["status"] == "Paid":
+                    st.success(bill["status"])
+                else:
+                    st.error(bill["status"])
+            with col4:
+                st.button(f"📄 {bill['invoice']}", key=f"invoice_{bill['invoice']}")
+    
     def logout(self):
         """Logout user"""
-        keys_to_clear = ['logged_in', 'user_data', 'current_page']
+        keys_to_clear = [
+            'logged_in', 'user_data', 'current_page', 'show_upgrade_modal',
+            'show_billing', 'show_signup', 'show_trial_signup', 'selected_plan'
+        ]
+        
         for key in keys_to_clear:
             if key in st.session_state:
                 del st.session_state[key]
@@ -614,70 +1049,108 @@ class EnhancedAuthService:
         """Check if user is logged in"""
         return st.session_state.get('logged_in', False)
 
-# Usage functions
-def show_subscription_enforcement_demo():
-    """Demo of subscription enforcement in action"""
+# Usage functions for easy integration
+def get_auth_service():
+    """Get the enhanced auth service instance"""
+    return EnhancedAuthService()
+
+# Demo data initialization for testing
+def initialize_demo_data():
+    """Initialize demo subscription data"""
+    if 'demo_initialized' not in st.session_state:
+        demo_subscriptions = {
+            'demo': {
+                "organization_code": "demo",
+                "organization_name": "Demo Law Firm",
+                "plan": SubscriptionPlan.PROFESSIONAL.value,
+                "status": SubscriptionStatus.ACTIVE.value,
+                "created_date": datetime.now() - timedelta(days=30),
+                "current_users": 8,
+                "storage_used_gb": 12.5,
+                "monthly_cost": 299,
+                "billing_email": "demo@demolawfirm.com",
+                "owner_name": "Demo Owner",
+                "owner_email": "demo@demolawfirm.com",
+                "payment_method": "1234",
+                "next_billing_date": datetime.now() + timedelta(days=15)
+            },
+            'smithlaw': {
+                "organization_code": "smithlaw", 
+                "organization_name": "Smith & Associates",
+                "plan": SubscriptionPlan.ENTERPRISE.value,
+                "status": SubscriptionStatus.ACTIVE.value,
+                "created_date": datetime.now() - timedelta(days=180),
+                "current_users": 25,
+                "storage_used_gb": 67.3,
+                "monthly_cost": 599,
+                "billing_email": "billing@smithlaw.com",
+                "owner_name": "John Smith",
+                "owner_email": "john@smithlaw.com",
+                "payment_method": "5678",
+                "next_billing_date": datetime.now() + timedelta(days=22)
+            },
+            'testfirm': {
+                "organization_code": "testfirm",
+                "organization_name": "Test Legal Firm",
+                "plan": SubscriptionPlan.TRIAL.value,
+                "status": SubscriptionStatus.TRIAL.value,
+                "created_date": datetime.now() - timedelta(days=3),
+                "trial_end_date": datetime.now() + timedelta(days=4),
+                "current_users": 2,
+                "storage_used_gb": 0.3,
+                "monthly_cost": 0,
+                "billing_email": "test@testfirm.com",
+                "owner_name": "Test User",
+                "owner_email": "test@testfirm.com"
+            }
+        }
+        
+        # Add demo data to session state
+        for org_code, subscription in demo_subscriptions.items():
+            st.session_state.subscriptions[org_code] = subscription
+        
+        st.session_state.demo_initialized = True
+
+# Initialize demo data when module loads
+initialize_demo_data()
+
+# Main execution for testing
+if __name__ == "__main__":
+    st.set_page_config(
+        page_title="LegalDoc Pro - Subscription Demo",
+        page_icon="⚖️",
+        layout="wide"
+    )
+    
     auth_service = EnhancedAuthService()
     
     if not auth_service.is_logged_in():
         auth_service.show_login()
-        return
-    
-    # Show upgrade modal if triggered
-    if st.session_state.get('show_upgrade_modal'):
-        org_code = st.session_state.get('upgrade_org_code') or st.session_state.user_data.get('organization_code')
-        auth_service.subscription_manager.show_upgrade_modal(org_code)
-        return
-    
-    # Show billing interface if triggered
-    if st.session_state.get('show_billing'):
-        org_code = st.session_state.user_data.get('organization_code')
-        auth_service.subscription_manager.show_billing_interface(org_code)
-        if st.button("← Back"):
-            del st.session_state['show_billing']
-            st.rerun()
-        return
-    
-    # Render main interface with sidebar
-    auth_service.render_sidebar()
-    
-    # Main content area with feature gating examples
-    st.title("Subscription-Enforced Platform")
-    
-    org_code = st.session_state.user_data.get('organization_code')
-    subscription = auth_service.subscription_manager.get_organization_subscription(org_code)
-    
-    st.write(f"Current Plan: **{subscription['plan'].title()}**")
-    
-    # Feature testing buttons
-    col1, col2 = st.columns(2)
-    
-    with col1:
-        st.subheader("AI Features")
-        if auth_service.has_permission('ai_analysis'):
-            st.success("✅ Basic AI Analysis Available")
-        else:
-            st.error("❌ AI Analysis Requires Upgrade")
+    else:
+        # Handle modals
+        user_data = st.session_state.get('user_data', {})
+        org_code = user_data.get('organization_code')
         
-        if auth_service.has_permission('batch_processing'):
-            st.success("✅ Batch Processing Available")
+        if st.session_state.get('show_upgrade_modal'):
+            auth_service.show_upgrade_modal(org_code)
+        elif st.session_state.get('show_billing'):
+            auth_service.show_billing_interface(org_code)
         else:
-            st.error("❌ Batch Processing Requires Professional+")
-    
-    with col2:
-        st.subheader("Storage & Users")
-        
-        # Test file upload limits
-        uploaded_file = st.file_uploader("Test File Upload")
-        if uploaded_file:
-            file_size_mb = uploaded_file.size / (1024 * 1024)
-            if auth_service.check_storage_before_upload(file_size_mb):
-                st.success(f"✅ File can be uploaded ({file_size_mb:.1f}MB)")
-            else:
-                st.error("❌ Storage limit exceeded - upgrade needed")
-        
-        # Test user limits
-        if auth_service.check_user_limit_before_invite():
-            st.success("✅ Can add more users")
-        else:
-            st.error("❌ User limit reached - upgrade needed")
+            # Show main interface
+            auth_service.render_sidebar()
+            
+            st.title("LegalDoc Pro Dashboard")
+            st.write("Welcome to your legal management platform!")
+            
+            # Show subscription status
+            subscription = auth_service.subscription_manager.get_organization_subscription(org_code)
+            if subscription:
+                status_msg = auth_service.subscription_manager.get_subscription_status_message(org_code)
+                st.success(f"Subscription Status: {status_msg}")
+                
+                # Show usage
+                col1, col2 = st.columns(2)
+                with col1:
+                    st.write(f"Users: {subscription.get('current_users', 0)}")
+                with col2:
+                    st.write(f"Storage: {subscription.get('storage_used_gb', 0):.1f}GB")
