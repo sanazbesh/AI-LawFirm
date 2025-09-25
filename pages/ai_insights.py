@@ -25,6 +25,23 @@ try:
 except ImportError:
     AI_SERVICE_AVAILABLE = False
 
+def show():  # This function already exists in your file
+    # ADD THIS CODE AT THE TOP:
+    from services.subscription_manager import EnhancedAuthService
+    auth_service = EnhancedAuthService()
+    
+    user_data = st.session_state.get('user_data', {})
+    org_code = user_data.get('organization_code')
+    
+    if not auth_service.has_permission('ai_analysis'):
+        st.error("AI Analysis requires a paid subscription. Please upgrade your plan.")
+        if st.button("Upgrade Now"):
+            st.session_state['show_upgrade_modal'] = True
+            st.rerun()
+        return
+    
+
+
 def show():
     st.markdown("""
     <div class="main-header">
