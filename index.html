@@ -1,4 +1,905 @@
-<!DOCTYPE html>
+function showDemo() {
+            showMessage('Demo: Auto-logging in...', 'info');
+            setTimeout(() => {
+                user = {
+                    email: 'demo@legaldocpro.com',
+                    firmName: 'Demo Law Firm',
+                    role: 'Senior Partner'
+                };
+                showDashboard();
+            }, 1500);
+        }
+
+        function showLogin() {
+            document.getElementById('login-form').classList.remove('hidden');
+            document.getElementById('signup-form').classList.add('hidden');
+        }
+
+        function showSignup() {
+            document.getElementById('login-form').classList.add('hidden');
+            document.getElementById('signup-form').classList.remove('hidden');
+        }
+
+        function login(event) {
+            event.preventDefault();
+            
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            
+            if (!email || !password) {
+                showMessage('Please enter email and password', 'error');
+                return;
+            }
+
+            showLoading(true);
+            showMessage('Signing in...', 'info');
+
+            // Simulate API call
+            setTimeout(() => {
+                user = {
+                    email: email,
+                    firmName: 'Your Law Firm',
+                    role: 'Partner'
+                };
+                
+                showMessage('Login successful!', 'success');
+                setTimeout(() => {
+                    showDashboard();
+                }, 1000);
+            }, 1500);
+        }
+
+        function signup(event) {
+            event.preventDefault();
+            
+            const email = document.getElementById('signup-email').value;
+            const password = document.getElementById('signup-password').value;
+            const firmName = document.getElementById('firm-name').value;
+            
+            if (!email || !password || !firmName) {
+                showMessage('Please fill in all fields', 'error');
+                return;
+            }
+
+            showLoading(true);
+            showMessage('Creating account...', 'info');
+
+            // Simulate API call
+            setTimeout(() => {
+                user = {
+                    email: email,
+                    firmName: firmName,
+                    role: 'Partner'
+                };
+                
+                showMessage('Account created successfully!', 'success');
+                setTimeout(() => {
+                    showDashboard();
+                }, 1000);
+            }, 1500);
+        }
+
+        function showDashboard() {
+            isAuthenticated = true;
+            showLoading(false);
+            
+            // Hide auth sections
+            document.getElementById('hero-section').classList.add('hidden');
+            document.getElementById('auth-container').classList.add('hidden');
+            
+            // Show main app
+            document.getElementById('main-app').classList.remove('hidden');
+            document.getElementById('navbar').classList.add('hidden'); // Start with navbar hidden
+            
+            // Update user info
+            if (user) {
+                document.getElementById('firm-name-display').textContent = user.firmName;
+                document.getElementById('user-email-display').textContent = user.email;
+                document.getElementById('user-role-display').textContent = user.role;
+            }
+
+            // Add fade-in animation
+            document.getElementById('main-app').classList.add('fade-in');
+            
+            // Open sidebar by default on desktop
+            if (window.innerWidth > 768) {
+                sidebarOpen = true;
+                updateSidebarState();
+            }
+            
+            // Load dashboard content
+            showPage('dashboard');
+        }
+
+        function logout() {
+            isAuthenticated = false;
+            user = null;
+            sidebarOpen = false;
+            
+            // Show auth sections
+            document.getElementById('hero-section').classList.remove('hidden');
+            document.getElementById('auth-container').classList.remove('hidden');
+            
+            // Hide main app
+            document.getElementById('main-app').classList.add('hidden');
+            document.getElementById('navbar').classList.add('hidden');
+            
+            // Reset sidebar
+            updateSidebarState();
+            
+            // Reset forms
+            document.getElementById('email').value = '';
+            document.getElementById('password').value = '';
+            document.getElementById('signup-email').value = '';
+            document.getElementById('signup-password').value = '';
+            document.getElementById('firm-name').value = '';
+            
+            showMessage('Logged out successfully', 'success');
+            showLogin();
+        }
+
+        function toggleSidebar() {
+            sidebarOpen = !sidebarOpen;
+            updateSidebarState();
+        }
+
+        function updateSidebarState() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('sidebar-overlay');
+            const mainApp = document.getElementById('main-app');
+            
+            if (sidebarOpen) {
+                sidebar.classList.add('open');
+                overlay.classList.add('show');
+                if (window.innerWidth > 768) {
+                    mainApp.classList.add('sidebar-open');
+                }
+            } else {
+                sidebar.classList.remove('open');
+                overlay.classList.remove('show');
+                mainApp.classList.remove('sidebar-open');
+            }
+        }
+
+        function showPage(pageName) {
+            currentPage = pageName;
+            
+            // Update active nav item
+            const navItems = document.querySelectorAll('.nav-item');
+            navItems.forEach(item => item.classList.remove('active'));
+            
+            const activeNavItem = Array.from(navItems).find(item => 
+                item.onclick.toString().includes(`'${pageName}'`)
+            );
+            if (activeNavItem) {
+                activeNavItem.classList.add('active');
+            }
+            
+            // Load page content
+            loadPageContent(pageName);
+            
+            // Close sidebar on mobile after selection
+            if (window.innerWidth <= 768) {
+                sidebarOpen = false;
+                updateSidebarState();
+            }
+        }
+
+        function loadPageContent(pageName) {
+            const contentContainer = document.getElementById('page-content');
+            
+            switch(pageName) {
+                case 'dashboard':
+                    contentContainer.innerHTML = generateDashboardContent();
+                    break;
+                case 'documents':
+                    contentContainer.innerHTML = generateDocumentsContent();
+                    break;
+                case 'matters':
+                    contentContainer.innerHTML = generateMattersContent();
+                    break;
+                case 'billing':
+                    contentContainer.innerHTML = generateBillingContent();
+                    break;
+                case 'ai-insights':
+                    contentContainer.innerHTML = generateAIInsightsContent();
+                    break;
+                case 'calendar':
+                    contentContainer.innerHTML = generateCalendarContent();
+                    break;
+                case 'search':
+                    contentContainer.innerHTML = generateSearchContent();
+                    break;
+                case 'integrations':
+                    contentContainer.innerHTML = generateIntegrationsContent();
+                    break;
+                case 'mobile':
+                    contentContainer.innerHTML = generateMobileContent();
+                    break;
+                case 'business-intel':
+                    contentContainer.innerHTML = generateBusinessIntelContent();
+                    break;
+                case 'client-portal':
+                    contentContainer.innerHTML = generateClientPortalContent();
+                    break;
+                case 'settings':
+                    contentContainer.innerHTML = generateSettingsContent();
+                    break;
+                default:
+                    contentContainer.innerHTML = generateDashboardContent();
+            }
+        }
+
+        function generateDashboardContent() {
+            return `
+                <div class="main-header">
+                    <h1>📊 Executive Dashboard</h1>
+                    <p>Overview of your legal practice management</p>
+                </div>
+
+                <div class="dashboard-metrics">
+                    <div class="metric-card-dashboard">
+                        <div class="metric-icon"><i class="fas fa-briefcase"></i></div>
+                        <h4>Active Matters</h4>
+                        <div class="metric-value">${sampleData.matters.length}</div>
+                    </div>
+                    <div class="metric-card-dashboard">
+                        <div class="metric-icon"><i class="fas fa-file-alt"></i></div>
+                        <h4>Total Documents</h4>
+                        <div class="metric-value">${sampleData.documents.length}</div>
+                    </div>
+                    <div class="metric-card-dashboard">
+                        <div class="metric-icon"><i class="fas fa-users"></i></div>
+                        <h4>Active Clients</h4>
+                        <div class="metric-value">${sampleData.clients.length}</div>
+                    </div>
+                    <div class="metric-card-dashboard">
+                        <div class="metric-icon"><i class="fas fa-clock"></i></div>
+                        <h4>Pending Tasks</h4>
+                        <div class="metric-value">${sampleData.tasks.length}</div>
+                    </div>
+                </div>
+
+                <div class="section-header">
+                    <h3>Recent Activity</h3>
+                    <p>Latest updates across your legal practice</p>
+                </div>
+
+                <div class="metric-card">
+                    <h4>📄 Document uploaded: Merger Agreement v2.1</h4>
+                    <p>Matter created: Johnson Custody Case</p>
+                    <small>2024-01-15 • Sarah Chen</small>
+                </div>
+
+                <div class="metric-card">
+                    <h4>📋 Invoice generated: INV-2024-001</h4>
+                    <p>Client portal access granted</p>
+                    <small>2024-01-14 • Michael Rodriguez</small>
+                </div>
+
+                <div class="metric-card">
+                    <h4>📅 Calendar event scheduled</h4>
+                    <p>Court hearing scheduled for next week</p>
+                    <small>2024-01-13 • Emma Williams</small>
+                </div>
+            `;
+        }
+
+        function generateDocumentsContent() {
+            let documentsHtml = `
+                <div class="main-header">
+                    <h1>📁 Document Management</h1>
+                    <p>Organize and manage your legal documents</p>
+                </div>
+                
+                <div style="display: flex; gap: 15px; margin-bottom: 30px; flex-wrap: wrap;">
+                    <input type="text" class="form-control" placeholder="Search documents..." style="flex: 1; min-width: 250px;">
+                    <select class="form-control" style="width: 200px;">
+                        <option>All Types</option>
+                        <option>Contracts</option>
+                        <option>Briefs</option>
+                        <option>Pleadings</option>
+                        <option>Memos</option>
+                    </select>
+                    <button class="btn btn-primary">
+                        <i class="fas fa-upload"></i> Upload Document
+                    </button>
+                </div>
+            `;
+
+            sampleData.documents.forEach(doc => {
+                documentsHtml += `
+                    <div class="document-card">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                            <h4>${doc.name}</h4>
+                            <span class="status-badge status-${doc.status.toLowerCase()}">${doc.status}</span>
+                        </div>
+                        <p><strong>Type:</strong> ${doc.type} | <strong>Size:</strong> ${doc.size} | <strong>Modified:</strong> ${doc.modified}</p>
+                        <div style="margin-top: 15px;">
+                            <button class="btn btn-primary" style="margin-right: 10px; padding: 8px 15px; font-size: 0.9rem;">
+                                <i class="fas fa-eye"></i> View
+                            </button>
+                            <button class="btn btn-secondary" style="padding: 8px 15px; font-size: 0.9rem;">
+                                <i class="fas fa-download"></i> Download
+                            </button>
+                        </div>
+                    </div>
+                `;
+            });
+
+            return documentsHtml;
+        }
+
+        function generateMattersContent() {
+            let mattersHtml = `
+                <div class="main-header">
+                    <h1>💼 Matter Management</h1>
+                    <p>Track and manage legal matters</p>
+                </div>
+                
+                <div style="display: flex; gap: 15px; margin-bottom: 30px; flex-wrap: wrap;">
+                    <input type="text" class="form-control" placeholder="Search matters..." style="flex: 1; min-width: 250px;">
+                    <select class="form-control" style="width: 200px;">
+                        <option>All Status</option>
+                        <option>Active</option>
+                        <option>Pending</option>
+                        <option>Closed</option>
+                    </select>
+                    <button class="btn btn-primary">
+                        <i class="fas fa-plus"></i> New Matter
+                    </button>
+                </div>
+            `;
+
+            sampleData.matters.forEach(matter => {
+                mattersHtml += `
+                    <div class="matter-card">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                            <h4>${matter.title}</h4>
+                            <span class="status-badge status-${matter.status.toLowerCase()}">${matter.status}</span>
+                        </div>
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 15px;">
+                            <div><i class="fas fa-user" style="color: #2E86AB; margin-right: 8px;"></i><strong>Client:</strong> ${matter.client}</div>
+                            <div><i class="fas fa-gavel" style="color: #2E86AB; margin-right: 8px;"></i><strong>Type:</strong> ${matter.type}</div>
+                            <div><i class="fas fa-dollar-sign" style="color: #2E86AB; margin-right: 8px;"></i><strong>Value:</strong> ${matter.value}</div>
+                        </div>
+                        <div style="margin-top: 15px;">
+                            <button class="btn btn-primary" style="margin-right: 10px; padding: 8px 15px; font-size: 0.9rem;">
+                                <i class="fas fa-eye"></i> View Details
+                            </button>
+                            <button class="btn btn-secondary" style="padding: 8px 15px; font-size: 0.9rem;">
+                                <i class="fas fa-edit"></i> Edit
+                            </button>
+                        </div>
+                    </div>
+                `;
+            });
+
+            return mattersHtml;
+        }
+
+        function generateBillingContent() {
+            return `
+                <div class="main-header">
+                    <h1>💰 Time & Billing</h1>
+                    <p>Track time and manage billing</p>
+                </div>
+
+                <div class="dashboard-metrics">
+                    <div class="metric-card-dashboard">
+                        <div class="metric-icon"><i class="fas fa-clock"></i></div>
+                        <h4>Today's Hours</h4>
+                        <div class="metric-value">6.5</div>
+                    </div>
+                    <div class="metric-card-dashboard">
+                        <div class="metric-icon"><i class="fas fa-calendar-week"></i></div>
+                        <h4>This Week</h4>
+                        <div class="metric-value">32.25</div>
+                    </div>
+                    <div class="metric-card-dashboard">
+                        <div class="metric-icon"><i class="fas fa-dollar-sign"></i></div>
+                        <h4>Unbilled Amount</h4>
+                        <div class="metric-value">$15,420</div>
+                    </div>
+                    <div class="metric-card-dashboard">
+                        <div class="metric-icon"><i class="fas fa-chart-line"></i></div>
+                        <h4>Monthly Revenue</h4>
+                        <div class="metric-value">$85,300</div>
+                    </div>
+                </div>
+
+                <div style="display: flex; justify-content: space-between; align-items: center; margin: 30px 0;">
+                    <h3>Recent Time Entries</h3>
+                    <button class="btn btn-primary">
+                        <i class="fas fa-plus"></i> Add Time Entry
+                    </button>
+                </div>
+
+                <div class="document-card">
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <div>
+                            <h4>Johnson vs. Smith Merger</h4>
+                            <p>Review merger documents and regulatory filing requirements</p>
+                            <small>2024-01-15</small>
+                        </div>
+                        <div style="text-align: right;">
+                            <div style="font-weight: 600; color: #2E86AB;">3.5 hours</div>
+                            <div style="font-weight: 600; color: #A23B72;">$875.00</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="document-card">
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <div>
+                            <h4>Real Estate Purchase</h4>
+                            <p>Title search and purchase agreement review</p>
+                            <small>2024-01-14</small>
+                        </div>
+                        <div style="text-align: right;">
+                            <div style="font-weight: 600; color: #2E86AB;">2.0 hours</div>
+                            <div style="font-weight: 600; color: #A23B72;">$500.00</div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function generateAIInsightsContent() {
+            return `
+                <div class="main-header">
+                    <h1>🤖 AI Insights</h1>
+                    <p>Leverage artificial intelligence for legal analysis</p>
+                </div>
+
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 25px;">
+                    <div class="ai-insight">
+                        <h4><i class="fas fa-robot"></i> Contract Analysis</h4>
+                        <p>Upload contracts for AI-powered risk assessment and clause analysis</p>
+                        <button class="btn btn-primary" style="margin-top: 15px;">
+                            <i class="fas fa-upload"></i> Analyze Contract
+                        </button>
+                    </div>
+
+                    <div class="ai-insight">
+                        <h4><i class="fas fa-search"></i> Case Research</h4>
+                        <p>Get AI assistance for legal research and case law analysis</p>
+                        <button class="btn btn-primary" style="margin-top: 15px;">
+                            <i class="fas fa-gavel"></i> Research Assistant
+                        </button>
+                    </div>
+
+                    <div class="ai-insight">
+                        <h4><i class="fas fa-file-search"></i> Document Review</h4>
+                        <p>Automated document review and categorization</p>
+                        <button class="btn btn-primary" style="margin-top: 15px;">
+                            <i class="fas fa-eye"></i> Review Documents
+                        </button>
+                    </div>
+
+                    <div class="ai-insight">
+                        <h4><i class="fas fa-chart-bar"></i> Legal Analytics</h4>
+                        <p>Gain insights from your legal data with AI-powered analytics</p>
+                        <button class="btn btn-primary" style="margin-top: 15px;">
+                            <i class="fas fa-chart-line"></i> View Analytics
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+
+        function generateCalendarContent() {
+            return `
+                <div class="main-header">
+                    <h1>📅 Calendar & Tasks</h1>
+                    <p>Manage your schedule and tasks</p>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 30px;">
+                    <div>
+                        <h3>Calendar View</h3>
+                        <div style="background: white; border-radius: 15px; padding: 20px; box-shadow: 0 5px 15px rgba(0,0,0,0.08);">
+                            <div style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 10px; text-align: center;">
+                                ${generateCalendarDays()}
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <h3>Upcoming Tasks</h3>
+                        ${sampleData.tasks.map(task => `
+                            <div class="document-card">
+                                <div style="display: flex; justify-content: space-between; align-items: center;">
+                                    <div>
+                                        <h4>${task.title}</h4>
+                                        <small>${task.due}</small>
+                                    </div>
+                                    <span class="status-badge status-${task.priority.toLowerCase()}">${task.priority}</span>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+        }
+
+        function generateCalendarDays() {
+            let daysHtml = '';
+            const daysOfWeek = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+            
+            // Add day headers
+            daysOfWeek.forEach(day => {
+                daysHtml += `<div style="font-weight: 600; padding: 10px; background: #f8f9fa; border-radius: 8px;">${day}</div>`;
+            });
+            
+            // Add calendar days
+            for (let i = 1; i <= 31; i++) {
+                const isToday = i === 15;
+                const hasEvents = [2, 6, 9, 12, 15].includes(i);
+                daysHtml += `
+                    <div style="
+                        padding: 10px; 
+                        border-radius: 8px; 
+                        cursor: pointer; 
+                        transition: all 0.3s ease;
+                        ${isToday ? 'background: #2E86AB; color: white;' : 'background: #f8f9fa;'}
+                        ${hasEvents ? 'border: 2px solid #A23B72;' : ''}
+                    " onmouseover="this.style.background='rgba(46, 134, 171, 0.1)'" onmouseout="this.style.background='${isToday ? '#2E86AB' : '#f8f9fa'}'">
+                        ${i}
+                        ${hasEvents ? '<br><small style="color: #A23B72;">●</small>' : ''}
+                    </div>
+                `;
+                if (i === 31) break;
+            }
+            
+            return daysHtml;
+        }
+
+        function generateSearchContent() {
+            return `
+                <div class="main-header">
+                    <h1>🔍 Advanced Search</h1>
+                    <p>Powerful search across all your legal data</p>
+                </div>
+
+                <div style="background: white; border-radius: 15px; padding: 30px; box-shadow: 0 5px 15px rgba(0,0,0,0.08); margin-bottom: 30px;">
+                    <div class="form-group">
+                        <label>Search Query</label>
+                        <input type="text" class="form-control" placeholder="Enter your search terms...">
+                    </div>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 20px;">
+                        <div class="form-group">
+                            <label>Content Type</label>
+                            <select class="form-control">
+                                <option>All Content</option>
+                                <option>Documents</option>
+                                <option>Matters</option>
+                                <option>Clients</option>
+                                <option>Time Entries</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Date Range</label>
+                            <select class="form-control">
+                                <option>Any Time</option>
+                                <option>Last Week</option>
+                                <option>Last Month</option>
+                                <option>Last Year</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Status</label>
+                            <select class="form-control">
+                                <option>Any Status</option>
+                                <option>Active</option>
+                                <option>Pending</option>
+                                <option>Closed</option>
+                            </select>
+                        </div>
+                    </div>
+                    <button class="btn btn-primary">
+                        <i class="fas fa-search"></i> Search
+                    </button>
+                </div>
+
+                <h3>Search Results</h3>
+                <div class="document-card">
+                    <h4>Contract Analysis Results</h4>
+                    <p><strong>Type:</strong> Document | <strong>Date:</strong> 2024-01-15</p>
+                    <p>Search results found in merger agreement...</p>
+                </div>
+            `;
+        }
+
+        function generateIntegrationsContent() {
+            return `
+                <div class="main-header">
+                    <h1>🔌 Integrations</h1>
+                    <p>Connect with external services and APIs</p>
+                </div>
+
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 25px;">
+                    <div class="integration-card">
+                        <h4><i class="fas fa-envelope" style="color: #2E86AB; margin-right: 10px;"></i>Email Integration</h4>
+                        <p>Connect with Gmail, Outlook, and other email providers</p>
+                        <button class="btn btn-primary">
+                            <i class="fas fa-plug"></i> Connect
+                        </button>
+                    </div>
+
+                    <div class="integration-card">
+                        <h4><i class="fas fa-calendar" style="color: #2E86AB; margin-right: 10px;"></i>Calendar Sync</h4>
+                        <p>Synchronize with Google Calendar, Outlook Calendar</p>
+                        <button class="btn btn-primary">
+                            <i class="fas fa-sync"></i> Sync
+                        </button>
+                    </div>
+
+                    <div class="integration-card">
+                        <h4><i class="fas fa-cloud" style="color: #2E86AB; margin-right: 10px;"></i>Cloud Storage</h4>
+                        <p>Integration with Dropbox, Google Drive, OneDrive</p>
+                        <button class="btn btn-primary">
+                            <i class="fas fa-link"></i> Link
+                        </button>
+                    </div>
+
+                    <div class="integration-card">
+                        <h4><i class="fas fa-credit-card" style="color: #2E86AB; margin-right: 10px;"></i>Payment Gateway</h4>
+                        <p>Accept payments through Stripe, PayPal, and more</p>
+                        <button class="btn btn-primary">
+                            <i class="fas fa-dollar-sign"></i> Setup
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+
+        function generateMobileContent() {
+            return `
+                <div class="main-header">
+                    <h1>📱 Mobile App</h1>
+                    <p>Access LegalDoc Pro on the go</p>
+                </div>
+
+                <div style="display: flex; justify-content: center; margin: 40px 0;">
+                    <div class="mobile-frame">
+                        <div class="mobile-screen">
+                            <div style="background: linear-gradient(135deg, #2E86AB, #A23B72); color: white; padding: 20px; text-align: center;">
+                                <h4>LegalDoc Pro Mobile</h4>
+                                <p style="margin: 0; opacity: 0.9;">Enterprise Legal Management</p>
+                            </div>
+                            <div style="padding: 20px;">
+                                <div style="background: #f8f9fa; padding: 15px; border-radius: 10px; margin-bottom: 15px;">
+                                    <strong>📊 Dashboard</strong>
+                                </div>
+                                <div style="background: #f8f9fa; padding: 15px; border-radius: 10px; margin-bottom: 15px;">
+                                    <strong>📁 Documents</strong>
+                                </div>
+                                <div style="background: #f8f9fa; padding: 15px; border-radius: 10px; margin-bottom: 15px;">
+                                    <strong>💼 Matters</strong>
+                                </div>
+                                <div style="background: #f8f9fa; padding: 15px; border-radius: 10px;">
+                                    <strong>⏰ Time Tracking</strong>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="text-align: center;">
+                    <h3>Coming Soon</h3>
+                    <p>Mobile applications for iOS and Android are in development</p>
+                    <button class="btn btn-primary" style="margin-right: 15px;">
+                        <i class="fas fa-mobile-alt"></i> iOS App Store
+                    </button>
+                    <button class="btn btn-primary">
+                        <i class="fas fa-mobile-alt"></i> Google Play Store
+                    </button>
+                </div>
+            `;
+        }
+
+        function generateBusinessIntelContent() {
+            return `
+                <div class="main-header">
+                    <h1>📈 Business Intelligence</h1>
+                    <p>Analytics and insights for your legal practice</p>
+                </div>
+
+                <div class="dashboard-metrics">
+                    <div class="metric-card-dashboard">
+                        <div class="metric-icon"><i class="fas fa-chart-line"></i></div>
+                        <h4>Revenue Growth</h4>
+                        <div class="metric-value">+12.5%</div>
+                    </div>
+                    <div class="metric-card-dashboard">
+                        <div class="metric-icon"><i class="fas fa-users"></i></div>
+                        <h4>Client Retention</h4>
+                        <div class="metric-value">94.2%</div>
+                    </div>
+                    <div class="metric-card-dashboard">
+                        <div class="metric-icon"><i class="fas fa-clock"></i></div>
+                        <h4>Utilization Rate</h4>
+                        <div class="metric-value">78.9%</div>
+                    </div>
+                    <div class="metric-card-dashboard">
+                        <div class="metric-icon"><i class="fas fa-dollar-sign"></i></div>
+                        <h4>Collection Rate</h4>
+                        <div class="metric-value">96.7%</div>
+                    </div>
+                </div>
+
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 25px;">
+                    <div class="document-card">
+                        <h4>📊 Practice Analytics</h4>
+                        <p>Detailed analytics on matter types, client satisfaction, and profitability</p>
+                        <button class="btn btn-primary" style="margin-top: 15px;">
+                            <i class="fas fa-chart-bar"></i> View Reports
+                        </button>
+                    </div>
+
+                    <div class="document-card">
+                        <h4>💰 Financial Insights</h4>
+                        <p>Revenue forecasting, expense tracking, and profitability analysis</p>
+                        <button class="btn btn-primary" style="margin-top: 15px;">
+                            <i class="fas fa-dollar-sign"></i> Financial Dashboard
+                        </button>
+                    </div>
+
+                    <div class="document-card">
+                        <h4>⏱️ Time Analysis</h4>
+                        <p>Time utilization patterns and productivity metrics</p>
+                        <button class="btn btn-primary" style="margin-top: 15px;">
+                            <i class="fas fa-clock"></i> Time Reports
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+
+        function generateClientPortalContent() {
+            let clientsHtml = `
+                <div class="main-header">
+                    <h1>👥 Client Portal Management</h1>
+                    <p>Manage client access and communications</p>
+                </div>
+                
+                <div style="display: flex; gap: 15px; margin-bottom: 30px; flex-wrap: wrap;">
+                    <input type="text" class="form-control" placeholder="Search clients..." style="flex: 1; min-width: 250px;">
+                    <button class="btn btn-primary">
+                        <i class="fas fa-user-plus"></i> Add Client
+                    </button>
+                </div>
+            `;
+
+            sampleData.clients.forEach(client => {
+                clientsHtml += `
+                    <div class="client-portal">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                            <h4>${client.name}</h4>
+                            <span class="status-badge status-active">Active</span>
+                        </div>
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 15px;">
+                            <div><i class="fas fa-envelope" style="color: #9c27b0; margin-right: 8px;"></i><strong>Email:</strong> ${client.email}</div>
+                            <div><i class="fas fa-phone" style="color: #9c27b0; margin-right: 8px;"></i><strong>Phone:</strong> ${client.phone}</div>
+                            <div><i class="fas fa-briefcase" style="color: #9c27b0; margin-right: 8px;"></i><strong>Matters:</strong> ${client.matters}</div>
+                        </div>
+                        <div style="margin-top: 15px;">
+                            <button class="btn btn-primary" style="margin-right: 10px; padding: 8px 15px; font-size: 0.9rem;">
+                                <i class="fas fa-eye"></i> View Portal
+                            </button>
+                            <button class="btn btn-secondary" style="padding: 8px 15px; font-size: 0.9rem;">
+                                <i class="fas fa-envelope"></i> Send Message
+                            </button>
+                        </div>
+                    </div>
+                `;
+            });
+
+            return clientsHtml;
+        }
+
+        function generateSettingsContent() {
+            return `
+                <div class="main-header">
+                    <h1>⚙️ System Settings</h1>
+                    <p>Configure your LegalDoc Pro instance</p>
+                </div>
+
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 25px;">
+                    <div class="integration-card">
+                        <h4><i class="fas fa-users" style="color: #2E86AB; margin-right: 10px;"></i>User Management</h4>
+                        <p>Manage users, roles, and permissions</p>
+                        <button class="btn btn-primary">
+                            <i class="fas fa-users"></i> Manage Users
+                        </button>
+                    </div>
+
+                    <div class="integration-card">
+                        <h4><i class="fas fa-shield-alt" style="color: #2E86AB; margin-right: 10px;"></i>Security Settings</h4>
+                        <p>Configure authentication and security policies</p>
+                        <button class="btn btn-primary">
+                            <i class="fas fa-shield-alt"></i> Security
+                        </button>
+                    </div>
+
+                    <div class="integration-card">
+                        <h4><i class="fas fa-cog" style="color: #2E86AB; margin-right: 10px;"></i>System Configuration</h4>
+                        <p>General system settings and preferences</p>
+                        <button class="btn btn-primary">
+                            <i class="fas fa-cog"></i> Configure
+                        </button>
+                    </div>
+
+                    <div class="integration-card">
+                        <h4><i class="fas fa-database" style="color: #2E86AB; margin-right: 10px;"></i>Backup & Data</h4>
+                        <p>Manage backups and data export</p>
+                        <button class="btn btn-primary">
+                            <i class="fas fa-database"></i> Data Management
+                        </button>
+                    </div>
+                </div>
+
+                <div class="document-card" style="margin-top: 30px;">
+                    <h4>🟢 System Status</h4>
+                    <p><strong>All Systems Operational</strong></p>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-top: 15px;">
+                        <div>• Database: Connected</div>
+                        <div>• File Storage: Available</div>
+                        <div>• Email Service: Active</div>
+                        <div>• Backup System: Running</div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function showMessage(text, type) {
+            const container = document.getElementById('message-container');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${type}`;
+            
+            const icon = type === 'error' ? 'fa-exclamation-triangle' : 
+                        type === 'success' ? 'fa-check-circle' : 'fa-info-circle';
+            
+            messageDiv.innerHTML = `
+                <i class="fas ${icon}"></i>
+                <span>${text}</span>
+            `;
+            
+            // Remove existing messages
+            container.innerHTML = '';
+            container.appendChild(messageDiv);
+            
+            // Auto-remove message after 5 seconds
+            setTimeout(() => {
+                if (messageDiv.parentNode) {
+                    messageDiv.parentNode.removeChild(messageDiv);
+                }
+            }, 5000);
+        }
+
+        function showLoading(show) {
+            const loading = document.getElementById('loading');
+            if (show) {
+                loading.classList.remove('hidden');
+            } else {
+                loading.classList.add('hidden');
+            }
+        }
+
+        // Handle window resize
+        window.addEventListener('resize', () => {
+            if (window.innerWidth <= 768 && sidebarOpen) {
+                // Close sidebar on mobile when window is resized
+                sidebarOpen = false;
+                updateSidebarState();
+            }
+        });
+
+        // Initialize app when page loads
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html><!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -23,6 +924,16 @@
             max-width: 1400px;
             margin: 0 auto;
             padding: 20px;
+        }
+
+        .main-header {
+            background: linear-gradient(135deg, #2E86AB 0%, #A23B72 100%);
+            color: white;
+            padding: 2rem;
+            border-radius: 15px;
+            margin-bottom: 2rem;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
         }
 
         .hero {
@@ -101,141 +1012,83 @@
             font-size: 1rem;
         }
 
-        .form-group {
-            margin-bottom: 25px;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 10px;
-            font-weight: 600;
-            color: #333;
-        }
-
-        .form-control {
-            width: 100%;
-            padding: 15px 20px;
-            border: 2px solid #e9ecef;
-            border-radius: 15px;
-            font-size: 16px;
-            transition: all 0.3s ease;
-            box-sizing: border-box;
-        }
-
-        .form-control:focus {
-            outline: none;
-            border-color: #2E86AB;
-            box-shadow: 0 0 0 3px rgba(46, 134, 171, 0.1);
-        }
-
-        .btn {
-            padding: 15px 30px;
-            border: none;
-            border-radius: 15px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-            transition: all 0.3s ease;
-            text-decoration: none;
-        }
-
-        .btn-primary {
-            background: linear-gradient(135deg, #2E86AB, #A23B72);
-            color: white;
-        }
-
-        .btn-primary:hover:not(:disabled) {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(46, 134, 171, 0.3);
-        }
-
-        .btn:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-            transform: none;
-        }
-
-        .main-app {
+        .sidebar {
+            position: fixed;
+            left: -300px;
+            top: 0;
+            width: 300px;
+            height: 100vh;
             background: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(20px);
-            border-radius: 25px;
-            padding: 40px;
-            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
-            margin-bottom: 30px;
+            transition: all 0.3s ease;
+            z-index: 1000;
+            overflow-y: auto;
+            border-right: 1px solid rgba(0, 0, 0, 0.1);
         }
 
-        .user-dashboard {
-            background: linear-gradient(135deg, #2E86AB 0%, #A23B72 100%);
+        .sidebar.open {
+            left: 0;
+        }
+
+        .sidebar-header {
+            padding: 30px 25px;
+            background: linear-gradient(135deg, #2E86AB, #A23B72);
             color: white;
-            padding: 30px;
-            border-radius: 20px;
-            margin-bottom: 40px;
-        }
-
-        .user-info {
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
 
-        .user-badge {
-            background: rgba(255, 255, 255, 0.2);
-            padding: 8px 16px;
-            border-radius: 20px;
-            font-weight: 600;
+        .sidebar-nav {
+            padding: 20px 0;
         }
 
-        .dashboard-metrics {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 25px;
-            margin-bottom: 40px;
-        }
-
-        .metric-card {
-            background: linear-gradient(135deg, #2E86AB 0%, #A23B72 100%);
-            color: white;
-            padding: 30px;
-            border-radius: 20px;
-            text-align: center;
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px 25px;
+            cursor: pointer;
             transition: all 0.3s ease;
-            border-left: 5px solid rgba(255, 255, 255, 0.3);
-        }
-
-        .metric-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 15px 35px rgba(46, 134, 171, 0.3);
-        }
-
-        .metric-icon {
-            font-size: 2rem;
-            margin-bottom: 15px;
-        }
-
-        .metric-value {
-            font-size: 2.2rem;
-            font-weight: bold;
-            margin-bottom: 10px;
-        }
-
-        .section-header {
-            text-align: center;
-            margin-bottom: 30px;
-        }
-
-        .section-header h2 {
-            font-size: 2.5rem;
-            font-weight: 700;
+            border: none;
+            background: none;
+            width: 100%;
+            text-align: left;
             color: #333;
-            margin-bottom: 10px;
         }
 
-        .section-header p {
-            color: #666;
-            font-size: 1.1rem;
+        .nav-item:hover {
+            background: rgba(46, 134, 171, 0.1);
+            color: #2E86AB;
+        }
+
+        .nav-item.active {
+            background: rgba(46, 134, 171, 0.2);
+            color: #2E86AB;
+            border-right: 4px solid #2E86AB;
+        }
+
+        .nav-item i {
+            width: 20px;
+            text-align: center;
+        }
+
+        .sidebar-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .sidebar-overlay.show {
+            opacity: 1;
+            visibility: visible;
         }
 
         .navbar {
@@ -291,32 +1144,221 @@
             transform: translateY(-2px);
         }
 
-        .tab-navigation {
-            display: flex;
-            gap: 10px;
+        .main-app {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 25px;
+            padding: 40px;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
             margin-bottom: 30px;
-            justify-content: center;
-            flex-wrap: wrap;
+            margin-left: 0;
+            transition: margin-left 0.3s ease;
         }
 
-        .tab-btn {
-            background: rgba(46, 134, 171, 0.1);
-            border: 2px solid rgba(46, 134, 171, 0.2);
-            padding: 12px 20px;
+        .main-app.sidebar-open {
+            margin-left: 300px;
+        }
+
+        .user-dashboard {
+            background: linear-gradient(135deg, #2E86AB 0%, #A23B72 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 20px;
+            margin-bottom: 40px;
+        }
+
+        .user-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .user-badge {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: 600;
+        }
+
+        .metric-card {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            padding: 1.5rem;
             border-radius: 15px;
-            cursor: pointer;
-            color: #2E86AB;
-            font-weight: 500;
+            border-left: 5px solid #2E86AB;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            margin: 0.5rem 0;
             transition: all 0.3s ease;
         }
 
-        .tab-btn:hover {
-            background: rgba(46, 134, 171, 0.2);
+        .metric-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
         }
 
-        .tab-btn.active {
-            background: #2E86AB;
+        .dashboard-metrics {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .metric-card-dashboard {
+            background: linear-gradient(135deg, #2E86AB 0%, #A23B72 100%);
             color: white;
+            padding: 30px;
+            border-radius: 20px;
+            text-align: center;
+            transition: all 0.3s ease;
+            border-left: 5px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .metric-card-dashboard:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(46, 134, 171, 0.3);
+        }
+
+        .metric-icon {
+            font-size: 2rem;
+            margin-bottom: 15px;
+        }
+
+        .metric-value {
+            font-size: 2.2rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .document-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            margin: 1rem 0;
+            border-left: 4px solid #2E86AB;
+            transition: all 0.3s ease;
+        }
+
+        .document-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+
+        .matter-card {
+            background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+            padding: 2rem;
+            border-radius: 15px;
+            border: 2px solid #dee2e6;
+            margin: 1rem 0;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            transition: all 0.3s ease;
+        }
+
+        .status-badge {
+            padding: 0.4rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .status-active { background-color: #28a745; color: white; }
+        .status-pending { background-color: #ffc107; color: #212529; }
+        .status-draft { background-color: #6c757d; color: white; }
+        .status-review { background-color: #17a2b8; color: white; }
+        .status-final { background-color: #28a745; color: white; }
+
+        .ai-insight {
+            background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+            border: 1px solid #2196f3;
+            border-radius: 12px;
+            padding: 1rem;
+            margin: 1rem 0;
+        }
+
+        .client-portal {
+            background: linear-gradient(135deg, #f3e5f5 0%, #e1bee7 100%);
+            border: 1px solid #9c27b0;
+            border-radius: 12px;
+            padding: 1rem;
+            margin: 1rem 0;
+        }
+
+        .integration-card {
+            background: white;
+            border: 2px solid #e9ecef;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin: 1rem 0;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .integration-card:hover {
+            border-color: #2E86AB;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 15px 20px;
+            border: 2px solid #e9ecef;
+            border-radius: 15px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            box-sizing: border-box;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: #2E86AB;
+            box-shadow: 0 0 0 3px rgba(46, 134, 171, 0.1);
+        }
+
+        .btn {
+            padding: 15px 30px;
+            border: none;
+            border-radius: 15px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #2E86AB, #A23B72);
+            color: white;
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(46, 134, 171, 0.3);
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
         }
 
         .message {
@@ -374,6 +1416,59 @@
             to { transform: rotate(360deg); }
         }
 
+        .section-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .section-header h2 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .section-header p {
+            color: #666;
+            font-size: 1.1rem;
+        }
+
+        .mobile-frame {
+            width: 300px;
+            height: 600px;
+            background: #000;
+            border-radius: 25px;
+            padding: 20px;
+            margin: 0 auto;
+            position: relative;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+
+        .mobile-screen {
+            width: 100%;
+            height: 100%;
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #666;
+            padding: 5px;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+        }
+
+        .close-btn:hover {
+            background: #f0f0f0;
+            color: #333;
+        }
+
         @media (max-width: 768px) {
             .container {
                 padding: 10px;
@@ -403,6 +1498,16 @@
             
             .main-app {
                 padding: 25px;
+                margin-left: 0 !important;
+            }
+
+            .sidebar {
+                width: 100%;
+                left: -100%;
+            }
+
+            .sidebar.open {
+                left: 0;
             }
         }
 
@@ -417,15 +1522,93 @@
     </style>
 </head>
 <body>
+    <!-- Sidebar Overlay -->
+    <div id="sidebar-overlay" class="sidebar-overlay" onclick="toggleSidebar()"></div>
+    
+    <!-- Sidebar -->
+    <div id="sidebar" class="sidebar">
+        <div class="sidebar-header">
+            <div class="logo">
+                <div class="logo-icon">
+                    <i class="fas fa-balance-scale"></i>
+                </div>
+                <span>LegalDoc Pro</span>
+            </div>
+            <button class="close-btn" onclick="toggleSidebar()">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        
+        <nav class="sidebar-nav">
+            <button class="nav-item active" onclick="showPage('dashboard')">
+                <i class="fas fa-chart-pie"></i>
+                <span>Executive Dashboard</span>
+            </button>
+            <button class="nav-item" onclick="showPage('documents')">
+                <i class="fas fa-file-alt"></i>
+                <span>Document Management</span>
+            </button>
+            <button class="nav-item" onclick="showPage('matters')">
+                <i class="fas fa-briefcase"></i>
+                <span>Matter Management</span>
+            </button>
+            <button class="nav-item" onclick="showPage('billing')">
+                <i class="fas fa-dollar-sign"></i>
+                <span>Time & Billing</span>
+            </button>
+            <button class="nav-item" onclick="showPage('ai-insights')">
+                <i class="fas fa-robot"></i>
+                <span>AI Insights</span>
+            </button>
+            <button class="nav-item" onclick="showPage('calendar')">
+                <i class="fas fa-calendar"></i>
+                <span>Calendar & Tasks</span>
+            </button>
+            <button class="nav-item" onclick="showPage('search')">
+                <i class="fas fa-search"></i>
+                <span>Advanced Search</span>
+            </button>
+            <button class="nav-item" onclick="showPage('integrations')">
+                <i class="fas fa-plug"></i>
+                <span>Integrations</span>
+            </button>
+            <button class="nav-item" onclick="showPage('mobile')">
+                <i class="fas fa-mobile-alt"></i>
+                <span>Mobile App</span>
+            </button>
+            <button class="nav-item" onclick="showPage('business-intel')">
+                <i class="fas fa-chart-bar"></i>
+                <span>Business Intelligence</span>
+            </button>
+            <button class="nav-item" onclick="showPage('client-portal')">
+                <i class="fas fa-users"></i>
+                <span>Client Portal Management</span>
+            </button>
+            <button class="nav-item" onclick="showPage('settings')">
+                <i class="fas fa-cog"></i>
+                <span>System Settings</span>
+            </button>
+        </nav>
+    </div>
+
     <!-- Navigation (hidden initially) -->
     <div id="navbar" class="navbar hidden">
         <div class="logo">
+            <button class="nav-btn" onclick="toggleSidebar()" style="margin-right: 15px;">
+                <i class="fas fa-bars"></i>
+            </button>
             <div class="logo-icon">
                 <i class="fas fa-balance-scale"></i>
             </div>
             <span>LegalDoc Pro</span>
         </div>
         <div class="nav-actions">
+            <button class="nav-btn" title="Notifications">
+                <i class="fas fa-bell"></i>
+            </button>
+            <button class="nav-btn" title="User Settings">
+                <i class="fas fa-user"></i>
+            </button>
             <button class="nav-btn" onclick="logout()" title="Logout">
                 <i class="fas fa-sign-out-alt"></i>
             </button>
@@ -533,101 +1716,9 @@
                 </div>
             </div>
 
-            <!-- Tab Navigation -->
-            <div class="tab-navigation">
-                <button class="tab-btn active" onclick="showTab('dashboard')" id="tab-dashboard">
-                    <i class="fas fa-chart-pie"></i> Dashboard
-                </button>
-                <button class="tab-btn" onclick="showTab('documents')" id="tab-documents">
-                    <i class="fas fa-file-alt"></i> Documents
-                </button>
-                <button class="tab-btn" onclick="showTab('matters')" id="tab-matters">
-                    <i class="fas fa-briefcase"></i> Matters
-                </button>
-                <button class="tab-btn" onclick="showTab('billing')" id="tab-billing">
-                    <i class="fas fa-dollar-sign"></i> Billing
-                </button>
-            </div>
-
-            <!-- Dashboard Content -->
-            <div id="content-dashboard" class="tab-content">
-                <div class="section-header">
-                    <h2>Executive Dashboard</h2>
-                    <p>Overview of your legal practice management</p>
-                </div>
-
-                <div class="dashboard-metrics">
-                    <div class="metric-card">
-                        <div class="metric-icon"><i class="fas fa-briefcase"></i></div>
-                        <h4>Active Matters</h4>
-                        <div class="metric-value">24</div>
-                    </div>
-                    <div class="metric-card">
-                        <div class="metric-icon"><i class="fas fa-file-alt"></i></div>
-                        <h4>Total Documents</h4>
-                        <div class="metric-value">156</div>
-                    </div>
-                    <div class="metric-card">
-                        <div class="metric-icon"><i class="fas fa-users"></i></div>
-                        <h4>Active Clients</h4>
-                        <div class="metric-value">18</div>
-                    </div>
-                    <div class="metric-card">
-                        <div class="metric-icon"><i class="fas fa-clock"></i></div>
-                        <h4>Billable Hours</h4>
-                        <div class="metric-value">127.5</div>
-                    </div>
-                </div>
-
-                <div class="section-header">
-                    <h3>Recent Activity</h3>
-                    <p>Latest updates across your legal practice</p>
-                </div>
-
-                <div class="dashboard-metrics">
-                    <div class="metric-card" style="text-align: left;">
-                        <h4 style="color: white; margin-bottom: 10px;">Contract Review Completed</h4>
-                        <p style="margin-bottom: 10px; opacity: 0.9;">Johnson vs. Smith merger agreement review</p>
-                        <small style="opacity: 0.8;">2024-01-15 • Sarah Chen</small>
-                    </div>
-                    <div class="metric-card" style="text-align: left;">
-                        <h4 style="color: white; margin-bottom: 10px;">New Matter Created</h4>
-                        <p style="margin-bottom: 10px; opacity: 0.9;">Corporate restructuring for TechCorp Inc.</p>
-                        <small style="opacity: 0.8;">2024-01-14 • Michael Rodriguez</small>
-                    </div>
-                    <div class="metric-card" style="text-align: left;">
-                        <h4 style="color: white; margin-bottom: 10px;">Document Uploaded</h4>
-                        <p style="margin-bottom: 10px; opacity: 0.9;">Real estate purchase agreement</p>
-                        <small style="opacity: 0.8;">2024-01-13 • Emma Williams</small>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Documents Content -->
-            <div id="content-documents" class="tab-content hidden">
-                <div class="section-header">
-                    <h2>Document Management</h2>
-                    <p>Organize and manage your legal documents</p>
-                </div>
-                <p style="text-align: center; color: #666; margin-top: 50px;">Document management features coming soon...</p>
-            </div>
-
-            <!-- Matters Content -->
-            <div id="content-matters" class="tab-content hidden">
-                <div class="section-header">
-                    <h2>Matter Management</h2>
-                    <p>Track and manage legal matters</p>
-                </div>
-                <p style="text-align: center; color: #666; margin-top: 50px;">Matter management features coming soon...</p>
-            </div>
-
-            <!-- Billing Content -->
-            <div id="content-billing" class="tab-content hidden">
-                <div class="section-header">
-                    <h2>Time & Billing</h2>
-                    <p>Track time and manage billing</p>
-                </div>
-                <p style="text-align: center; color: #666; margin-top: 50px;">Billing features coming soon...</p>
+            <!-- Page Content Container -->
+            <div id="page-content">
+                <!-- Content will be dynamically loaded here -->
             </div>
         </div>
 
@@ -642,8 +1733,33 @@
     <script>
         // Application state
         let isAuthenticated = false;
-        let currentTab = 'dashboard';
+        let currentPage = 'dashboard';
         let user = null;
+        let sidebarOpen = false;
+
+        // Sample data matching your Streamlit app
+        const sampleData = {
+            clients: [
+                { id: 1, name: 'Johnson Corporation', email: 'legal@johnsoncorp.com', phone: '(555) 123-4567', matters: 3 },
+                { id: 2, name: 'TechStart Inc.', email: 'ceo@techstart.com', phone: '(555) 234-5678', matters: 2 },
+                { id: 3, name: 'Maria Rodriguez', email: 'maria.r@email.com', phone: '(555) 345-6789', matters: 1 }
+            ],
+            matters: [
+                { id: 1, title: 'Johnson vs. Smith Merger', client: 'Johnson Corporation', type: 'Corporate', status: 'Active', value: '$2.5M' },
+                { id: 2, name: 'Real Estate Purchase', client: 'TechStart Inc.', type: 'Real Estate', status: 'Pending', value: '$850K' },
+                { id: 3, name: 'Employment Dispute', client: 'Maria Rodriguez', type: 'Litigation', status: 'Active', value: '$75K' }
+            ],
+            documents: [
+                { id: 1, name: 'Merger Agreement v2.1', type: 'Contract', status: 'Final', size: '2.3 MB', modified: '2024-01-15' },
+                { id: 2, name: 'Motion to Dismiss', type: 'Pleading', status: 'Review', size: '1.8 MB', modified: '2024-01-14' },
+                { id: 3, name: 'Tax Analysis Memo', type: 'Memo', status: 'Draft', size: '512 KB', modified: '2024-01-13' }
+            ],
+            tasks: [
+                { id: 1, title: 'File Motion to Dismiss', due: 'Today, 5:00 PM', priority: 'High' },
+                { id: 2, title: 'Client Meeting - Johnson Corp', due: 'Tomorrow, 10:00 AM', priority: 'Medium' },
+                { id: 3, title: 'Deposition Preparation', due: 'Jan 17, 2:00 PM', priority: 'High' }
+            ]
+        };
 
         // Initialize application
         function init() {
@@ -655,185 +1771,4 @@
             }, 3000);
         }
 
-        function showDemo() {
-            showMessage('Demo: Auto-logging in...', 'info');
-            setTimeout(() => {
-                user = {
-                    email: 'demo@legaldocpro.com',
-                    firmName: 'Demo Law Firm',
-                    role: 'Senior Partner'
-                };
-                showDashboard();
-            }, 1500);
-        }
-
-        function showLogin() {
-            document.getElementById('login-form').classList.remove('hidden');
-            document.getElementById('signup-form').classList.add('hidden');
-        }
-
-        function showSignup() {
-            document.getElementById('login-form').classList.add('hidden');
-            document.getElementById('signup-form').classList.remove('hidden');
-        }
-
-        function login(event) {
-            event.preventDefault();
-            
-            const email = document.getElementById('email').value;
-            const password = document.getElementById('password').value;
-            
-            if (!email || !password) {
-                showMessage('Please enter email and password', 'error');
-                return;
-            }
-
-            showLoading(true);
-            showMessage('Signing in...', 'info');
-
-            // Simulate API call
-            setTimeout(() => {
-                user = {
-                    email: email,
-                    firmName: 'Your Law Firm',
-                    role: 'Partner'
-                };
-                
-                showMessage('Login successful!', 'success');
-                setTimeout(() => {
-                    showDashboard();
-                }, 1000);
-            }, 1500);
-        }
-
-        function signup(event) {
-            event.preventDefault();
-            
-            const email = document.getElementById('signup-email').value;
-            const password = document.getElementById('signup-password').value;
-            const firmName = document.getElementById('firm-name').value;
-            
-            if (!email || !password || !firmName) {
-                showMessage('Please fill in all fields', 'error');
-                return;
-            }
-
-            showLoading(true);
-            showMessage('Creating account...', 'info');
-
-            // Simulate API call
-            setTimeout(() => {
-                user = {
-                    email: email,
-                    firmName: firmName,
-                    role: 'Partner'
-                };
-                
-                showMessage('Account created successfully!', 'success');
-                setTimeout(() => {
-                    showDashboard();
-                }, 1000);
-            }, 1500);
-        }
-
-        function showDashboard() {
-            isAuthenticated = true;
-            showLoading(false);
-            
-            // Hide auth sections
-            document.getElementById('hero-section').classList.add('hidden');
-            document.getElementById('auth-container').classList.add('hidden');
-            
-            // Show main app
-            document.getElementById('main-app').classList.remove('hidden');
-            document.getElementById('navbar').classList.remove('hidden');
-            
-            // Update user info
-            if (user) {
-                document.getElementById('firm-name-display').textContent = user.firmName;
-                document.getElementById('user-email-display').textContent = user.email;
-                document.getElementById('user-role-display').textContent = user.role;
-            }
-
-            // Add fade-in animation
-            document.getElementById('main-app').classList.add('fade-in');
-        }
-
-        function logout() {
-            isAuthenticated = false;
-            user = null;
-            
-            // Show auth sections
-            document.getElementById('hero-section').classList.remove('hidden');
-            document.getElementById('auth-container').classList.remove('hidden');
-            
-            // Hide main app
-            document.getElementById('main-app').classList.add('hidden');
-            document.getElementById('navbar').classList.add('hidden');
-            
-            // Reset forms
-            document.getElementById('email').value = '';
-            document.getElementById('password').value = '';
-            document.getElementById('signup-email').value = '';
-            document.getElementById('signup-password').value = '';
-            document.getElementById('firm-name').value = '';
-            
-            showMessage('Logged out successfully', 'success');
-            showLogin();
-        }
-
-        function showTab(tabName) {
-            // Hide all tab contents
-            const contents = document.querySelectorAll('.tab-content');
-            contents.forEach(content => content.classList.add('hidden'));
-            
-            // Remove active class from all tabs
-            const tabs = document.querySelectorAll('.tab-btn');
-            tabs.forEach(tab => tab.classList.remove('active'));
-            
-            // Show selected tab content
-            document.getElementById('content-' + tabName).classList.remove('hidden');
-            document.getElementById('tab-' + tabName).classList.add('active');
-            
-            currentTab = tabName;
-        }
-
-        function showMessage(text, type) {
-            const container = document.getElementById('message-container');
-            const messageDiv = document.createElement('div');
-            messageDiv.className = `message ${type}`;
-            
-            const icon = type === 'error' ? 'fa-exclamation-triangle' : 
-                        type === 'success' ? 'fa-check-circle' : 'fa-info-circle';
-            
-            messageDiv.innerHTML = `
-                <i class="fas ${icon}"></i>
-                <span>${text}</span>
-            `;
-            
-            // Remove existing messages
-            container.innerHTML = '';
-            container.appendChild(messageDiv);
-            
-            // Auto-remove message after 5 seconds
-            setTimeout(() => {
-                if (messageDiv.parentNode) {
-                    messageDiv.parentNode.removeChild(messageDiv);
-                }
-            }, 5000);
-        }
-
-        function showLoading(show) {
-            const loading = document.getElementById('loading');
-            if (show) {
-                loading.classList.remove('hidden');
-            } else {
-                loading.classList.add('hidden');
-            }
-        }
-
-        // Initialize app when page loads
-        document.addEventListener('DOMContentLoaded', init);
-    </script>
-</body>
-</html>
+        function show
