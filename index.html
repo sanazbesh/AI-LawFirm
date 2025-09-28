@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>LegalDoc Pro - Enterprise Legal Management</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/alpinejs/3.13.3/cdn.min.js" defer></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
         * {
@@ -24,59 +23,6 @@
             max-width: 1400px;
             margin: 0 auto;
             padding: 20px;
-        }
-
-        .navbar {
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(20px);
-            border-radius: 20px;
-            padding: 15px 30px;
-            margin-bottom: 30px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-        }
-
-        .logo {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            color: white;
-            font-size: 1.5rem;
-            font-weight: 700;
-        }
-
-        .logo-icon {
-            width: 50px;
-            height: 50px;
-            background: linear-gradient(135deg, #2E86AB, #A23B72);
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.2rem;
-            color: white;
-        }
-
-        .nav-actions {
-            display: flex;
-            gap: 15px;
-        }
-
-        .nav-btn {
-            background: rgba(255, 255, 255, 0.2);
-            border: none;
-            padding: 10px 15px;
-            border-radius: 10px;
-            color: white;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .nav-btn:hover {
-            background: rgba(255, 255, 255, 0.3);
-            transform: translateY(-2px);
         }
 
         .hero {
@@ -155,6 +101,63 @@
             font-size: 1rem;
         }
 
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 15px 20px;
+            border: 2px solid #e9ecef;
+            border-radius: 15px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            box-sizing: border-box;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: #2E86AB;
+            box-shadow: 0 0 0 3px rgba(46, 134, 171, 0.1);
+        }
+
+        .btn {
+            padding: 15px 30px;
+            border: none;
+            border-radius: 15px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #2E86AB, #A23B72);
+            color: white;
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(46, 134, 171, 0.3);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
         .main-app {
             background: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(20px);
@@ -218,89 +221,6 @@
             margin-bottom: 10px;
         }
 
-        .sidebar {
-            position: fixed;
-            left: -300px;
-            top: 0;
-            width: 300px;
-            height: 100vh;
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(20px);
-            transition: all 0.3s ease;
-            z-index: 1000;
-            overflow-y: auto;
-            border-right: 1px solid rgba(0, 0, 0, 0.1);
-        }
-
-        .sidebar.open {
-            left: 0;
-        }
-
-        .sidebar-header {
-            padding: 30px 25px;
-            background: linear-gradient(135deg, #2E86AB, #A23B72);
-            color: white;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .sidebar-nav {
-            padding: 20px 0;
-        }
-
-        .nav-item {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            padding: 15px 25px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            border: none;
-            background: none;
-            width: 100%;
-            text-align: left;
-            color: #333;
-        }
-
-        .nav-item:hover {
-            background: rgba(46, 134, 171, 0.1);
-            color: #2E86AB;
-        }
-
-        .nav-item.active {
-            background: rgba(46, 134, 171, 0.2);
-            color: #2E86AB;
-            border-right: 4px solid #2E86AB;
-        }
-
-        .nav-item i {
-            width: 20px;
-            text-align: center;
-        }
-
-        .sidebar-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            background: rgba(0, 0, 0, 0.5);
-            z-index: 999;
-            opacity: 0;
-            visibility: hidden;
-            transition: all 0.3s ease;
-        }
-
-        .sidebar-overlay.show {
-            opacity: 1;
-            visibility: visible;
-        }
-
-        .page-content {
-            transition: all 0.3s ease;
-        }
-
         .section-header {
             text-align: center;
             margin-bottom: 30px;
@@ -318,190 +238,85 @@
             font-size: 1.1rem;
         }
 
-        .document-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-            gap: 25px;
-            margin-bottom: 40px;
-        }
-
-        .document-card {
-            background: white;
-            border-radius: 18px;
-            padding: 25px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-            border-left: 5px solid #2E86AB;
-            transition: all 0.3s ease;
-        }
-
-        .document-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
-        }
-
-        .document-header {
-            display: flex;
-            justify-content: between;
-            align-items: center;
-            margin-bottom: 15px;
-        }
-
-        .document-title {
-            font-size: 1.2rem;
-            font-weight: 600;
-            color: #2E86AB;
-            margin-bottom: 5px;
-        }
-
-        .document-meta {
-            display: flex;
-            gap: 15px;
-            margin-bottom: 15px;
-            font-size: 0.9rem;
-            color: #666;
-        }
-
-        .status-badge {
-            padding: 6px 12px;
+        .navbar {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
             border-radius: 20px;
-            font-size: 0.8rem;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .status-active { background-color: #28a745; color: white; }
-        .status-pending { background-color: #ffc107; color: #212529; }
-        .status-draft { background-color: #6c757d; color: white; }
-        .status-review { background-color: #17a2b8; color: white; }
-        .status-final { background-color: #28a745; color: white; }
-
-        .matter-card {
-            background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
-            padding: 30px;
-            border-radius: 20px;
-            border: 2px solid #dee2e6;
-            margin: 20px 0;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
-            transition: all 0.3s ease;
-        }
-
-        .matter-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
-        }
-
-        .matter-header {
+            padding: 15px 30px;
+            margin-bottom: 30px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
         }
 
-        .matter-title {
-            font-size: 1.4rem;
-            font-weight: 700;
-            color: #2E86AB;
-        }
-
-        .matter-info {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 15px;
-            margin-bottom: 20px;
-        }
-
-        .info-item {
+        .logo {
             display: flex;
             align-items: center;
-            gap: 10px;
-            font-size: 0.95rem;
-        }
-
-        .info-item i {
-            color: #2E86AB;
-            width: 20px;
-        }
-
-        .form-group {
-            margin-bottom: 25px;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 10px;
-            font-weight: 600;
-            color: #333;
-        }
-
-        .form-control {
-            width: 100%;
-            padding: 15px 20px;
-            border: 2px solid #e9ecef;
-            border-radius: 15px;
-            font-size: 16px;
-            transition: all 0.3s ease;
-        }
-
-        .form-control:focus {
-            outline: none;
-            border-color: #2E86AB;
-            box-shadow: 0 0 0 3px rgba(46, 134, 171, 0.1);
-        }
-
-        .btn {
-            padding: 15px 30px;
-            border: none;
-            border-radius: 15px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-            transition: all 0.3s ease;
-        }
-
-        .btn-primary {
-            background: linear-gradient(135deg, #2E86AB, #A23B72);
+            gap: 15px;
             color: white;
+            font-size: 1.5rem;
+            font-weight: 700;
         }
 
-        .btn-primary:hover:not(:disabled) {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(46, 134, 171, 0.3);
-        }
-
-        .btn-secondary {
-            background: #6c757d;
-            color: white;
-        }
-
-        .btn:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-            transform: none;
-        }
-
-        .loading {
-            text-align: center;
-            padding: 60px;
-            color: #2E86AB;
-        }
-
-        .spinner {
+        .logo-icon {
             width: 50px;
             height: 50px;
-            border: 4px solid #f3f3f3;
-            border-top: 4px solid #2E86AB;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-            margin: 0 auto 20px;
+            background: linear-gradient(135deg, #2E86AB, #A23B72);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            color: white;
         }
 
-        @keyframes spin {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
+        .nav-actions {
+            display: flex;
+            gap: 15px;
+        }
+
+        .nav-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            padding: 10px 15px;
+            border-radius: 10px;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .nav-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .tab-navigation {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .tab-btn {
+            background: rgba(46, 134, 171, 0.1);
+            border: 2px solid rgba(46, 134, 171, 0.2);
+            padding: 12px 20px;
+            border-radius: 15px;
+            cursor: pointer;
+            color: #2E86AB;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .tab-btn:hover {
+            background: rgba(46, 134, 171, 0.2);
+        }
+
+        .tab-btn.active {
+            background: #2E86AB;
+            color: white;
         }
 
         .message {
@@ -534,121 +349,34 @@
             color: white;
         }
 
-        .time-entry {
-            background: white;
-            border-radius: 15px;
-            padding: 20px;
-            margin-bottom: 15px;
-            border-left: 4px solid #2E86AB;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+        .hidden {
+            display: none !important;
         }
 
-        .time-entry-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 10px;
-        }
-
-        .calendar-grid {
-            display: grid;
-            grid-template-columns: repeat(7, 1fr);
-            gap: 10px;
-            margin-top: 20px;
-        }
-
-        .calendar-day {
-            background: white;
-            border-radius: 10px;
-            padding: 15px;
+        .loading {
             text-align: center;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            border: 2px solid transparent;
+            padding: 60px;
+            color: #2E86AB;
         }
 
-        .calendar-day:hover {
-            background: rgba(46, 134, 171, 0.1);
-        }
-
-        .calendar-day.today {
-            background: #2E86AB;
-            color: white;
-        }
-
-        .calendar-day.has-events {
-            border-color: #A23B72;
-        }
-
-        .modal {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            background: rgba(0, 0, 0, 0.5);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 2000;
-            opacity: 0;
-            visibility: hidden;
-            transition: all 0.3s ease;
-        }
-
-        .modal.show {
-            opacity: 1;
-            visibility: visible;
-        }
-
-        .modal-content {
-            background: white;
-            border-radius: 20px;
-            padding: 40px;
-            max-width: 600px;
-            width: 90%;
-            max-height: 80vh;
-            overflow-y: auto;
-            transform: scale(0.7);
-            transition: all 0.3s ease;
-        }
-
-        .modal.show .modal-content {
-            transform: scale(1);
-        }
-
-        .modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 30px;
-            padding-bottom: 20px;
-            border-bottom: 2px solid #f0f0f0;
-        }
-
-        .close-btn {
-            background: none;
-            border: none;
-            font-size: 1.5rem;
-            cursor: pointer;
-            color: #666;
-            padding: 5px;
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #2E86AB;
             border-radius: 50%;
-            transition: all 0.3s ease;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
         }
 
-        .close-btn:hover {
-            background: #f0f0f0;
-            color: #333;
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
         }
 
         @media (max-width: 768px) {
             .container {
                 padding: 10px;
-            }
-            
-            .navbar {
-                padding: 10px 20px;
             }
             
             .hero h1 {
@@ -660,10 +388,6 @@
             }
             
             .dashboard-metrics {
-                grid-template-columns: 1fr;
-            }
-            
-            .document-grid {
                 grid-template-columns: 1fr;
             }
             
@@ -692,92 +416,25 @@
         }
     </style>
 </head>
-<body x-data="legalApp()" x-init="init()">
-    <!-- Sidebar Overlay -->
-    <div class="sidebar-overlay" :class="{ show: sidebarOpen }" @click="sidebarOpen = false"></div>
-    
-    <!-- Sidebar -->
-    <div class="sidebar" :class="{ open: sidebarOpen }">
-        <div class="sidebar-header">
-            <div class="logo">
-                <div class="logo-icon">
-                    <i class="fas fa-balance-scale"></i>
-                </div>
-                <span>LegalDoc Pro</span>
-            </div>
-            <button class="close-btn" @click="sidebarOpen = false">
-                <i class="fas fa-times"></i>
-            </button>
-        </div>
-        
-        <nav class="sidebar-nav">
-            <button class="nav-item" :class="{ active: currentPage === 'dashboard' }" @click="setPage('dashboard')">
-                <i class="fas fa-chart-pie"></i>
-                <span>Executive Dashboard</span>
-            </button>
-            <button class="nav-item" :class="{ active: currentPage === 'documents' }" @click="setPage('documents')">
-                <i class="fas fa-file-alt"></i>
-                <span>Document Management</span>
-            </button>
-            <button class="nav-item" :class="{ active: currentPage === 'matters' }" @click="setPage('matters')">
-                <i class="fas fa-briefcase"></i>
-                <span>Matter Management</span>
-            </button>
-            <button class="nav-item" :class="{ active: currentPage === 'billing' }" @click="setPage('billing')">
-                <i class="fas fa-dollar-sign"></i>
-                <span>Time & Billing</span>
-            </button>
-            <button class="nav-item" :class="{ active: currentPage === 'ai-insights' }" @click="setPage('ai-insights')">
-                <i class="fas fa-robot"></i>
-                <span>AI Insights</span>
-            </button>
-            <button class="nav-item" :class="{ active: currentPage === 'calendar' }" @click="setPage('calendar')">
-                <i class="fas fa-calendar"></i>
-                <span>Calendar & Tasks</span>
-            </button>
-            <button class="nav-item" :class="{ active: currentPage === 'search' }" @click="setPage('search')">
-                <i class="fas fa-search"></i>
-                <span>Advanced Search</span>
-            </button>
-            <button class="nav-item" :class="{ active: currentPage === 'clients' }" @click="setPage('clients')">
-                <i class="fas fa-users"></i>
-                <span>Client Portal</span>
-            </button>
-            <button class="nav-item" :class="{ active: currentPage === 'settings' }" @click="setPage('settings')">
-                <i class="fas fa-cog"></i>
-                <span>System Settings</span>
-            </button>
-        </nav>
-    </div>
-
-    <!-- Main Navigation -->
-    <div class="navbar" x-show="isAuthenticated">
+<body>
+    <!-- Navigation (hidden initially) -->
+    <div id="navbar" class="navbar hidden">
         <div class="logo">
-            <button class="nav-btn" @click="sidebarOpen = !sidebarOpen" style="margin-right: 15px;">
-                <i class="fas fa-bars"></i>
-            </button>
             <div class="logo-icon">
                 <i class="fas fa-balance-scale"></i>
             </div>
             <span>LegalDoc Pro</span>
         </div>
         <div class="nav-actions">
-            <button class="nav-btn" @click="showNotifications = !showNotifications" title="Notifications">
-                <i class="fas fa-bell"></i>
-                <span x-show="notifications.length > 0" style="position: absolute; top: -5px; right: -5px; background: #ff4757; color: white; border-radius: 50%; width: 20px; height: 20px; font-size: 0.8rem; display: flex; align-items: center; justify-content: center;" x-text="notifications.length"></span>
-            </button>
-            <button class="nav-btn" @click="showUserSettings = !showUserSettings" title="User Settings">
-                <i class="fas fa-user"></i>
-            </button>
-            <button class="nav-btn" @click="logout()" title="Logout">
+            <button class="nav-btn" onclick="logout()" title="Logout">
                 <i class="fas fa-sign-out-alt"></i>
             </button>
         </div>
     </div>
 
     <div class="container">
-        <!-- Hero Section (shown when not authenticated) -->
-        <div x-show="!isAuthenticated" class="hero">
+        <!-- Hero Section -->
+        <div id="hero-section" class="hero">
             <h1>LegalDoc Pro</h1>
             <p>Complete Enterprise Legal Management Platform for modern law firms. Streamline document management, track matters, manage time & billing, and leverage AI insights for superior legal practice management.</p>
             
@@ -801,80 +458,99 @@
             </div>
         </div>
 
-        <!-- Authentication Forms -->
-        <div x-show="!isAuthenticated" class="auth-container">
-            <div x-show="authMode === 'login'">
+        <!-- Authentication Container -->
+        <div id="auth-container" class="auth-container">
+            <!-- Login Form -->
+            <div id="login-form">
                 <div class="auth-header">
                     <h2><i class="fas fa-sign-in-alt"></i> Legal Professional Portal</h2>
                     <p>Access your legal management dashboard</p>
                 </div>
-                <form @submit.prevent="login()">
+                <form onsubmit="login(event)">
                     <div class="form-group">
                         <label for="email">Email Address</label>
-                        <input type="email" id="email" class="form-control" x-model="credentials.email" required>
+                        <input type="email" id="email" class="form-control" required>
                     </div>
                     <div class="form-group">
                         <label for="password">Password</label>
-                        <input type="password" id="password" class="form-control" x-model="credentials.password" required>
+                        <input type="password" id="password" class="form-control" required>
                     </div>
-                    <button type="submit" class="btn btn-primary" style="width: 100%;" :disabled="loading">
+                    <button type="submit" class="btn btn-primary" style="width: 100%;" id="login-btn">
                         <i class="fas fa-sign-in-alt"></i>
-                        <span x-text="loading ? 'Signing In...' : 'Sign In'"></span>
+                        <span>Sign In</span>
                     </button>
                 </form>
                 <p style="text-align: center; margin-top: 25px;">
                     New to LegalDoc Pro? 
-                    <a href="#" @click="authMode = 'signup'" style="color: #2E86AB; text-decoration: none;">Create Account</a>
+                    <a href="#" onclick="showSignup()" style="color: #2E86AB; text-decoration: none;">Create Account</a>
                 </p>
             </div>
 
-            <div x-show="authMode === 'signup'">
+            <!-- Signup Form -->
+            <div id="signup-form" class="hidden">
                 <div class="auth-header">
                     <h2><i class="fas fa-user-plus"></i> Join LegalDoc Pro</h2>
                     <p>Create your legal management account</p>
                 </div>
-                <form @submit.prevent="signup()">
+                <form onsubmit="signup(event)">
                     <div class="form-group">
                         <label for="signup-email">Email Address</label>
-                        <input type="email" id="signup-email" class="form-control" x-model="credentials.email" required>
+                        <input type="email" id="signup-email" class="form-control" required>
                     </div>
                     <div class="form-group">
                         <label for="signup-password">Password</label>
-                        <input type="password" id="signup-password" class="form-control" x-model="credentials.password" required>
+                        <input type="password" id="signup-password" class="form-control" required>
                     </div>
                     <div class="form-group">
                         <label for="firm-name">Law Firm Name</label>
-                        <input type="text" id="firm-name" class="form-control" x-model="credentials.firmName" required>
+                        <input type="text" id="firm-name" class="form-control" required>
                     </div>
-                    <button type="submit" class="btn btn-primary" style="width: 100%;" :disabled="loading">
+                    <button type="submit" class="btn btn-primary" style="width: 100%;" id="signup-btn">
                         <i class="fas fa-user-plus"></i>
-                        <span x-text="loading ? 'Creating Account...' : 'Create Account'"></span>
+                        <span>Create Account</span>
                     </button>
                 </form>
                 <p style="text-align: center; margin-top: 25px;">
                     Already have an account? 
-                    <a href="#" @click="authMode = 'login'" style="color: #2E86AB; text-decoration: none;">Sign In</a>
+                    <a href="#" onclick="showLogin()" style="color: #2E86AB; text-decoration: none;">Sign In</a>
                 </p>
             </div>
 
-            <div x-show="message" :class="'message ' + messageType" x-text="message"></div>
+            <!-- Message Container -->
+            <div id="message-container"></div>
         </div>
 
-        <!-- Main Application -->
-        <div x-show="isAuthenticated" class="main-app fade-in">
+        <!-- Main Application (hidden initially) -->
+        <div id="main-app" class="main-app hidden">
             <!-- User Dashboard Header -->
             <div class="user-dashboard">
                 <div class="user-info">
                     <div>
-                        <h3><i class="fas fa-building"></i> <span x-text="user?.firmName || 'Legal Professional'"></span></h3>
-                        <p x-text="user?.email"></p>
+                        <h3><i class="fas fa-building"></i> <span id="firm-name-display">Demo Law Firm</span></h3>
+                        <p id="user-email-display">demo@legaldocpro.com</p>
                     </div>
-                    <div class="user-badge" x-text="user?.role || 'Partner'"></div>
+                    <div class="user-badge" id="user-role-display">Senior Partner</div>
                 </div>
             </div>
 
-            <!-- Dashboard Metrics (Dashboard Page) -->
-            <div x-show="currentPage === 'dashboard'" class="page-content">
+            <!-- Tab Navigation -->
+            <div class="tab-navigation">
+                <button class="tab-btn active" onclick="showTab('dashboard')" id="tab-dashboard">
+                    <i class="fas fa-chart-pie"></i> Dashboard
+                </button>
+                <button class="tab-btn" onclick="showTab('documents')" id="tab-documents">
+                    <i class="fas fa-file-alt"></i> Documents
+                </button>
+                <button class="tab-btn" onclick="showTab('matters')" id="tab-matters">
+                    <i class="fas fa-briefcase"></i> Matters
+                </button>
+                <button class="tab-btn" onclick="showTab('billing')" id="tab-billing">
+                    <i class="fas fa-dollar-sign"></i> Billing
+                </button>
+            </div>
+
+            <!-- Dashboard Content -->
+            <div id="content-dashboard" class="tab-content">
                 <div class="section-header">
                     <h2>Executive Dashboard</h2>
                     <p>Overview of your legal practice management</p>
@@ -884,1048 +560,280 @@
                     <div class="metric-card">
                         <div class="metric-icon"><i class="fas fa-briefcase"></i></div>
                         <h4>Active Matters</h4>
-                        <div class="metric-value" x-text="dashboardData.activeMatters"></div>
+                        <div class="metric-value">24</div>
                     </div>
                     <div class="metric-card">
                         <div class="metric-icon"><i class="fas fa-file-alt"></i></div>
                         <h4>Total Documents</h4>
-                        <div class="metric-value" x-text="dashboardData.totalDocuments"></div>
+                        <div class="metric-value">156</div>
                     </div>
                     <div class="metric-card">
                         <div class="metric-icon"><i class="fas fa-users"></i></div>
                         <h4>Active Clients</h4>
-                        <div class="metric-value" x-text="dashboardData.activeClients"></div>
+                        <div class="metric-value">18</div>
                     </div>
                     <div class="metric-card">
                         <div class="metric-icon"><i class="fas fa-clock"></i></div>
                         <h4>Billable Hours</h4>
-                        <div class="metric-value" x-text="dashboardData.billableHours"></div>
+                        <div class="metric-value">127.5</div>
                     </div>
                 </div>
 
-                <!-- Recent Activity -->
                 <div class="section-header">
                     <h3>Recent Activity</h3>
                     <p>Latest updates across your legal practice</p>
                 </div>
 
-                <div class="document-grid">
-                    <template x-for="activity in recentActivity" :key="activity.id">
-                        <div class="document-card">
-                            <div class="document-header">
-                                <div class="document-title" x-text="activity.title"></div>
-                                <span class="status-badge" :class="'status-' + activity.status" x-text="activity.status"></span>
-                            </div>
-                            <div class="document-meta">
-                                <span><i class="fas fa-calendar"></i> <span x-text="activity.date"></span></span>
-                                <span><i class="fas fa-user"></i> <span x-text="activity.user"></span></span>
-                            </div>
-                            <p x-text="activity.description"></p>
-                        </div>
-                    </template>
+                <div class="dashboard-metrics">
+                    <div class="metric-card" style="text-align: left;">
+                        <h4 style="color: white; margin-bottom: 10px;">Contract Review Completed</h4>
+                        <p style="margin-bottom: 10px; opacity: 0.9;">Johnson vs. Smith merger agreement review</p>
+                        <small style="opacity: 0.8;">2024-01-15 • Sarah Chen</small>
+                    </div>
+                    <div class="metric-card" style="text-align: left;">
+                        <h4 style="color: white; margin-bottom: 10px;">New Matter Created</h4>
+                        <p style="margin-bottom: 10px; opacity: 0.9;">Corporate restructuring for TechCorp Inc.</p>
+                        <small style="opacity: 0.8;">2024-01-14 • Michael Rodriguez</small>
+                    </div>
+                    <div class="metric-card" style="text-align: left;">
+                        <h4 style="color: white; margin-bottom: 10px;">Document Uploaded</h4>
+                        <p style="margin-bottom: 10px; opacity: 0.9;">Real estate purchase agreement</p>
+                        <small style="opacity: 0.8;">2024-01-13 • Emma Williams</small>
+                    </div>
                 </div>
             </div>
 
-            <!-- Document Management Page -->
-            <div x-show="currentPage === 'documents'" class="page-content">
+            <!-- Documents Content -->
+            <div id="content-documents" class="tab-content hidden">
                 <div class="section-header">
                     <h2>Document Management</h2>
                     <p>Organize and manage your legal documents</p>
                 </div>
-
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
-                    <div style="display: flex; gap: 15px;">
-                        <input type="text" class="form-control" placeholder="Search documents..." x-model="documentSearch" style="width: 300px;">
-                        <select class="form-control" x-model="documentFilter" style="width: 200px;">
-                            <option value="">All Types</option>
-                            <option value="contract">Contracts</option>
-                            <option value="brief">Briefs</option>
-                            <option value="pleading">Pleadings</option>
-                            <option value="memo">Memos</option>
-                        </select>
-                    </div>
-                    <button class="btn btn-primary" @click="showUploadModal = true">
-                        <i class="fas fa-upload"></i>
-                        Upload Document
-                    </button>
-                </div>
-
-                <div class="document-grid">
-                    <template x-for="doc in filteredDocuments" :key="doc.id">
-                        <div class="document-card">
-                            <div class="document-header">
-                                <div class="document-title" x-text="doc.name"></div>
-                                <span class="status-badge" :class="'status-' + doc.status" x-text="doc.status"></span>
-                            </div>
-                            <div class="document-meta">
-                                <span><i class="fas fa-calendar"></i> <span x-text="doc.modified"></span></span>
-                                <span><i class="fas fa-file"></i> <span x-text="doc.type"></span></span>
-                                <span><i class="fas fa-weight"></i> <span x-text="doc.size"></span></span>
-                            </div>
-                            <p x-text="doc.description"></p>
-                            <div style="display: flex; gap: 10px; margin-top: 15px;">
-                                <button class="btn btn-primary" style="font-size: 0.9rem; padding: 8px 15px;">
-                                    <i class="fas fa-eye"></i> View
-                                </button>
-                                <button class="btn btn-secondary" style="font-size: 0.9rem; padding: 8px 15px;">
-                                    <i class="fas fa-download"></i> Download
-                                </button>
-                            </div>
-                        </div>
-                    </template>
-                </div>
+                <p style="text-align: center; color: #666; margin-top: 50px;">Document management features coming soon...</p>
             </div>
 
-            <!-- Matter Management Page -->
-            <div x-show="currentPage === 'matters'" class="page-content">
+            <!-- Matters Content -->
+            <div id="content-matters" class="tab-content hidden">
                 <div class="section-header">
                     <h2>Matter Management</h2>
                     <p>Track and manage legal matters</p>
                 </div>
-
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
-                    <div style="display: flex; gap: 15px;">
-                        <input type="text" class="form-control" placeholder="Search matters..." x-model="matterSearch" style="width: 300px;">
-                        <select class="form-control" x-model="matterFilter" style="width: 200px;">
-                            <option value="">All Status</option>
-                            <option value="active">Active</option>
-                            <option value="pending">Pending</option>
-                            <option value="closed">Closed</option>
-                        </select>
-                    </div>
-                    <button class="btn btn-primary" @click="showMatterModal = true">
-                        <i class="fas fa-plus"></i>
-                        New Matter
-                    </button>
-                </div>
-
-                <template x-for="matter in filteredMatters" :key="matter.id">
-                    <div class="matter-card">
-                        <div class="matter-header">
-                            <div class="matter-title" x-text="matter.title"></div>
-                            <span class="status-badge" :class="'status-' + matter.status" x-text="matter.status"></span>
-                        </div>
-                        <div class="matter-info">
-                            <div class="info-item">
-                                <i class="fas fa-user"></i>
-                                <span x-text="matter.client"></span>
-                            </div>
-                            <div class="info-item">
-                                <i class="fas fa-gavel"></i>
-                                <span x-text="matter.type"></span>
-                            </div>
-                            <div class="info-item">
-                                <i class="fas fa-calendar"></i>
-                                <span x-text="matter.created"></span>
-                            </div>
-                            <div class="info-item">
-                                <i class="fas fa-dollar-sign"></i>
-                                <span x-text="matter.value"></span>
-                            </div>
-                        </div>
-                        <p x-text="matter.description"></p>
-                        <div style="display: flex; gap: 10px; margin-top: 15px;">
-                            <button class="btn btn-primary" style="font-size: 0.9rem; padding: 8px 15px;">
-                                <i class="fas fa-eye"></i> View Details
-                            </button>
-                            <button class="btn btn-secondary" style="font-size: 0.9rem; padding: 8px 15px;">
-                                <i class="fas fa-edit"></i> Edit
-                            </button>
-                        </div>
-                    </div>
-                </template>
+                <p style="text-align: center; color: #666; margin-top: 50px;">Matter management features coming soon...</p>
             </div>
 
-            <!-- Time & Billing Page -->
-            <div x-show="currentPage === 'billing'" class="page-content">
+            <!-- Billing Content -->
+            <div id="content-billing" class="tab-content hidden">
                 <div class="section-header">
                     <h2>Time & Billing</h2>
                     <p>Track time and manage billing</p>
                 </div>
-
-                <div class="dashboard-metrics">
-                    <div class="metric-card">
-                        <div class="metric-icon"><i class="fas fa-clock"></i></div>
-                        <h4>Today's Hours</h4>
-                        <div class="metric-value" x-text="billingData.todayHours"></div>
-                    </div>
-                    <div class="metric-card">
-                        <div class="metric-icon"><i class="fas fa-calendar-week"></i></div>
-                        <h4>This Week</h4>
-                        <div class="metric-value" x-text="billingData.weekHours"></div>
-                    </div>
-                    <div class="metric-card">
-                        <div class="metric-icon"><i class="fas fa-dollar-sign"></i></div>
-                        <h4>Unbilled Amount</h4>
-                        <div class="metric-value" x-text="billingData.unbilled"></div>
-                    </div>
-                    <div class="metric-card">
-                        <div class="metric-icon"><i class="fas fa-chart-line"></i></div>
-                        <h4>Monthly Revenue</h4>
-                        <div class="metric-value" x-text="billingData.monthlyRevenue"></div>
-                    </div>
-                </div>
-
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
-                    <h3>Recent Time Entries</h3>
-                    <button class="btn btn-primary" @click="showTimeModal = true">
-                        <i class="fas fa-plus"></i>
-                        Add Time Entry
-                    </button>
-                </div>
-
-                <template x-for="entry in timeEntries" :key="entry.id">
-                    <div class="time-entry">
-                        <div class="time-entry-header">
-                            <div>
-                                <strong x-text="entry.matter"></strong>
-                                <span style="color: #666; margin-left: 10px;" x-text="entry.date"></span>
-                            </div>
-                            <div style="display: flex; gap: 15px; align-items: center;">
-                                <span style="font-weight: 600; color: #2E86AB;" x-text="entry.hours + ' hours'"></span>
-                                <span style="font-weight: 600; color: #A23B72;" x-text="entry.amount"></span>
-                            </div>
-                        </div>
-                        <p x-text="entry.description"></p>
-                    </div>
-                </template>
-            </div>
-
-            <!-- AI Insights Page -->
-            <div x-show="currentPage === 'ai-insights'" class="page-content">
-                <div class="section-header">
-                    <h2>AI Insights</h2>
-                    <p>Leverage artificial intelligence for legal analysis</p>
-                </div>
-
-                <div class="document-grid">
-                    <div class="document-card">
-                        <div class="document-title">Contract Analysis</div>
-                        <p>Upload contracts for AI-powered risk assessment and clause analysis</p>
-                        <button class="btn btn-primary">
-                            <i class="fas fa-robot"></i> Analyze Contract
-                        </button>
-                    </div>
-                    <div class="document-card">
-                        <div class="document-title">Case Research</div>
-                        <p>Get AI assistance for legal research and case law analysis</p>
-                        <button class="btn btn-primary">
-                            <i class="fas fa-search"></i> Research Assistant
-                        </button>
-                    </div>
-                    <div class="document-card">
-                        <div class="document-title">Document Review</div>
-                        <p>Automated document review and categorization</p>
-                        <button class="btn btn-primary">
-                            <i class="fas fa-file-search"></i> Review Documents
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Calendar & Tasks Page -->
-            <div x-show="currentPage === 'calendar'" class="page-content">
-                <div class="section-header">
-                    <h2>Calendar & Tasks</h2>
-                    <p>Manage your schedule and tasks</p>
-                </div>
-
-                <div style="display: flex; gap: 30px;">
-                    <div style="flex: 2;">
-                        <h3>Calendar</h3>
-                        <div class="calendar-grid">
-                            <template x-for="day in calendarDays" :key="day.date">
-                                <div class="calendar-day" :class="{ today: day.isToday, 'has-events': day.hasEvents }">
-                                    <div x-text="day.date"></div>
-                                    <div x-show="day.hasEvents" style="font-size: 0.8rem; color: #A23B72;">
-                                        <span x-text="day.eventCount + ' events'"></span>
-                                    </div>
-                                </div>
-                            </template>
-                        </div>
-                    </div>
-                    <div style="flex: 1;">
-                        <h3>Upcoming Tasks</h3>
-                        <template x-for="task in upcomingTasks" :key="task.id">
-                            <div class="time-entry">
-                                <div style="display: flex; justify-content: space-between; align-items: center;">
-                                    <div>
-                                        <strong x-text="task.title"></strong>
-                                        <div style="font-size: 0.9rem; color: #666;" x-text="task.due"></div>
-                                    </div>
-                                    <span class="status-badge" :class="'status-' + task.priority" x-text="task.priority"></span>
-                                </div>
-                            </div>
-                        </template>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Advanced Search Page -->
-            <div x-show="currentPage === 'search'" class="page-content">
-                <div class="section-header">
-                    <h2>Advanced Search</h2>
-                    <p>Powerful search across all your legal data</p>
-                </div>
-
-                <div class="main-app" style="margin-bottom: 30px;">
-                    <form @submit.prevent="performSearch()">
-                        <div class="form-group">
-                            <label>Search Query</label>
-                            <input type="text" class="form-control" x-model="searchQuery" placeholder="Enter your search terms...">
-                        </div>
-                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 20px;">
-                            <div class="form-group">
-                                <label>Content Type</label>
-                                <select class="form-control" x-model="searchFilters.contentType">
-                                    <option value="">All Content</option>
-                                    <option value="documents">Documents</option>
-                                    <option value="matters">Matters</option>
-                                    <option value="clients">Clients</option>
-                                    <option value="time">Time Entries</option>
-                                </select>
-                            </div>
-                            <div class="form-group">
-                                <label>Date Range</label>
-                                <select class="form-control" x-model="searchFilters.dateRange">
-                                    <option value="">Any Time</option>
-                                    <option value="week">Last Week</option>
-                                    <option value="month">Last Month</option>
-                                    <option value="year">Last Year</option>
-                                </select>
-                            </div>
-                            <div class="form-group">
-                                <label>Status</label>
-                                <select class="form-control" x-model="searchFilters.status">
-                                    <option value="">Any Status</option>
-                                    <option value="active">Active</option>
-                                    <option value="pending">Pending</option>
-                                    <option value="closed">Closed</option>
-                                </select>
-                            </div>
-                        </div>
-                        <button type="submit" class="btn btn-primary">
-                            <i class="fas fa-search"></i>
-                            Search
-                        </button>
-                    </form>
-                </div>
-
-                <div x-show="searchResults.length > 0">
-                    <h3>Search Results</h3>
-                    <template x-for="result in searchResults" :key="result.id">
-                        <div class="document-card">
-                            <div class="document-title" x-text="result.title"></div>
-                            <div class="document-meta">
-                                <span><i class="fas fa-tag"></i> <span x-text="result.type"></span></span>
-                                <span><i class="fas fa-calendar"></i> <span x-text="result.date"></span></span>
-                            </div>
-                            <p x-text="result.excerpt"></p>
-                        </div>
-                    </template>
-                </div>
-            </div>
-
-            <!-- Client Portal Page -->
-            <div x-show="currentPage === 'clients'" class="page-content">
-                <div class="section-header">
-                    <h2>Client Portal Management</h2>
-                    <p>Manage client access and communications</p>
-                </div>
-
-                <div class="document-grid">
-                    <template x-for="client in clients" :key="client.id">
-                        <div class="document-card">
-                            <div class="document-title" x-text="client.name"></div>
-                            <div class="document-meta">
-                                <span><i class="fas fa-envelope"></i> <span x-text="client.email"></span></span>
-                                <span><i class="fas fa-phone"></i> <span x-text="client.phone"></span></span>
-                            </div>
-                            <p>Active matters: <span x-text="client.activeMatters"></span></p>
-                            <div style="display: flex; gap: 10px; margin-top: 15px;">
-                                <button class="btn btn-primary" style="font-size: 0.9rem; padding: 8px 15px;">
-                                    <i class="fas fa-eye"></i> View Portal
-                                </button>
-                                <button class="btn btn-secondary" style="font-size: 0.9rem; padding: 8px 15px;">
-                                    <i class="fas fa-envelope"></i> Send Message
-                                </button>
-                            </div>
-                        </div>
-                    </template>
-                </div>
-            </div>
-
-            <!-- System Settings Page -->
-            <div x-show="currentPage === 'settings'" class="page-content">
-                <div class="section-header">
-                    <h2>System Settings</h2>
-                    <p>Configure your LegalDoc Pro instance</p>
-                </div>
-
-                <div class="document-grid">
-                    <div class="document-card">
-                        <div class="document-title">User Management</div>
-                        <p>Manage users, roles, and permissions</p>
-                        <button class="btn btn-primary">
-                            <i class="fas fa-users"></i> Manage Users
-                        </button>
-                    </div>
-                    <div class="document-card">
-                        <div class="document-title">Security Settings</div>
-                        <p>Configure authentication and security policies</p>
-                        <button class="btn btn-primary">
-                            <i class="fas fa-shield-alt"></i> Security
-                        </button>
-                    </div>
-                    <div class="document-card">
-                        <div class="document-title">Integrations</div>
-                        <p>Connect with external services and APIs</p>
-                        <button class="btn btn-primary">
-                            <i class="fas fa-plug"></i> Integrations
-                        </button>
-                    </div>
-                    <div class="document-card">
-                        <div class="document-title">Backup & Data</div>
-                        <p>Manage backups and data export</p>
-                        <button class="btn btn-primary">
-                            <i class="fas fa-database"></i> Data Management
-                        </button>
-                    </div>
-                </div>
+                <p style="text-align: center; color: #666; margin-top: 50px;">Billing features coming soon...</p>
             </div>
         </div>
 
         <!-- Loading State -->
-        <div x-show="loading" class="loading">
+        <div id="loading" class="loading hidden">
             <div class="spinner"></div>
             <h3>Loading...</h3>
             <p>Please wait while we process your request</p>
         </div>
-
-        <!-- Messages -->
-        <div x-show="message" :class="'message ' + messageType">
-            <i class="fas" :class="messageType === 'error' ? 'fa-exclamation-triangle' : messageType === 'success' ? 'fa-check-circle' : 'fa-info-circle'"></i>
-            <span x-text="message"></span>
-        </div>
-    </div>
-
-    <!-- Modals -->
-    <!-- Upload Document Modal -->
-    <div class="modal" :class="{ show: showUploadModal }">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3>Upload Document</h3>
-                <button class="close-btn" @click="showUploadModal = false">
-                    <i class="fas fa-times"></i>
-                </button>
-            </div>
-            <form @submit.prevent="uploadDocument()">
-                <div class="form-group">
-                    <label>Document Name</label>
-                    <input type="text" class="form-control" x-model="uploadForm.name" required>
-                </div>
-                <div class="form-group">
-                    <label>Document Type</label>
-                    <select class="form-control" x-model="uploadForm.type" required>
-                        <option value="">Select Type</option>
-                        <option value="contract">Contract</option>
-                        <option value="brief">Brief</option>
-                        <option value="pleading">Pleading</option>
-                        <option value="memo">Memo</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label>Matter</label>
-                    <select class="form-control" x-model="uploadForm.matter">
-                        <option value="">Select Matter</option>
-                        <template x-for="matter in matters" :key="matter.id">
-                            <option :value="matter.id" x-text="matter.title"></option>
-                        </template>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label>File</label>
-                    <input type="file" class="form-control" @change="handleFileUpload" required>
-                </div>
-                <div style="display: flex; gap: 15px; justify-content: flex-end;">
-                    <button type="button" class="btn btn-secondary" @click="showUploadModal = false">Cancel</button>
-                    <button type="submit" class="btn btn-primary" :disabled="uploading">
-                        <i class="fas fa-upload"></i>
-                        <span x-text="uploading ? 'Uploading...' : 'Upload'"></span>
-                    </button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <!-- New Matter Modal -->
-    <div class="modal" :class="{ show: showMatterModal }">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3>New Matter</h3>
-                <button class="close-btn" @click="showMatterModal = false">
-                    <i class="fas fa-times"></i>
-                </button>
-            </div>
-            <form @submit.prevent="createMatter()">
-                <div class="form-group">
-                    <label>Matter Title</label>
-                    <input type="text" class="form-control" x-model="matterForm.title" required>
-                </div>
-                <div class="form-group">
-                    <label>Client</label>
-                    <select class="form-control" x-model="matterForm.client" required>
-                        <option value="">Select Client</option>
-                        <template x-for="client in clients" :key="client.id">
-                            <option :value="client.id" x-text="client.name"></option>
-                        </template>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label>Matter Type</label>
-                    <select class="form-control" x-model="matterForm.type" required>
-                        <option value="">Select Type</option>
-                        <option value="litigation">Litigation</option>
-                        <option value="corporate">Corporate</option>
-                        <option value="real-estate">Real Estate</option>
-                        <option value="family">Family Law</option>
-                        <option value="criminal">Criminal</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label>Description</label>
-                    <textarea class="form-control" x-model="matterForm.description" rows="4"></textarea>
-                </div>
-                <div style="display: flex; gap: 15px; justify-content: flex-end;">
-                    <button type="button" class="btn btn-secondary" @click="showMatterModal = false">Cancel</button>
-                    <button type="submit" class="btn btn-primary">
-                        <i class="fas fa-plus"></i>
-                        Create Matter
-                    </button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <!-- Time Entry Modal -->
-    <div class="modal" :class="{ show: showTimeModal }">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3>Add Time Entry</h3>
-                <button class="close-btn" @click="showTimeModal = false">
-                    <i class="fas fa-times"></i>
-                </button>
-            </div>
-            <form @submit.prevent="addTimeEntry()">
-                <div class="form-group">
-                    <label>Matter</label>
-                    <select class="form-control" x-model="timeForm.matter" required>
-                        <option value="">Select Matter</option>
-                        <template x-for="matter in matters" :key="matter.id">
-                            <option :value="matter.id" x-text="matter.title"></option>
-                        </template>
-                    </select>
-                </div>
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
-                    <div class="form-group">
-                        <label>Date</label>
-                        <input type="date" class="form-control" x-model="timeForm.date" required>
-                    </div>
-                    <div class="form-group">
-                        <label>Hours</label>
-                        <input type="number" step="0.25" class="form-control" x-model="timeForm.hours" required>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label>Description</label>
-                    <textarea class="form-control" x-model="timeForm.description" rows="3" required></textarea>
-                </div>
-                <div style="display: flex; gap: 15px; justify-content: flex-end;">
-                    <button type="button" class="btn btn-secondary" @click="showTimeModal = false">Cancel</button>
-                    <button type="submit" class="btn btn-primary">
-                        <i class="fas fa-plus"></i>
-                        Add Entry
-                    </button>
-                </div>
-            </form>
-        </div>
     </div>
 
     <script>
-        function legalApp() {
-            return {
-                // Authentication state
-                isAuthenticated: false,
-                authMode: 'login',
-                credentials: { email: '', password: '', firmName: '' },
-                user: null,
+        // Application state
+        let isAuthenticated = false;
+        let currentTab = 'dashboard';
+        let user = null;
+
+        // Initialize application
+        function init() {
+            console.log('LegalDoc Pro initializing...');
+            
+            // Auto-login demo after 3 seconds
+            setTimeout(() => {
+                showDemo();
+            }, 3000);
+        }
+
+        function showDemo() {
+            showMessage('Demo: Auto-logging in...', 'info');
+            setTimeout(() => {
+                user = {
+                    email: 'demo@legaldocpro.com',
+                    firmName: 'Demo Law Firm',
+                    role: 'Senior Partner'
+                };
+                showDashboard();
+            }, 1500);
+        }
+
+        function showLogin() {
+            document.getElementById('login-form').classList.remove('hidden');
+            document.getElementById('signup-form').classList.add('hidden');
+        }
+
+        function showSignup() {
+            document.getElementById('login-form').classList.add('hidden');
+            document.getElementById('signup-form').classList.remove('hidden');
+        }
+
+        function login(event) {
+            event.preventDefault();
+            
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            
+            if (!email || !password) {
+                showMessage('Please enter email and password', 'error');
+                return;
+            }
+
+            showLoading(true);
+            showMessage('Signing in...', 'info');
+
+            // Simulate API call
+            setTimeout(() => {
+                user = {
+                    email: email,
+                    firmName: 'Your Law Firm',
+                    role: 'Partner'
+                };
                 
-                // UI state
-                currentPage: 'dashboard',
-                sidebarOpen: false,
-                loading: false,
-                message: '',
-                messageType: '',
+                showMessage('Login successful!', 'success');
+                setTimeout(() => {
+                    showDashboard();
+                }, 1000);
+            }, 1500);
+        }
+
+        function signup(event) {
+            event.preventDefault();
+            
+            const email = document.getElementById('signup-email').value;
+            const password = document.getElementById('signup-password').value;
+            const firmName = document.getElementById('firm-name').value;
+            
+            if (!email || !password || !firmName) {
+                showMessage('Please fill in all fields', 'error');
+                return;
+            }
+
+            showLoading(true);
+            showMessage('Creating account...', 'info');
+
+            // Simulate API call
+            setTimeout(() => {
+                user = {
+                    email: email,
+                    firmName: firmName,
+                    role: 'Partner'
+                };
                 
-                // Modal states
-                showUploadModal: false,
-                showMatterModal: false,
-                showTimeModal: false,
-                showUserSettings: false,
-                showNotifications: false,
-                uploading: false,
-                
-                // Search and filters
-                documentSearch: '',
-                documentFilter: '',
-                matterSearch: '',
-                matterFilter: '',
-                searchQuery: '',
-                searchFilters: {
-                    contentType: '',
-                    dateRange: '',
-                    status: ''
-                },
-                searchResults: [],
-                
-                // Form data
-                uploadForm: { name: '', type: '', matter: '', file: null },
-                matterForm: { title: '', client: '', type: '', description: '' },
-                timeForm: { matter: '', date: '', hours: '', description: '' },
-                
-                // Dashboard data
-                dashboardData: {
-                    activeMatters: 24,
-                    totalDocuments: 156,
-                    activeClients: 18,
-                    billableHours: 127.5
-                },
-                
-                billingData: {
-                    todayHours: 6.5,
-                    weekHours: 32.25,
-                    unbilled: '$15,420',
-                    monthlyRevenue: '$85,300'
-                },
-                
-                // Sample data
-                recentActivity: [
-                    {
-                        id: 1,
-                        title: 'Contract Review Completed',
-                        description: 'Johnson vs. Smith merger agreement review',
-                        status: 'final',
-                        date: '2024-01-15',
-                        user: 'Sarah Chen'
-                    },
-                    {
-                        id: 2,
-                        title: 'New Matter Created',
-                        description: 'Corporate restructuring for TechCorp Inc.',
-                        status: 'active',
-                        date: '2024-01-14',
-                        user: 'Michael Rodriguez'
-                    },
-                    {
-                        id: 3,
-                        title: 'Document Uploaded',
-                        description: 'Real estate purchase agreement',
-                        status: 'review',
-                        date: '2024-01-13',
-                        user: 'Emma Williams'
-                    }
-                ],
-                
-                documents: [
-                    {
-                        id: 1,
-                        name: 'Merger Agreement v2.1',
-                        type: 'contract',
-                        status: 'final',
-                        modified: '2024-01-15',
-                        size: '2.3 MB',
-                        description: 'Comprehensive merger agreement between Johnson Corp and Smith Industries'
-                    },
-                    {
-                        id: 2,
-                        name: 'Motion to Dismiss',
-                        type: 'pleading',
-                        status: 'review',
-                        modified: '2024-01-14',
-                        size: '1.8 MB',
-                        description: 'Motion to dismiss for failure to state a claim'
-                    },
-                    {
-                        id: 3,
-                        name: 'Client Memo - Tax Implications',
-                        type: 'memo',
-                        status: 'draft',
-                        modified: '2024-01-13',
-                        size: '512 KB',
-                        description: 'Analysis of tax implications for corporate restructuring'
-                    }
-                ],
-                
-                matters: [
-                    {
-                        id: 1,
-                        title: 'Johnson vs. Smith Merger',
-                        client: 'Johnson Corporation',
-                        type: 'corporate',
-                        status: 'active',
-                        created: '2024-01-10',
-                        value: '$2.5M',
-                        description: 'Major corporate merger requiring regulatory approval and due diligence'
-                    },
-                    {
-                        id: 2,
-                        title: 'Real Estate Purchase - Downtown Office',
-                        client: 'TechStart Inc.',
-                        type: 'real-estate',
-                        status: 'pending',
-                        created: '2024-01-08',
-                        value: '$850K',
-                        description: 'Commercial real estate acquisition for expanding startup'
-                    },
-                    {
-                        id: 3,
-                        title: 'Employment Contract Dispute',
-                        client: 'Maria Rodriguez',
-                        type: 'litigation',
-                        status: 'active',
-                        created: '2024-01-05',
-                        value: '$75K',
-                        description: 'Non-compete clause enforcement and wrongful termination claims'
-                    }
-                ],
-                
-                clients: [
-                    {
-                        id: 1,
-                        name: 'Johnson Corporation',
-                        email: 'legal@johnsoncorp.com',
-                        phone: '(555) 123-4567',
-                        activeMatters: 3
-                    },
-                    {
-                        id: 2,
-                        name: 'TechStart Inc.',
-                        email: 'ceo@techstart.com',
-                        phone: '(555) 234-5678',
-                        activeMatters: 2
-                    },
-                    {
-                        id: 3,
-                        name: 'Maria Rodriguez',
-                        email: 'maria.r@email.com',
-                        phone: '(555) 345-6789',
-                        activeMatters: 1
-                    }
-                ],
-                
-                timeEntries: [
-                    {
-                        id: 1,
-                        matter: 'Johnson vs. Smith Merger',
-                        date: '2024-01-15',
-                        hours: '3.5',
-                        amount: '$875.00',
-                        description: 'Review merger documents and regulatory filing requirements'
-                    },
-                    {
-                        id: 2,
-                        matter: 'Real Estate Purchase',
-                        date: '2024-01-14',
-                        hours: '2.0',
-                        amount: '$500.00',
-                        description: 'Title search and purchase agreement review'
-                    },
-                    {
-                        id: 3,
-                        matter: 'Employment Dispute',
-                        date: '2024-01-13',
-                        hours: '1.5',
-                        amount: '$375.00',
-                        description: 'Client consultation and case strategy development'
-                    }
-                ],
-                
-                calendarDays: [
-                    { date: 1, isToday: false, hasEvents: false, eventCount: 0 },
-                    { date: 2, isToday: false, hasEvents: true, eventCount: 2 },
-                    { date: 3, isToday: false, hasEvents: false, eventCount: 0 },
-                    { date: 4, isToday: false, hasEvents: true, eventCount: 1 },
-                    { date: 5, isToday: false, hasEvents: false, eventCount: 0 },
-                    { date: 6, isToday: false, hasEvents: true, eventCount: 3 },
-                    { date: 7, isToday: false, hasEvents: false, eventCount: 0 },
-                    { date: 8, isToday: false, hasEvents: false, eventCount: 0 },
-                    { date: 9, isToday: false, hasEvents: true, eventCount: 1 },
-                    { date: 10, isToday: false, hasEvents: false, eventCount: 0 },
-                    { date: 11, isToday: false, hasEvents: false, eventCount: 0 },
-                    { date: 12, isToday: false, hasEvents: true, eventCount: 2 },
-                    { date: 13, isToday: false, hasEvents: false, eventCount: 0 },
-                    { date: 14, isToday: false, hasEvents: false, eventCount: 0 },
-                    { date: 15, isToday: true, hasEvents: true, eventCount: 4 }
-                ],
-                
-                upcomingTasks: [
-                    {
-                        id: 1,
-                        title: 'File Motion to Dismiss',
-                        due: 'Today, 5:00 PM',
-                        priority: 'active'
-                    },
-                    {
-                        id: 2,
-                        title: 'Client Meeting - Johnson Corp',
-                        due: 'Tomorrow, 10:00 AM',
-                        priority: 'pending'
-                    },
-                    {
-                        id: 3,
-                        title: 'Deposition Preparation',
-                        due: 'Jan 17, 2:00 PM',
-                        priority: 'review'
-                    }
-                ],
-                
-                notifications: [
-                    { id: 1, message: 'New document uploaded', time: '10 min ago' },
-                    { id: 2, message: 'Client payment received', time: '1 hour ago' },
-                    { id: 3, message: 'Court date reminder', time: '2 hours ago' }
-                ],
+                showMessage('Account created successfully!', 'success');
+                setTimeout(() => {
+                    showDashboard();
+                }, 1000);
+            }, 1500);
+        }
 
-                init() {
-                    // For demo purposes, auto-login after 2 seconds
-                    setTimeout(() => {
-                        this.isAuthenticated = true;
-                        this.user = {
-                            email: 'demo@legaldocpro.com',
-                            firmName: 'Demo Law Firm',
-                            role: 'Senior Partner'
-                        };
-                    }, 2000);
-                },
+        function showDashboard() {
+            isAuthenticated = true;
+            showLoading(false);
+            
+            // Hide auth sections
+            document.getElementById('hero-section').classList.add('hidden');
+            document.getElementById('auth-container').classList.add('hidden');
+            
+            // Show main app
+            document.getElementById('main-app').classList.remove('hidden');
+            document.getElementById('navbar').classList.remove('hidden');
+            
+            // Update user info
+            if (user) {
+                document.getElementById('firm-name-display').textContent = user.firmName;
+                document.getElementById('user-email-display').textContent = user.email;
+                document.getElementById('user-role-display').textContent = user.role;
+            }
 
-                // Authentication methods
-                async login() {
-                    this.loading = true;
-                    this.message = '';
+            // Add fade-in animation
+            document.getElementById('main-app').classList.add('fade-in');
+        }
 
-                    // Simulate API call
-                    setTimeout(() => {
-                        this.isAuthenticated = true;
-                        this.user = {
-                            email: this.credentials.email,
-                            firmName: 'Your Law Firm',
-                            role: 'Partner'
-                        };
-                        this.showMessage('Login successful!', 'success');
-                        this.resetCredentials();
-                        this.loading = false;
-                    }, 1500);
-                },
+        function logout() {
+            isAuthenticated = false;
+            user = null;
+            
+            // Show auth sections
+            document.getElementById('hero-section').classList.remove('hidden');
+            document.getElementById('auth-container').classList.remove('hidden');
+            
+            // Hide main app
+            document.getElementById('main-app').classList.add('hidden');
+            document.getElementById('navbar').classList.add('hidden');
+            
+            // Reset forms
+            document.getElementById('email').value = '';
+            document.getElementById('password').value = '';
+            document.getElementById('signup-email').value = '';
+            document.getElementById('signup-password').value = '';
+            document.getElementById('firm-name').value = '';
+            
+            showMessage('Logged out successfully', 'success');
+            showLogin();
+        }
 
-                async signup() {
-                    this.loading = true;
-                    this.message = '';
+        function showTab(tabName) {
+            // Hide all tab contents
+            const contents = document.querySelectorAll('.tab-content');
+            contents.forEach(content => content.classList.add('hidden'));
+            
+            // Remove active class from all tabs
+            const tabs = document.querySelectorAll('.tab-btn');
+            tabs.forEach(tab => tab.classList.remove('active'));
+            
+            // Show selected tab content
+            document.getElementById('content-' + tabName).classList.remove('hidden');
+            document.getElementById('tab-' + tabName).classList.add('active');
+            
+            currentTab = tabName;
+        }
 
-                    // Simulate API call
-                    setTimeout(() => {
-                        this.isAuthenticated = true;
-                        this.user = {
-                            email: this.credentials.email,
-                            firmName: this.credentials.firmName,
-                            role: 'Partner'
-                        };
-                        this.showMessage('Account created successfully!', 'success');
-                        this.resetCredentials();
-                        this.loading = false;
-                    }, 1500);
-                },
-
-                logout() {
-                    this.isAuthenticated = false;
-                    this.user = null;
-                    this.currentPage = 'dashboard';
-                    this.sidebarOpen = false;
-                    this.showMessage('Logged out successfully', 'success');
-                },
-
-                // Navigation
-                setPage(page) {
-                    this.currentPage = page;
-                    this.sidebarOpen = false;
-                },
-
-                // Form handlers
-                async uploadDocument() {
-                    this.uploading = true;
-                    
-                    // Simulate upload
-                    setTimeout(() => {
-                        this.documents.unshift({
-                            id: Date.now(),
-                            name: this.uploadForm.name,
-                            type: this.uploadForm.type,
-                            status: 'review',
-                            modified: new Date().toISOString().split('T')[0],
-                            size: '1.2 MB',
-                            description: 'Recently uploaded document'
-                        });
-                        
-                        this.showMessage('Document uploaded successfully!', 'success');
-                        this.showUploadModal = false;
-                        this.resetUploadForm();
-                        this.uploading = false;
-                    }, 2000);
-                },
-
-                async createMatter() {
-                    this.loading = true;
-                    
-                    // Simulate API call
-                    setTimeout(() => {
-                        this.matters.unshift({
-                            id: Date.now(),
-                            title: this.matterForm.title,
-                            client: this.clients.find(c => c.id == this.matterForm.client)?.name || 'New Client',
-                            type: this.matterForm.type,
-                            status: 'active',
-                            created: new Date().toISOString().split('T')[0],
-                            value: '$0',
-                            description: this.matterForm.description
-                        });
-                        
-                        this.showMessage('Matter created successfully!', 'success');
-                        this.showMatterModal = false;
-                        this.resetMatterForm();
-                        this.loading = false;
-                    }, 1500);
-                },
-
-                async addTimeEntry() {
-                    this.loading = true;
-                    
-                    // Simulate API call
-                    setTimeout(() => {
-                        const matter = this.matters.find(m => m.id == this.timeForm.matter);
-                        const amount = (parseFloat(this.timeForm.hours) * 250).toFixed(2); // $250/hour rate
-                        
-                        this.timeEntries.unshift({
-                            id: Date.now(),
-                            matter: matter?.title || 'Unknown Matter',
-                            date: this.timeForm.date,
-                            hours: this.timeForm.hours,
-                            amount: ' + amount,
-                            description: this.timeForm.description
-                        });
-                        
-                        this.showMessage('Time entry added successfully!', 'success');
-                        this.showTimeModal = false;
-                        this.resetTimeForm();
-                        this.loading = false;
-                    }, 1000);
-                },
-
-                async performSearch() {
-                    this.loading = true;
-                    this.searchResults = [];
-                    
-                    // Simulate search
-                    setTimeout(() => {
-                        this.searchResults = [
-                            {
-                                id: 1,
-                                title: 'Contract Analysis Results',
-                                type: 'Document',
-                                date: '2024-01-15',
-                                excerpt: 'Search results for "' + this.searchQuery + '" found in merger agreement...'
-                            },
-                            {
-                                id: 2,
-                                title: 'Related Matter: Corporate Restructuring',
-                                type: 'Matter',
-                                date: '2024-01-10',
-                                excerpt: 'Matter contains references to "' + this.searchQuery + '" in case documents...'
-                            }
-                        ];
-                        this.loading = false;
-                    }, 1500);
-                },
-
-                // File handling
-                handleFileUpload(event) {
-                    const file = event.target.files[0];
-                    if (file) {
-                        this.uploadForm.file = file;
-                        if (!this.uploadForm.name) {
-                            this.uploadForm.name = file.name.split('.')[0];
-                        }
-                    }
-                },
-
-                // Computed properties
-                get filteredDocuments() {
-                    let filtered = this.documents;
-                    
-                    if (this.documentSearch) {
-                        filtered = filtered.filter(doc => 
-                            doc.name.toLowerCase().includes(this.documentSearch.toLowerCase()) ||
-                            doc.description.toLowerCase().includes(this.documentSearch.toLowerCase())
-                        );
-                    }
-                    
-                    if (this.documentFilter) {
-                        filtered = filtered.filter(doc => doc.type === this.documentFilter);
-                    }
-                    
-                    return filtered;
-                },
-
-                get filteredMatters() {
-                    let filtered = this.matters;
-                    
-                    if (this.matterSearch) {
-                        filtered = filtered.filter(matter => 
-                            matter.title.toLowerCase().includes(this.matterSearch.toLowerCase()) ||
-                            matter.client.toLowerCase().includes(this.matterSearch.toLowerCase())
-                        );
-                    }
-                    
-                    if (this.matterFilter) {
-                        filtered = filtered.filter(matter => matter.status === this.matterFilter);
-                    }
-                    
-                    return filtered;
-                },
-
-                // Utility methods
-                resetCredentials() {
-                    this.credentials = { email: '', password: '', firmName: '' };
-                },
-
-                resetUploadForm() {
-                    this.uploadForm = { name: '', type: '', matter: '', file: null };
-                },
-
-                resetMatterForm() {
-                    this.matterForm = { title: '', client: '', type: '', description: '' };
-                },
-
-                resetTimeForm() {
-                    this.timeForm = { matter: '', date: '', hours: '', description: '' };
-                },
-
-                showMessage(text, type) {
-                    this.message = text;
-                    this.messageType = type;
-                    setTimeout(() => {
-                        this.message = '';
-                    }, 5000);
+        function showMessage(text, type) {
+            const container = document.getElementById('message-container');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${type}`;
+            
+            const icon = type === 'error' ? 'fa-exclamation-triangle' : 
+                        type === 'success' ? 'fa-check-circle' : 'fa-info-circle';
+            
+            messageDiv.innerHTML = `
+                <i class="fas ${icon}"></i>
+                <span>${text}</span>
+            `;
+            
+            // Remove existing messages
+            container.innerHTML = '';
+            container.appendChild(messageDiv);
+            
+            // Auto-remove message after 5 seconds
+            setTimeout(() => {
+                if (messageDiv.parentNode) {
+                    messageDiv.parentNode.removeChild(messageDiv);
                 }
+            }, 5000);
+        }
+
+        function showLoading(show) {
+            const loading = document.getElementById('loading');
+            if (show) {
+                loading.classList.remove('hidden');
+            } else {
+                loading.classList.add('hidden');
             }
         }
+
+        // Initialize app when page loads
+        document.addEventListener('DOMContentLoaded', init);
     </script>
 </body>
 </html>
