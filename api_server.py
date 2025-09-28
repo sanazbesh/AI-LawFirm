@@ -707,40 +707,44 @@ def internal_error(e):
     return jsonify({'error': 'Internal server error'}), 500
 
 # Initialize Database
-@app.before_first_request
+# Initialize Database
 def create_tables():
-    db.create_all()
-    
-    # Create sample data if no users exist
-    if User.query.count() == 0:
-        print("Creating sample data...")
+    with app.app_context():
+        db.create_all()
         
-        # Create sample user
-        sample_user = User(
-            email='admin@legaldocpro.com',
-            password_hash=generate_password_hash('admin123'),
-            firm_name='LegalDoc Pro Firm',
-            role='Senior Partner'
-        )
-        db.session.add(sample_user)
-        
-        # Create sample clients
-        clients_data = [
-            {'name': 'Johnson Corporation', 'email': 'legal@johnsoncorp.com', 'phone': '(555) 123-4567'},
-            {'name': 'TechStart Inc.', 'email': 'ceo@techstart.com', 'phone': '(555) 234-5678'},
-            {'name': 'Maria Rodriguez', 'email': 'maria.r@email.com', 'phone': '(555) 345-6789'}
-        ]
-        
-        for client_data in clients_data:
-            client = Client(**client_data)
-            db.session.add(client)
-        
-        db.session.commit()
-        print("Sample data created successfully!")
+        # Create sample data if no users exist
+        if User.query.count() == 0:
+            print("Creating sample data...")
+            
+            # Create sample user
+            sample_user = User(
+                email='admin@legaldocpro.com',
+                password_hash=generate_password_hash('admin123'),
+                firm_name='LegalDoc Pro Firm',
+                role='Senior Partner'
+            )
+            db.session.add(sample_user)
+            
+            # Create sample clients
+            clients_data = [
+                {'name': 'Johnson Corporation', 'email': 'legal@johnsoncorp.com', 'phone': '(555) 123-4567'},
+                {'name': 'TechStart Inc.', 'email': 'ceo@techstart.com', 'phone': '(555) 234-5678'},
+                {'name': 'Maria Rodriguez', 'email': 'maria.r@email.com', 'phone': '(555) 345-6789'}
+            ]
+            
+            for client_data in clients_data:
+                client = Client(**client_data)
+                db.session.add(client)
+            
+            db.session.commit()
+            print("Sample data created successfully!")
 
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5001))
     debug = os.environ.get('FLASK_ENV') == 'development'
+    
+    # Initialize database tables
+    create_tables()
     
     print("Starting LegalDoc Pro Production Server...")
     print(f"Frontend available at: http://localhost:{port}")
