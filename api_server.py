@@ -626,6 +626,6 @@ def internal_error(e):
 
 if __name__ == '__main__':
     print("Starting LegalDoc Pro API Server...")
-    print("Frontend available at: http://localhost:5000")
-    print("API endpoints available at: http://localhost:5000/api/*")
-    app.run(debug=True, host='0.0.0.0', port=5000)
+    print("Frontend available at: http://localhost:5001")
+    print("API endpoints available at: http://localhost:5001/api/*")
+    app.run(debug=True, host='0.0.0.0', port=5001)
