@@ -1,3 +1,5 @@
+from dotenv import load_dotenv
+load_dotenv()  # This loads .env file variables
 import os
 import uuid
 import boto3
