@@ -641,51 +641,51 @@
         </div>
         
         <nav class="sidebar-nav">
-            <button class="nav-item active" onclick="showPage('dashboard')">
+            <button class="nav-item active" data-page="dashboard">
                 <i class="fas fa-chart-pie"></i>
                 <span>Executive Dashboard</span>
             </button>
-            <button class="nav-item" onclick="showPage('documents')">
+            <button class="nav-item" data-page="documents">
                 <i class="fas fa-file-alt"></i>
                 <span>Document Management</span>
             </button>
-            <button class="nav-item" onclick="showPage('matters')">
+            <button class="nav-item" data-page="matters">
                 <i class="fas fa-briefcase"></i>
                 <span>Matter Management</span>
             </button>
-            <button class="nav-item" onclick="showPage('billing')">
+            <button class="nav-item" data-page="billing">
                 <i class="fas fa-dollar-sign"></i>
                 <span>Time & Billing</span>
             </button>
-            <button class="nav-item" onclick="showPage('ai-insights')">
+            <button class="nav-item" data-page="ai-insights">
                 <i class="fas fa-robot"></i>
                 <span>AI Insights</span>
             </button>
-            <button class="nav-item" onclick="showPage('calendar')">
+            <button class="nav-item" data-page="calendar">
                 <i class="fas fa-calendar"></i>
                 <span>Calendar & Tasks</span>
             </button>
-            <button class="nav-item" onclick="showPage('search')">
+            <button class="nav-item" data-page="search">
                 <i class="fas fa-search"></i>
                 <span>Advanced Search</span>
             </button>
-            <button class="nav-item" onclick="showPage('integrations')">
+            <button class="nav-item" data-page="integrations">
                 <i class="fas fa-plug"></i>
                 <span>Integrations</span>
             </button>
-            <button class="nav-item" onclick="showPage('mobile')">
+            <button class="nav-item" data-page="mobile">
                 <i class="fas fa-mobile-alt"></i>
                 <span>Mobile App</span>
             </button>
-            <button class="nav-item" onclick="showPage('business-intel')">
+            <button class="nav-item" data-page="business-intel">
                 <i class="fas fa-chart-bar"></i>
                 <span>Business Intelligence</span>
             </button>
-            <button class="nav-item" onclick="showPage('client-portal')">
+            <button class="nav-item" data-page="client-portal">
                 <i class="fas fa-users"></i>
                 <span>Client Portal Management</span>
             </button>
-            <button class="nav-item" onclick="showPage('settings')">
+            <button class="nav-item" data-page="settings">
                 <i class="fas fa-cog"></i>
                 <span>System Settings</span>
             </button>
@@ -866,10 +866,25 @@
         function init() {
             console.log('LegalDoc Pro initializing...');
             
+            // Add event listeners to navigation items
+            addNavigationListeners();
+            
             // Auto-login demo after 3 seconds
             setTimeout(() => {
                 showDemo();
             }, 3000);
+        }
+
+        function addNavigationListeners() {
+            document.addEventListener('click', (e) => {
+                if (e.target.closest('.nav-item')) {
+                    const navItem = e.target.closest('.nav-item');
+                    const pageName = navItem.getAttribute('data-page');
+                    if (pageName) {
+                        showPage(pageName);
+                    }
+                }
+            });
         }
 
         function showDemo() {
@@ -1042,12 +1057,12 @@
             const navItems = document.querySelectorAll('.nav-item');
             navItems.forEach(item => item.classList.remove('active'));
             
-            const activeNavItem = Array.from(navItems).find(item => 
-                item.onclick.toString().includes(`'${pageName}'`)
-            );
-            if (activeNavItem) {
-                activeNavItem.classList.add('active');
-            }
+            // Find the clicked nav item and make it active
+            navItems.forEach(item => {
+                if (item.getAttribute('data-page') === pageName) {
+                    item.classList.add('active');
+                }
+            });
             
             // Load page content
             loadPageContent(pageName);
@@ -1113,189 +1128,7 @@
 
                 <div class="dashboard-metrics">
                     <div class="metric-card-dashboard">
-                        <div class="metric-icon"><i class="fas fa-clock"></i></div>
-                        <h4>Utilization Rate</h4>
-                        <div class="metric-value">78.9%</div>
-                    </div>
-                    <div class="metric-card-dashboard">
-                        <div class="metric-icon"><i class="fas fa-dollar-sign"></i></div>
-                        <h4>Collection Rate</h4>
-                        <div class="metric-value">96.7%</div>
-                    </div>
-                </div>
-
-                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 25px;">
-                    <div class="document-card">
-                        <h4>📊 Practice Analytics</h4>
-                        <p>Detailed analytics on matter types, client satisfaction, and profitability</p>
-                        <button class="btn btn-primary" style="margin-top: 15px;">
-                            <i class="fas fa-chart-bar"></i> View Reports
-                        </button>
-                    </div>
-
-                    <div class="document-card">
-                        <h4>💰 Financial Insights</h4>
-                        <p>Revenue forecasting, expense tracking, and profitability analysis</p>
-                        <button class="btn btn-primary" style="margin-top: 15px;">
-                            <i class="fas fa-dollar-sign"></i> Financial Dashboard
-                        </button>
-                    </div>
-
-                    <div class="document-card">
-                        <h4>⏱️ Time Analysis</h4>
-                        <p>Time utilization patterns and productivity metrics</p>
-                        <button class="btn btn-primary" style="margin-top: 15px;">
-                            <i class="fas fa-clock"></i> Time Reports
-                        </button>
-                    </div>
-                </div>
-            `;
-        }
-
-        function generateClientPortalContent() {
-            let clientsHtml = `
-                <div class="main-header">
-                    <h1>👥 Client Portal Management</h1>
-                    <p>Manage client access and communications</p>
-                </div>
-                
-                <div style="display: flex; gap: 15px; margin-bottom: 30px; flex-wrap: wrap;">
-                    <input type="text" class="form-control" placeholder="Search clients..." style="flex: 1; min-width: 250px;">
-                    <button class="btn btn-primary">
-                        <i class="fas fa-user-plus"></i> Add Client
-                    </button>
-                </div>
-            `;
-
-            sampleData.clients.forEach(client => {
-                clientsHtml += `
-                    <div class="client-portal">
-                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
-                            <h4>${client.name}</h4>
-                            <span class="status-badge status-active">Active</span>
-                        </div>
-                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 15px;">
-                            <div><i class="fas fa-envelope" style="color: #9c27b0; margin-right: 8px;"></i><strong>Email:</strong> ${client.email}</div>
-                            <div><i class="fas fa-phone" style="color: #9c27b0; margin-right: 8px;"></i><strong>Phone:</strong> ${client.phone}</div>
-                            <div><i class="fas fa-briefcase" style="color: #9c27b0; margin-right: 8px;"></i><strong>Matters:</strong> ${client.matters}</div>
-                        </div>
-                        <div style="margin-top: 15px;">
-                            <button class="btn btn-primary" style="margin-right: 10px; padding: 8px 15px; font-size: 0.9rem;">
-                                <i class="fas fa-eye"></i> View Portal
-                            </button>
-                            <button class="btn btn-secondary" style="padding: 8px 15px; font-size: 0.9rem;">
-                                <i class="fas fa-envelope"></i> Send Message
-                            </button>
-                        </div>
-                    </div>
-                `;
-            });
-
-            return clientsHtml;
-        }
-
-        function generateSettingsContent() {
-            return `
-                <div class="main-header">
-                    <h1>⚙️ System Settings</h1>
-                    <p>Configure your LegalDoc Pro instance</p>
-                </div>
-
-                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 25px;">
-                    <div class="integration-card">
-                        <h4><i class="fas fa-users" style="color: #2E86AB; margin-right: 10px;"></i>User Management</h4>
-                        <p>Manage users, roles, and permissions</p>
-                        <button class="btn btn-primary">
-                            <i class="fas fa-users"></i> Manage Users
-                        </button>
-                    </div>
-
-                    <div class="integration-card">
-                        <h4><i class="fas fa-shield-alt" style="color: #2E86AB; margin-right: 10px;"></i>Security Settings</h4>
-                        <p>Configure authentication and security policies</p>
-                        <button class="btn btn-primary">
-                            <i class="fas fa-shield-alt"></i> Security
-                        </button>
-                    </div>
-
-                    <div class="integration-card">
-                        <h4><i class="fas fa-cog" style="color: #2E86AB; margin-right: 10px;"></i>System Configuration</h4>
-                        <p>General system settings and preferences</p>
-                        <button class="btn btn-primary">
-                            <i class="fas fa-cog"></i> Configure
-                        </button>
-                    </div>
-
-                    <div class="integration-card">
-                        <h4><i class="fas fa-database" style="color: #2E86AB; margin-right: 10px;"></i>Backup & Data</h4>
-                        <p>Manage backups and data export</p>
-                        <button class="btn btn-primary">
-                            <i class="fas fa-database"></i> Data Management
-                        </button>
-                    </div>
-                </div>
-
-                <div class="document-card" style="margin-top: 30px;">
-                    <h4>🟢 System Status</h4>
-                    <p><strong>All Systems Operational</strong></p>
-                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-top: 15px;">
-                        <div>• Database: Connected</div>
-                        <div>• File Storage: Available</div>
-                        <div>• Email Service: Active</div>
-                        <div>• Backup System: Running</div>
-                    </div>
-                </div>
-            `;
-        }
-
-        function showMessage(text, type) {
-            const container = document.getElementById('message-container');
-            const messageDiv = document.createElement('div');
-            messageDiv.className = `message ${type}`;
-            
-            const icon = type === 'error' ? 'fa-exclamation-triangle' : 
-                        type === 'success' ? 'fa-check-circle' : 'fa-info-circle';
-            
-            messageDiv.innerHTML = `
-                <i class="fas ${icon}"></i>
-                <span>${text}</span>
-            `;
-            
-            // Remove existing messages
-            container.innerHTML = '';
-            container.appendChild(messageDiv);
-            
-            // Auto-remove message after 5 seconds
-            setTimeout(() => {
-                if (messageDiv.parentNode) {
-                    messageDiv.parentNode.removeChild(messageDiv);
-                }
-            }, 5000);
-        }
-
-        function showLoading(show) {
-            const loading = document.getElementById('loading');
-            if (show) {
-                loading.classList.remove('hidden');
-            } else {
-                loading.classList.add('hidden');
-            }
-        }
-
-        // Handle window resize
-        window.addEventListener('resize', () => {
-            if (window.innerWidth <= 768 && sidebarOpen) {
-                // Close sidebar on mobile when window is resized
-                sidebarOpen = false;
-                updateSidebarState();
-            }
-        });
-
-        // Initialize app when page loads
-        document.addEventListener('DOMContentLoaded', init);
-    </script>
-</body>
-</html><i class="fas fa-briefcase"></i></div>
+                        <div class="metric-icon"><i class="fas fa-briefcase"></i></div>
                         <h4>Active Matters</h4>
                         <div class="metric-value">${sampleData.matters.length}</div>
                     </div>
@@ -1769,8 +1602,189 @@
                     </div>
                     <div class="metric-card-dashboard">
                         <div class="metric-icon"><i class="fas fa-users"></i></div>
-                        <h4>Client Retention</h4>
                         <div class="metric-value">94.2%</div>
                     </div>
                     <div class="metric-card-dashboard">
-                        <div class="metric-icon">
+                        <div class="metric-icon"><i class="fas fa-clock"></i></div>
+                        <h4>Utilization Rate</h4>
+                        <div class="metric-value">78.9%</div>
+                    </div>
+                    <div class="metric-card-dashboard">
+                        <div class="metric-icon"><i class="fas fa-dollar-sign"></i></div>
+                        <h4>Collection Rate</h4>
+                        <div class="metric-value">96.7%</div>
+                    </div>
+                </div>
+
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 25px;">
+                    <div class="document-card">
+                        <h4>📊 Practice Analytics</h4>
+                        <p>Detailed analytics on matter types, client satisfaction, and profitability</p>
+                        <button class="btn btn-primary" style="margin-top: 15px;">
+                            <i class="fas fa-chart-bar"></i> View Reports
+                        </button>
+                    </div>
+
+                    <div class="document-card">
+                        <h4>💰 Financial Insights</h4>
+                        <p>Revenue forecasting, expense tracking, and profitability analysis</p>
+                        <button class="btn btn-primary" style="margin-top: 15px;">
+                            <i class="fas fa-dollar-sign"></i> Financial Dashboard
+                        </button>
+                    </div>
+
+                    <div class="document-card">
+                        <h4>⏱️ Time Analysis</h4>
+                        <p>Time utilization patterns and productivity metrics</p>
+                        <button class="btn btn-primary" style="margin-top: 15px;">
+                            <i class="fas fa-clock"></i> Time Reports
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+
+        function generateClientPortalContent() {
+            let clientsHtml = `
+                <div class="main-header">
+                    <h1>👥 Client Portal Management</h1>
+                    <p>Manage client access and communications</p>
+                </div>
+                
+                <div style="display: flex; gap: 15px; margin-bottom: 30px; flex-wrap: wrap;">
+                    <input type="text" class="form-control" placeholder="Search clients..." style="flex: 1; min-width: 250px;">
+                    <button class="btn btn-primary">
+                        <i class="fas fa-user-plus"></i> Add Client
+                    </button>
+                </div>
+            `;
+
+            sampleData.clients.forEach(client => {
+                clientsHtml += `
+                    <div class="client-portal">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                            <h4>${client.name}</h4>
+                            <span class="status-badge status-active">Active</span>
+                        </div>
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 15px;">
+                            <div><i class="fas fa-envelope" style="color: #9c27b0; margin-right: 8px;"></i><strong>Email:</strong> ${client.email}</div>
+                            <div><i class="fas fa-phone" style="color: #9c27b0; margin-right: 8px;"></i><strong>Phone:</strong> ${client.phone}</div>
+                            <div><i class="fas fa-briefcase" style="color: #9c27b0; margin-right: 8px;"></i><strong>Matters:</strong> ${client.matters}</div>
+                        </div>
+                        <div style="margin-top: 15px;">
+                            <button class="btn btn-primary" style="margin-right: 10px; padding: 8px 15px; font-size: 0.9rem;">
+                                <i class="fas fa-eye"></i> View Portal
+                            </button>
+                            <button class="btn btn-secondary" style="padding: 8px 15px; font-size: 0.9rem;">
+                                <i class="fas fa-envelope"></i> Send Message
+                            </button>
+                        </div>
+                    </div>
+                `;
+            });
+
+            return clientsHtml;
+        }
+
+        function generateSettingsContent() {
+            return `
+                <div class="main-header">
+                    <h1>⚙️ System Settings</h1>
+                    <p>Configure your LegalDoc Pro instance</p>
+                </div>
+
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 25px;">
+                    <div class="integration-card">
+                        <h4><i class="fas fa-users" style="color: #2E86AB; margin-right: 10px;"></i>User Management</h4>
+                        <p>Manage users, roles, and permissions</p>
+                        <button class="btn btn-primary">
+                            <i class="fas fa-users"></i> Manage Users
+                        </button>
+                    </div>
+
+                    <div class="integration-card">
+                        <h4><i class="fas fa-shield-alt" style="color: #2E86AB; margin-right: 10px;"></i>Security Settings</h4>
+                        <p>Configure authentication and security policies</p>
+                        <button class="btn btn-primary">
+                            <i class="fas fa-shield-alt"></i> Security
+                        </button>
+                    </div>
+
+                    <div class="integration-card">
+                        <h4><i class="fas fa-cog" style="color: #2E86AB; margin-right: 10px;"></i>System Configuration</h4>
+                        <p>General system settings and preferences</p>
+                        <button class="btn btn-primary">
+                            <i class="fas fa-cog"></i> Configure
+                        </button>
+                    </div>
+
+                    <div class="integration-card">
+                        <h4><i class="fas fa-database" style="color: #2E86AB; margin-right: 10px;"></i>Backup & Data</h4>
+                        <p>Manage backups and data export</p>
+                        <button class="btn btn-primary">
+                            <i class="fas fa-database"></i> Data Management
+                        </button>
+                    </div>
+                </div>
+
+                <div class="document-card" style="margin-top: 30px;">
+                    <h4>🟢 System Status</h4>
+                    <p><strong>All Systems Operational</strong></p>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-top: 15px;">
+                        <div>• Database: Connected</div>
+                        <div>• File Storage: Available</div>
+                        <div>• Email Service: Active</div>
+                        <div>• Backup System: Running</div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function showMessage(text, type) {
+            const container = document.getElementById('message-container');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${type}`;
+            
+            const icon = type === 'error' ? 'fa-exclamation-triangle' : 
+                        type === 'success' ? 'fa-check-circle' : 'fa-info-circle';
+            
+            messageDiv.innerHTML = `
+                <i class="fas ${icon}"></i>
+                <span>${text}</span>
+            `;
+            
+            // Remove existing messages
+            container.innerHTML = '';
+            container.appendChild(messageDiv);
+            
+            // Auto-remove message after 5 seconds
+            setTimeout(() => {
+                if (messageDiv.parentNode) {
+                    messageDiv.parentNode.removeChild(messageDiv);
+                }
+            }, 5000);
+        }
+
+        function showLoading(show) {
+            const loading = document.getElementById('loading');
+            if (show) {
+                loading.classList.remove('hidden');
+            } else {
+                loading.classList.add('hidden');
+            }
+        }
+
+        // Handle window resize
+        window.addEventListener('resize', () => {
+            if (window.innerWidth <= 768 && sidebarOpen) {
+                // Close sidebar on mobile when window is resized
+                sidebarOpen = false;
+                updateSidebarState();
+            }
+        });
+
+        // Initialize app when page loads
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>
