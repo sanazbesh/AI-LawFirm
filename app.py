@@ -42,7 +42,7 @@ st.markdown("""
     }
     
     [data-testid="stSidebar"] > div:first-child {
-        padding: 2rem 1rem;
+        padding: 2rem 1rem !important;
     }
     
     [data-testid="stSidebar"] .css-17eq0hr {
