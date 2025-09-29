@@ -436,7 +436,7 @@ class EnhancedAuthService:
         with col_trial:
             st.markdown("""
             <div style="background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); 
-                        padding: 2rem; border-radius: 12px; color: white; height: 280px;">
+                        padding: 2rem; border-radius: 12px; color: white; height: 320px;">
                 <h3 style="margin-top: 0; font-size: 1.5rem; margin-bottom: 1rem;">Free Trial</h3>
                 <p style="font-size: 1.1rem; margin-bottom: 1.5rem;">Experience the full platform risk-free</p>
                 <ul style="list-style: none; padding-left: 0; margin-bottom: 2rem;">
@@ -455,7 +455,7 @@ class EnhancedAuthService:
         with col_paid:
             st.markdown("""
             <div style="background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); 
-                        padding: 2rem; border-radius: 12px; color: white; height: 280px;
+                        padding: 2rem; border-radius: 12px; color: white; height: 320px;
                         border: 2px solid #3b82f6;">
                 <h3 style="margin-top: 0; font-size: 1.5rem; margin-bottom: 1rem;">Enterprise Account</h3>
                 <p style="font-size: 1.1rem; margin-bottom: 1.5rem;">Full-featured legal management solution</p>
@@ -480,7 +480,7 @@ class EnhancedAuthService:
     
         with col_feat1:
             st.markdown("""
-            <div class="feature-card">
+            <div class="feature-card" style="min-height: 400px>
                 <h4>AI-Powered Intelligence</h4>
                 <p style="color: #475569; line-height: 1.6;">
                 Advanced document analysis and contract review powered by machine learning. 
@@ -496,7 +496,7 @@ class EnhancedAuthService:
     
         with col_feat2:
             st.markdown("""
-            <div class="feature-card">
+            <div class="feature-card" style="min-height: 400px>
                 <h4>Complete Practice Management</h4>
                 <p style="color: #475569; line-height: 1.6;">
                 Streamline your entire practice with integrated matter management, 
@@ -512,7 +512,7 @@ class EnhancedAuthService:
     
         with col_feat3:
             st.markdown("""
-            <div class="feature-card">
+            <div class="feature-card" style="min-height: 400px>
                 <h4>Enterprise-Grade Security</h4>
                 <p style="color: #475569; line-height: 1.6;">
                 Bank-level encryption and security protocols. Fully compliant with 
