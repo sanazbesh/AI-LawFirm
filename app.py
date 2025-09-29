@@ -492,8 +492,31 @@ def main():
         st.markdown("""
         <style>
         .stApp {
-            background: #0f172a !important;
+            background: linear-gradient(135deg, 
+                #1a0b2e 0%,
+                #2d1b4e 15%,
+                #1e3a8a 35%,
+                #0f172a 50%,
+                #1e3a8a 65%,
+                #16537e 85%,
+                #0891b2 100%) !important;
             min-height: 100vh;
+            position: relative;
+        }
+        
+        /* Add geometric overlay pattern */
+        .stApp::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: 
+                radial-gradient(circle at 20% 30%, rgba(168, 85, 247, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 70%, rgba(14, 165, 233, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 50% 50%, rgba(59, 130, 246, 0.05) 0%, transparent 50%);
+            pointer-events: none;
         }
         .main .block-container {
             background: #1e293b !important;
