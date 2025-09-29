@@ -292,10 +292,25 @@ class EnhancedAuthService:
     
     def show_login(self):
         """Login interface with subscription validation and account creation"""
+        # Add custom CSS for better styling
         st.markdown("""
+        <style>
+        .stApp {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        .main-header {
+            text-align: center;
+            color: white;
+            padding: 2rem 0;
+        }
+        .main-header h1 {
+            font-size: 3rem;
+            margin-bottom: 0.5rem;
+        }
+        </style>
         <div class="main-header">
-            <h1>LegalDoc Pro</h1>
-            <p>Enterprise Legal Management Platform</p>
+            <h1>⚖️ LegalDoc Pro</h1>
+            <p style="font-size: 1.2rem;">Enterprise Legal Management Platform</p>
         </div>
         """, unsafe_allow_html=True)
         
@@ -308,9 +323,24 @@ class EnhancedAuthService:
             self.show_trial_signup()
             return
         
-        col1, col2, col3 = st.columns([1, 2, 1])
+        # Create a container with white background
+        container = st.container()
+        with container:
+            st.markdown("""
+            <style>
+            div[data-testid="stVerticalBlock"] > div:has(div.login-container) {
+                background-color: white;
+                padding: 2rem;
+                border-radius: 10px;
+                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+                margin: 2rem auto;
+                max-width: 1000px;
+            }
+            </style>
+            <div class="login-container"></div>
+            """, unsafe_allow_html=True)
         
-        with col2:
+        with container:
             # Existing customer login
             st.subheader("Existing Customers")
             org_code = st.text_input("Organization Code", 
@@ -366,29 +396,32 @@ class EnhancedAuthService:
             # Account creation section
             st.divider()
             
+            st.markdown("### Get Started")
+            
             # Two-column layout for new customers
-            col_existing, col_new = st.columns(2)
+            col_trial, col_paid = st.columns(2)
             
-            with col_existing:
-                st.markdown("### Already a Customer?")
-                st.write("Enter your organization code above to access your account.")
-                st.info("Contact your administrator if you don't have your organization code.")
+            with col_trial:
+                st.markdown("#### Free Trial")
+                st.write("Try all features free for 7 days")
+                st.write("• No credit card required")
+                st.write("• Full platform access")
+                st.write("• Up to 3 users")
+                
+                if st.button("Start 7-Day Free Trial", type="primary", use_container_width=True, key="trial_btn"):
+                    st.session_state['show_trial_signup'] = True
+                    st.rerun()
             
-            with col_new:
-                st.markdown("### New Customer?")
-                st.write("Get started with LegalDoc Pro today!")
+            with col_paid:
+                st.markdown("#### Paid Account")
+                st.write("Get started with full access")
+                st.write("• Immediate activation")
+                st.write("• Choose your plan")
+                st.write("• Priority support")
                 
-                col_trial, col_paid = st.columns(2)
-                
-                with col_trial:
-                    if st.button("Start 7-Day Free Trial", type="primary", use_container_width=True):
-                        st.session_state['show_trial_signup'] = True
-                        st.rerun()
-                
-                with col_paid:
-                    if st.button("Create Paid Account", use_container_width=True):
-                        st.session_state['show_signup'] = True
-                        st.rerun()
+                if st.button("Create Paid Account", use_container_width=True, key="paid_btn"):
+                    st.session_state['show_signup'] = True
+                    st.rerun()
             
             # Features preview
             st.divider()
@@ -398,26 +431,26 @@ class EnhancedAuthService:
             
             with col_feat1:
                 st.markdown("""
-                **AI-Powered Analysis**
-                - Document review & analysis
-                - Contract risk assessment
-                - Automated legal insights
+                #### 🤖 AI-Powered Analysis
+                • Document review & analysis  
+                • Contract risk assessment  
+                • Automated legal insights
                 """)
             
             with col_feat2:
                 st.markdown("""
-                **Complete Practice Management**
-                - Matter & case management
-                - Time tracking & billing
-                - Document organization
+                #### 📊 Complete Practice Management
+                • Matter & case management  
+                • Time tracking & billing  
+                • Document organization
                 """)
             
             with col_feat3:
                 st.markdown("""
-                **Secure & Compliant**
-                - Bank-level security
-                - Attorney-client privilege
-                - GDPR compliant
+                #### 🔒 Secure & Compliant
+                • Bank-level security  
+                • Attorney-client privilege  
+                • GDPR compliant
                 """)
     
     def show_trial_signup(self):
