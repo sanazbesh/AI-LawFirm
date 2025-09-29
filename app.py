@@ -487,10 +487,7 @@ def main():
         if not auth_service.is_logged_in():
             auth_service.show_login()
             return
-        import streamlit as st
-import sys
-import os
-from datetime import datetime
+
 
 # Add current directory to path for imports
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
