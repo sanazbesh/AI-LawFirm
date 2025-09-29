@@ -66,7 +66,26 @@ st.markdown("""
         transition: all 0.3s ease !important;
         margin-bottom: 0.5rem !important;
     }
+    /* Better sidebar styling */
+    [data-testid="stSidebar"] .element-container {
+        padding: 0.25rem 0 !important;
+    }
     
+    [data-testid="stSidebar"] p {
+        font-size: 1.05rem !important;
+        font-weight: 500 !important;
+        color: rgba(255,255,255,0.95) !important;
+        padding: 0.75rem 1rem !important;
+        border-radius: 10px !important;
+        transition: all 0.3s ease !important;
+        cursor: pointer !important;
+    }
+    
+    [data-testid="stSidebar"] p:hover {
+        background: rgba(255,255,255,0.15) !important;
+        transform: translateX(5px) scale(1.05) !important;
+        color: white !important;
+    }
     [data-testid="stSidebar"] button:hover {
         background: rgba(255,255,255,0.25) !important;
         transform: translateX(5px);
