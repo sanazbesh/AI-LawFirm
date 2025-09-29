@@ -377,52 +377,52 @@ class EnhancedAuthService:
                                 placeholder="Enter your firm's code (e.g., 'smithlaw')",
                                 label_visibility="visible")
             
-            if org_code:
-                # Check if organization exists
-                if org_code.lower() in ['demo', 'smithlaw', 'testfirm']:
-                    # Mock validation for demo
-                    status_msg = self.subscription_manager.get_subscription_status_message(org_code)
-                    if self.subscription_manager.is_subscription_active(org_code):
-                        st.success(f"Organization found: {status_msg}")
-                    else:
-                        st.error("Subscription expired or inactive")
-                        if st.button("Renew Subscription"):
-                            st.session_state['show_upgrade_modal'] = True
-                            st.rerun()
-                        return
-                elif org_code in st.session_state.subscriptions:
-                    # Check subscription status
-                    if self.subscription_manager.is_subscription_active(org_code):
-                        status_msg = self.subscription_manager.get_subscription_status_message(org_code)
-                        st.success(f"Organization found: {status_msg}")
-                    else:
-                        st.error("Subscription expired or inactive. Please renew.")
-                        if st.button("Renew Subscription"):
-                            st.session_state['show_upgrade_modal'] = True
-                            st.session_state['upgrade_org_code'] = org_code
-                            st.rerun()
-                        return
+        if org_code:
+            # Check if organization exists
+            if org_code.lower() in ['demo', 'smithlaw', 'testfirm']:
+                # Mock validation for demo
+                status_msg = self.subscription_manager.get_subscription_status_message(org_code)
+                if self.subscription_manager.is_subscription_active(org_code):
+                    st.success(f"Organization found: {status_msg}")
                 else:
-                    st.error("Organization not found. Please check your code or create a new account.")
+                    st.error("Subscription expired or inactive")
+                    if st.button("Renew Subscription"):
+                        st.session_state['show_upgrade_modal'] = True
+                        st.rerun()
                     return
+            elif org_code in st.session_state.subscriptions:
+                # Check subscription status
+                if self.subscription_manager.is_subscription_active(org_code):
+                    status_msg = self.subscription_manager.get_subscription_status_message(org_code)
+                    st.success(f"Organization found: {status_msg}")
+                else:
+                    st.error("Subscription expired or inactive. Please renew.")
+                    if st.button("Renew Subscription"):
+                        st.session_state['show_upgrade_modal'] = True
+                        st.session_state['upgrade_org_code'] = org_code
+                        st.rerun()
+                    return
+            else:
+                st.error("Organization not found. Please check your code or create a new account.")
+                return
                 
-                # Login form for existing organizations
-                with st.form("login_form"):
-                    username = st.text_input("Username")
-                    password = st.text_input("Password", type="password")
+            # Login form for existing organizations
+            with st.form("login_form"):
+                username = st.text_input("Username")
+                password = st.text_input("Password", type="password")
                     
-                    col_login1, col_login2 = st.columns(2)
+                col_login1, col_login2 = st.columns(2)
                     
-                    with col_login1:
-                        login_button = st.form_submit_button("Login", type="primary")
-                    with col_login2:
-                        demo_button = st.form_submit_button("Demo Login")
+                with col_login1:
+                    login_button = st.form_submit_button("Login", type="primary")
+                with col_login2:
+                    demo_button = st.form_submit_button("Demo Login")
                     
-                    if login_button or demo_button:
-                        if self.authenticate_user(org_code, username, password, demo_button):
-                            st.rerun()
-                        else:
-                            st.error("Invalid credentials")
+                if login_button or demo_button:
+                    if self.authenticate_user(org_code, username, password, demo_button):
+                        st.rerun()
+                    else:
+                        st.error("Invalid credentials")
             
             # Account creation section
             st.divider()
