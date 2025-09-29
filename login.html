@@ -407,7 +407,7 @@
             const formData = new FormData(e.target);
             
             try {
-                const response = await fetch('/login', {
+                const response = await fetch('/api/auth/login', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
@@ -418,11 +418,13 @@
                 
                 const data = await response.json();
                 
-                if (data.success) {
+                if (data.access_token) {
+                    localStorage.setItem('access_token', data.access_token);
+                    localStorage.setItem('user', JSON.stringify(data.user));
                     showMessage('Login successful! Redirecting...', 'success');
-                    setTimeout(() => window.location.href = data.redirect, 1000);
+                    setTimeout(() => window.location.href = '/', 1000);
                 } else {
-                    showMessage(data.message || 'Invalid credentials', 'error');
+                    showMessage(data.error || 'Invalid credentials', 'error');
                 }
             } catch (error) {
                 showMessage('An error occurred. Please try again.', 'error');
@@ -435,23 +437,25 @@
             const formData = new FormData(e.target);
             
             try {
-                const response = await fetch('/signup', {
+                const response = await fetch('/api/auth/signup', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
                         email: formData.get('email'),
                         password: formData.get('password'),
-                        firm_name: formData.get('firm_name')
+                        firmName: formData.get('firm_name')
                     })
                 });
                 
                 const data = await response.json();
                 
-                if (data.success) {
+                if (data.access_token) {
+                    localStorage.setItem('access_token', data.access_token);
+                    localStorage.setItem('user', JSON.stringify(data.user));
                     showMessage('Account created successfully! Redirecting...', 'success');
-                    setTimeout(() => window.location.href = data.redirect, 1000);
+                    setTimeout(() => window.location.href = '/', 1000);
                 } else {
-                    showMessage(data.message || 'Signup failed', 'error');
+                    showMessage(data.error || 'Signup failed', 'error');
                 }
             } catch (error) {
                 showMessage('An error occurred. Please try again.', 'error');
