@@ -392,7 +392,7 @@ Save this as your main dashboard template
     <div class="sidebar" id="sidebar">
         <div class="sidebar-header">
             <h2><i class="fas fa-balance-scale"></i> LegalDoc Pro</h2>
-            <p id="firm-name">{{ user.firm_name }}</p>
+            <p id="firm-name"></p>
         </div>
         
         <div class="nav-section">
@@ -450,11 +450,10 @@ Save this as your main dashboard template
             </div>
             <div class="user-info">
                 <div>
-                    <div style="font-weight: 600;">{{ user.email }}</div>
-                    <div style="font-size: 0.85rem; opacity: 0.9;">{{ user.role }}</div>
+                    <div style="font-weight: 600;" id="user-email"></div>
+                    <div style="font-size: 0.85rem; opacity: 0.9;" id="user-role"></div>
                 </div>
-                <div class="user-avatar">
-                    {{ user.email[0].upper() }}
+                <div class="user-avatar" id="user-avatar">
                 </div>
             </div>
         </div>
@@ -521,6 +520,13 @@ Save this as your main dashboard template
                 document.getElementById('sidebar').classList.remove('open');
             }
         }
+        // Load user data from localStorage
+        const userData = JSON.parse(localStorage.getItem('user') || '{}');
+        document.getElementById('firm-name').textContent = userData.firmName || 'Your Firm';
+        document.getElementById('user-email').textContent = userData.email || '';
+        document.getElementById('user-role').textContent = userData.role || '';
+        document.getElementById('user-avatar').textContent = userData.email ? userData.email[0].toUpperCase() : 'U';
+
         
         async function loadDashboard() {
             document.getElementById('page-title').textContent = 'Executive Dashboard';
