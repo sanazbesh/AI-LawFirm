@@ -492,15 +492,68 @@ def main():
         st.markdown("""
         <style>
         .stApp {
-            background: #f8fafc !important;
+            background: #0f172a !important;
             min-height: 100vh;
         }
         .main .block-container {
-            background: white !important;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05) !important;
+            background: #1e293b !important;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3) !important;
+            border: 1px solid #334155 !important;
         }
         
-        /* Add subtle accent border at top */
+        /* Make all text readable on dark background */
+        .main .block-container * {
+            color: #e2e8f0 !important;
+        }
+        
+        /* Headers */
+        h1, h2, h3, h4, h5, h6 {
+            color: #f1f5f9 !important;
+        }
+        
+        /* Metric values and labels - high contrast */
+        [data-testid="stMetricValue"] {
+            color: #60a5fa !important;
+        }
+        
+        [data-testid="stMetricLabel"] {
+            color: #cbd5e1 !important;
+        }
+        
+        /* Chart backgrounds - light for readability */
+        .js-plotly-plot, .plotly {
+            background: #ffffff !important;
+        }
+        
+        .js-plotly-plot .plotly .main-svg {
+            background: #ffffff !important;
+        }
+        
+        /* Table styling */
+        .dataframe {
+            background: #1e293b !important;
+            color: #e2e8f0 !important;
+        }
+        
+        .dataframe th {
+            background: #334155 !important;
+            color: #f1f5f9 !important;
+        }
+        
+        .dataframe td {
+            background: #1e293b !important;
+            color: #e2e8f0 !important;
+            border-color: #334155 !important;
+        }
+        
+        /* Input fields */
+        .stTextInput input, .stSelectbox select, .stTextArea textarea {
+            background: #334155 !important;
+            color: #e2e8f0 !important;
+            border-color: #475569 !important;
+        }
+        
+        /* Top accent bar */
         .main .block-container::before {
             content: '';
             position: absolute;
@@ -508,7 +561,7 @@ def main():
             left: 0;
             right: 0;
             height: 4px;
-            background: linear-gradient(90deg, #1e40af 0%, #3b82f6 50%, #06b6d4 100%);
+            background: linear-gradient(90deg, #3b82f6 0%, #06b6d4 100%);
         }
         </style>
         """, unsafe_allow_html=True)
