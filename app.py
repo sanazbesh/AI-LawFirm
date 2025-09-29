@@ -492,11 +492,23 @@ def main():
         st.markdown("""
         <style>
         .stApp {
-            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 50%, #06b6d4 100%) !important;
+            background: #f8fafc !important;
             min-height: 100vh;
         }
         .main .block-container {
             background: white !important;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05) !important;
+        }
+        
+        /* Add subtle accent border at top */
+        .main .block-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #1e40af 0%, #3b82f6 50%, #06b6d4 100%);
         }
         </style>
         """, unsafe_allow_html=True)
