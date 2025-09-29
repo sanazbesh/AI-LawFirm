@@ -297,6 +297,8 @@ class EnhancedAuthService:
         <style>
         .stApp {
             background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 50%, #06b6d4 100%);
+            min-height: 100vh;
+            overflow-y: auto;
         }
         .main-header {
             text-align: center;
@@ -363,20 +365,20 @@ class EnhancedAuthService:
         if st.session_state.get('show_signup', False):
             self.show_subscription_signup()
             return
-
+    
         if st.session_state.get('show_trial_signup', False):
             self.show_trial_signup()
             return
         
         # Create a professional container
         st.markdown('<div class="login-box">', unsafe_allow_html=True)
-        
+    
         # Existing customer login
         st.markdown('<h2 class="section-header">Sign In</h2>', unsafe_allow_html=True)
         org_code = st.text_input("Organization Code", 
                                 placeholder="Enter your firm's code (e.g., 'smithlaw')",
                                 label_visibility="visible")
-            
+        
         if org_code:
             # Check if organization exists
             if org_code.lower() in ['demo', 'smithlaw', 'testfirm']:
