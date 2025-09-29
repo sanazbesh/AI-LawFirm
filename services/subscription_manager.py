@@ -370,9 +370,8 @@ class EnhancedAuthService:
             self.show_trial_signup()
             return
         
-        # Create a professional container
-        st.markdown('<div class="login-box">', unsafe_allow_html=True)
-    
+        # Don't create the login-box div yet - just show the org code input first
+        
         # Existing customer login
         st.markdown('<h2 class="section-header">Sign In</h2>', unsafe_allow_html=True)
         org_code = st.text_input("Organization Code", 
