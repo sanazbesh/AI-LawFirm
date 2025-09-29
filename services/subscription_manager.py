@@ -472,9 +472,7 @@ class EnhancedAuthService:
                     st.session_state['show_signup'] = True
                     st.rerun()
     
-            st.markdown('</div>', unsafe_allow_html=True)
-    
-            # Features preview with professional cards
+            # Features preview
             st.markdown('<div style="max-width: 1200px; margin: 3rem auto; padding: 0 2rem;">', unsafe_allow_html=True)
             st.markdown('<h2 style="text-align: center; color: white; margin-bottom: 3rem; font-size: 2.5rem;">Why Leading Law Firms Choose LegalDoc Pro</h2>', unsafe_allow_html=True)
     
