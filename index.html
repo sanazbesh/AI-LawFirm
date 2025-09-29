@@ -397,19 +397,19 @@ Save this as your main dashboard template
         
         <div class="nav-section">
             <div class="nav-label">Main</div>
-            <div class="nav-item active" onclick="loadPage('dashboard')">
+            <div class="nav-item active" data-page="dashboard">
                 <i class="fas fa-chart-pie"></i>
                 <span>Executive Dashboard</span>
             </div>
-            <div class="nav-item" onclick="loadPage('documents')">
+            <div class="nav-item" data-page="documents">
                 <i class="fas fa-file-alt"></i>
                 <span>Document Management</span>
             </div>
-            <div class="nav-item" onclick="loadPage('matters')">
+            <div class="nav-item" data-page="matters">
                 <i class="fas fa-briefcase"></i>
                 <span>Matter Management</span>
             </div>
-            <div class="nav-item" onclick="loadPage('billing')">
+            <div class="nav-item" data-page="billing">
                 <i class="fas fa-dollar-sign"></i>
                 <span>Time & Billing</span>
             </div>
@@ -417,27 +417,26 @@ Save this as your main dashboard template
         
         <div class="nav-section">
             <div class="nav-label">Tools</div>
-            <div class="nav-item" onclick="loadPage('ai')">
+            <div class="nav-item" data-page="ai">
                 <i class="fas fa-robot"></i>
                 <span>AI Insights</span>
             </div>
-            <div class="nav-item" onclick="loadPage('clients')">
+            <div class="nav-item" data-page="clients">
                 <i class="fas fa-users"></i>
                 <span>Client Portal</span>
             </div>
-            <div class="nav-item" onclick="loadPage('calendar')">
+            <div class="nav-item" data-page="calendar">
                 <i class="fas fa-calendar"></i>
                 <span>Calendar & Tasks</span>
             </div>
         </div>
         
         <div class="nav-section">
-            <div class="nav-item" onclick="window.location.href='/logout'" style="color: #dc3545;">
+            <div class="nav-item" data-page="logout">
                 <i class="fas fa-sign-out-alt"></i>
                 <span>Logout</span>
             </div>
         </div>
-    </div>
     
     <!-- Main Content -->
     <div class="main-content">
@@ -497,23 +496,41 @@ Save this as your main dashboard template
             document.getElementById('sidebar').classList.toggle('open');
         }
         
-        function loadPage(page) {
-            // Update active nav
+        // Add click handlers to navigation
+        document.addEventListener('DOMContentLoaded', function() {
             document.querySelectorAll('.nav-item').forEach(item => {
-                item.classList.remove('active');
+                item.addEventListener('click', function() {
+                    const page = this.getAttribute('data-page');
+                    
+                    if (page === 'logout') {
+                        localStorage.clear();
+                        window.location.href = '/login';
+                        return;
+                    }
+                    
+                    // Update active state
+                    document.querySelectorAll('.nav-item').forEach(nav => nav.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    // Load the page
+                    loadPage(page);
+                });
             });
-            event.target.closest('.nav-item').classList.add('active');
             
-            // Load content
-            switch(page) {
-                case 'dashboard': loadDashboard(); break;
-                case 'documents': loadDocuments(); break;
-                case 'matters': loadMatters(); break;
-                case 'billing': loadBilling(); break;
-                case 'ai': loadAI(); break;
-                case 'clients': loadClients(); break;
-                case 'calendar': loadCalendar(); break;
-            }
+            // Load dashboard on start
+            loadPage('dashboard');
+        });
+        
+        function loadPage(page) {
+            document.getElementById('page-title').textContent = 
+                page === 'dashboard' ? 'Executive Dashboard' :
+                page === 'documents' ? 'Document Management' :
+                page === 'matters' ? 'Matter Management' :
+                page === 'billing' ? 'Time & Billing' :
+                page === 'ai' ? 'AI Insights' :
+                page === 'clients' ? 'Client Management' :
+                page === 'calendar' ? 'Calendar & Tasks' : 'Dashboard';
+        }
             
             // Close sidebar on mobile
             if (window.innerWidth <= 768) {
