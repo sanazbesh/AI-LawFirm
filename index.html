@@ -1,10 +1,146 @@
-<!DOCTYPE html>
+function generateBusinessIntelContent() {
+            return `
+                <div class="main-header">
+                    <h1>📈 Business Intelligence</h1>
+                    <p>Analytics and insights for your legal practice</p>
+                </div>
+
+                <div class="dashboard-metrics">
+                    <div class="metric-card-dashboard">
+                        <div class="metric-icon"><i class="fas fa-chart-line"></i></div>
+                        <h4>Revenue Growth</h4>
+                        <div class="metric-value">+12.5%</div>
+                        <div style="margin-top: 10px; font-size: 0.9rem; opacity: 0.9;">vs last quarter</div>
+                    </div>
+                    <div class="metric-card-dashboard">
+                        <div class="metric-icon"><i class="fas fa-users"></i></div>
+                        <h4>Client Retention</h4>
+                        <div class="metric-value">94.2%</div>
+                        <div style="margin-top: 10px; font-size: 0.9rem; opacity: 0.9;">Industry avg: 89%</div>
+                    </div>
+                    <div class="metric-card-dashboard">
+                        <div class="metric-icon"><i class="fas fa-clock"></i></div>
+                        <h4>Utilization Rate</h4>
+                        <div class="metric-value">78.9%</div>
+                        <div style="margin-top: 10px; font-size: 0.9rem; opacity: 0.9;">Target: 75%</div>
+                    </div>
+                    <div class="metric-card-dashboard">
+                        <div class="metric-icon"><i class="fas fa-dollar-sign"></i></div>
+                        <h4>Collection Rate</h4>
+                        <div class="metric-value">96.7%</div>
+                        <div style="margin-top: 10px; font-size: 0.9rem; opacity: 0.9;">Excellent performance</div>
+                    </div>
+                </div>
+
+                <div class="document-card" style="margin-bottom: 30px;">
+                    <h3 style="margin-bottom: 20px;">📈 Quarterly Revenue Growth</h3>
+                    <div style="height: 300px; position: relative;">
+                        <canvas id="growthChart"></canvas>
+                    </div>
+                </div>
+
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 25px;">
+                    <div class="document-card">
+                        <h4>📊 Practice Analytics</h4>
+                        <p>Detailed analytics on matter types, client satisfaction, and profitability</p>
+                        <div style="margin-top: 15px; padding: 15px; background: #f8f9fa; border-radius: 10px;">
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                                <span>Corporate Law</span>
+                                <strong style="color: #2E86AB;">40%</strong>
+                            </div>
+                            <div style="background: #e9ecef; height: 8px; border-radius: 4px; overflow: hidden;">
+                                <div style="background: linear-gradient(90deg, #2E86AB, #A23B72); width: 40%; height: 100%;"></div>
+                            </div>
+                        </div>
+                        <div style="margin-top: 10px; padding: 15px; background: #f8f9fa; border-radius: 10px;">
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                                <span>Real Estate</span>
+                                <strong style="color: #A23B72;">30%</strong>
+                            </div>
+                            <div style="background: #e9ecef; height: 8px; border-radius: 4px; overflow: hidden;">
+                                <div style="background: linear-gradient(90deg, #A23B72, #F18701); width: 30%; height: 100%;"></div>
+                            </div>
+                        </div>
+                        <div style="margin-top: 10px; padding: 15px; background: #f8f9fa; border-radius: 10px;">
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                                <span>Litigation</span>
+                                <strong style="color: #F18701;">30%</strong>
+                            </div>
+                            <div style="background: #e9ecef; height: 8px; border-radius: 4px; overflow: hidden;">
+                                <div style="background: #F18701; width: 30%; height: 100%;"></div>
+                            </div>
+                        </div>
+                        <button class="btn btn-primary" style="margin-top: 15px; width: 100%;">
+                            <i class="fas fa-chart-bar"></i> View Reports
+                        </button>
+                    </div>
+
+                    <div class="document-card">
+                        <h4>💰 Financial Insights</h4>
+                        <p>Revenue forecasting, expense tracking, and profitability analysis</p>
+                        <div style="margin-top: 15px; display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                            <div style="text-align: center; padding: 15px; background: #f8f9fa; border-radius: 10px;">
+                                <div style="font-size: 1.3rem; font-weight: bold; color: #28a745;">$342K</div>
+                                <div style="font-size: 0.85rem; color: #666; margin-top: 5px;">Q4 Revenue</div>
+                            </div>
+                            <div style="text-align: center; padding: 15px; background: #f8f9fa; border-radius: 10px;">
+                                <div style="font-size: 1.3rem; font-weight: bold; color: #2E86AB;">$89K</div>
+                                <div style="font-size: 0.85rem; color: #666; margin-top: 5px;">Expenses</div>
+                            </div>
+                            <div style="text-align: center; padding: 15px; background: #f8f9fa; border-radius: 10px;">
+                                <div style="font-size: 1.3rem; font-weight: bold; color: #A23B72;">$253K</div>
+                                <div style="font-size: 0.85rem; color: #666; margin-top: 5px;">Net Profit</div>
+                            </div>
+                            <div style="text-align: center; padding: 15px; background: #f8f9fa; border-radius: 10px;">
+                                <div style="font-size: 1.3rem; font-weight: bold; color: #F18701;">74%</div>
+                                <div style="font-size: 0.85rem; color: #666; margin-top: 5px;">Margin</div>
+                            </div>
+                        </div>
+                        <button class="btn btn-primary" style="margin-top: 15px; width: 100%;">
+                            <i class="fas fa-dollar-sign"></i> Financial Dashboard
+                        </button>
+                    </div>
+
+                    <div class="document-card">
+                        <h4>⏱️ Time Analysis</h4>
+                        <p>Time utilization patterns and productivity metrics</p>
+                        <div style="margin-top: 15px;">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                                <span style="font-weight: 600;">Billable Hours</span>
+                                <span style="font-size: 1.2rem; font-weight: bold; color: #2E86AB;">85%</span>
+                            </div>
+                            <div style="background: #e9ecef; height: 12px; border-radius: 6px; overflow: hidden; margin-bottom: 15px;">
+                                <div style="background: linear-gradient(90deg, #2E86AB, #A23B72); width: 85%; height: 100%;"></div>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                                <span style="font-weight: 600;">Admin Work</span>
+                                <span style="font-size: 1.2rem; font-weight: bold; color: #A23B72;">10%</span>
+                            </div>
+                            <div style="background: #e9ecef; height: 12px; border-radius: 6px; overflow: hidden; margin-bottom: 15px;">
+                                <div style="background: #A23B72; width: 10%; height: 100%;"></div>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                                <span style="font-weight: 600;">Business Dev</span>
+                                <span style="font-size: 1.2rem; font-weight: bold; color: #F18701;">5%</span>
+                            </div>
+                            <div style="background: #e9ecef; height: 12px; border-radius: 6px; overflow: hidden;">
+                                <div style="background: #F18701; width: 5%; height: 100%;"></div>
+                            </div>
+                        </div>
+                        <button class="btn btn-primary" style="margin-top: 15px; width: 100%;">
+                            <i class="fas fa-clock"></i> Time Reports
+                        </button>
+                    </div>
+                </div>
+            `;
+        }<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>LegalDoc Pro - Enterprise Legal Management</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
     <style>
         * {
             margin: 0;
@@ -976,9 +1112,9 @@
             document.getElementById('hero-section').classList.add('hidden');
             document.getElementById('auth-container').classList.add('hidden');
             
-            // Show main app
+            // Show main app and navbar
             document.getElementById('main-app').classList.remove('hidden');
-            document.getElementById('navbar').classList.add('hidden'); // Start with navbar hidden
+            document.getElementById('navbar').classList.remove('hidden');
             
             // Update user info
             if (user) {
@@ -1080,6 +1216,8 @@
             switch(pageName) {
                 case 'dashboard':
                     contentContainer.innerHTML = generateDashboardContent();
+                    // Render charts after DOM is updated
+                    setTimeout(() => renderDashboardCharts(), 100);
                     break;
                 case 'documents':
                     contentContainer.innerHTML = generateDocumentsContent();
@@ -1089,6 +1227,7 @@
                     break;
                 case 'billing':
                     contentContainer.innerHTML = generateBillingContent();
+                    setTimeout(() => renderBillingCharts(), 100);
                     break;
                 case 'ai-insights':
                     contentContainer.innerHTML = generateAIInsightsContent();
@@ -1107,6 +1246,7 @@
                     break;
                 case 'business-intel':
                     contentContainer.innerHTML = generateBusinessIntelContent();
+                    setTimeout(() => renderBusinessIntelCharts(), 100);
                     break;
                 case 'client-portal':
                     contentContainer.innerHTML = generateClientPortalContent();
@@ -1116,6 +1256,116 @@
                     break;
                 default:
                     contentContainer.innerHTML = generateDashboardContent();
+                    setTimeout(() => renderDashboardCharts(), 100);
+            }
+        }
+
+        function renderDashboardCharts() {
+            // Revenue Chart
+            const revenueCtx = document.getElementById('revenueChart');
+            if (revenueCtx) {
+                new Chart(revenueCtx, {
+                    type: 'line',
+                    data: {
+                        labels: ['Aug', 'Sep', 'Oct', 'Nov', 'Dec', 'Jan'],
+                        datasets: [{
+                            label: 'Revenue ($K)',
+                            data: [65, 72, 78, 81, 85, 92],
+                            borderColor: '#2E86AB',
+                            backgroundColor: 'rgba(46, 134, 171, 0.1)',
+                            tension: 0.4,
+                            fill: true
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { display: false }
+                        },
+                        scales: {
+                            y: { beginAtZero: true }
+                        }
+                    }
+                });
+            }
+
+            // Matters Pie Chart
+            const mattersCtx = document.getElementById('mattersChart');
+            if (mattersCtx) {
+                new Chart(mattersCtx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['Corporate', 'Real Estate', 'Litigation'],
+                        datasets: [{
+                            data: [40, 30, 30],
+                            backgroundColor: ['#2E86AB', '#A23B72', '#F18701']
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                position: 'bottom'
+                            }
+                        }
+                    }
+                });
+            }
+        }
+
+        function renderBillingCharts() {
+            const billingCtx = document.getElementById('billingTrendChart');
+            if (billingCtx) {
+                new Chart(billingCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'],
+                        datasets: [{
+                            label: 'Hours',
+                            data: [6.5, 7.2, 5.8, 6.9, 7.5],
+                            backgroundColor: '#2E86AB'
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { display: false }
+                        },
+                        scales: {
+                            y: { beginAtZero: true, max: 10 }
+                        }
+                    }
+                });
+            }
+        }
+
+        function renderBusinessIntelCharts() {
+            const growthCtx = document.getElementById('growthChart');
+            if (growthCtx) {
+                new Chart(growthCtx, {
+                    type: 'line',
+                    data: {
+                        labels: ['Q1', 'Q2', 'Q3', 'Q4'],
+                        datasets: [{
+                            label: 'Revenue Growth %',
+                            data: [8.2, 9.5, 11.3, 12.5],
+                            borderColor: '#28a745',
+                            backgroundColor: 'rgba(40, 167, 69, 0.1)',
+                            tension: 0.4,
+                            fill: true
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { display: false }
+                        }
+                    }
+                });
             }
         }
 
@@ -1131,21 +1381,63 @@
                         <div class="metric-icon"><i class="fas fa-briefcase"></i></div>
                         <h4>Active Matters</h4>
                         <div class="metric-value">${sampleData.matters.length}</div>
+                        <div style="margin-top: 10px; font-size: 0.9rem; opacity: 0.9;">↑ 12% from last month</div>
                     </div>
                     <div class="metric-card-dashboard">
                         <div class="metric-icon"><i class="fas fa-file-alt"></i></div>
                         <h4>Total Documents</h4>
                         <div class="metric-value">${sampleData.documents.length}</div>
+                        <div style="margin-top: 10px; font-size: 0.9rem; opacity: 0.9;">↑ 8% from last month</div>
                     </div>
                     <div class="metric-card-dashboard">
                         <div class="metric-icon"><i class="fas fa-users"></i></div>
                         <h4>Active Clients</h4>
                         <div class="metric-value">${sampleData.clients.length}</div>
+                        <div style="margin-top: 10px; font-size: 0.9rem; opacity: 0.9;">↑ 5% from last month</div>
                     </div>
                     <div class="metric-card-dashboard">
                         <div class="metric-icon"><i class="fas fa-clock"></i></div>
                         <h4>Pending Tasks</h4>
                         <div class="metric-value">${sampleData.tasks.length}</div>
+                        <div style="margin-top: 10px; font-size: 0.9rem; opacity: 0.9;">↓ 3% from last month</div>
+                    </div>
+                </div>
+
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 25px; margin-bottom: 30px;">
+                    <div class="document-card">
+                        <h3 style="margin-bottom: 20px;">📈 Revenue Trend (Last 6 Months)</h3>
+                        <div style="height: 250px; position: relative;">
+                            <canvas id="revenueChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="document-card">
+                        <h3 style="margin-bottom: 20px;">💼 Matters by Type</h3>
+                        <div style="height: 250px; position: relative; display: flex; align-items: center; justify-content: center;">
+                            <canvas id="mattersChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="document-card" style="margin-bottom: 30px;">
+                    <h3 style="margin-bottom: 20px;">⏰ Time Utilization (This Week)</h3>
+                    <div style="background: linear-gradient(90deg, #2E86AB 0%, #2E86AB 78%, #f8f9fa 78%); height: 40px; border-radius: 10px; position: relative; overflow: hidden;">
+                        <div style="position: absolute; left: 0; right: 0; top: 0; bottom: 0; display: flex; align-items: center; justify-content: center; color: white; font-weight: 600; font-size: 1.1rem;">
+                            78% Utilized (32.25 / 40 hours)
+                        </div>
+                    </div>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; margin-top: 20px;">
+                        <div style="text-align: center; padding: 15px; background: #f8f9fa; border-radius: 10px;">
+                            <div style="font-size: 1.5rem; font-weight: bold; color: #2E86AB;">32.25h</div>
+                            <div style="font-size: 0.9rem; color: #666;">Billable</div>
+                        </div>
+                        <div style="text-align: center; padding: 15px; background: #f8f9fa; border-radius: 10px;">
+                            <div style="font-size: 1.5rem; font-weight: bold; color: #A23B72;">7.75h</div>
+                            <div style="font-size: 0.9rem; color: #666;">Non-Billable</div>
+                        </div>
+                        <div style="text-align: center; padding: 15px; background: #f8f9fa; border-radius: 10px;">
+                            <div style="font-size: 1.5rem; font-weight: bold; color: #28a745;">$8,062</div>
+                            <div style="font-size: 0.9rem; color: #666;">Revenue Generated</div>
+                        </div>
                     </div>
                 </div>
 
@@ -1279,21 +1571,32 @@
                         <div class="metric-icon"><i class="fas fa-clock"></i></div>
                         <h4>Today's Hours</h4>
                         <div class="metric-value">6.5</div>
+                        <div style="margin-top: 10px; font-size: 0.9rem; opacity: 0.9;">↑ 0.5h from yesterday</div>
                     </div>
                     <div class="metric-card-dashboard">
                         <div class="metric-icon"><i class="fas fa-calendar-week"></i></div>
                         <h4>This Week</h4>
                         <div class="metric-value">32.25</div>
+                        <div style="margin-top: 10px; font-size: 0.9rem; opacity: 0.9;">80% of target</div>
                     </div>
                     <div class="metric-card-dashboard">
                         <div class="metric-icon"><i class="fas fa-dollar-sign"></i></div>
                         <h4>Unbilled Amount</h4>
                         <div class="metric-value">$15,420</div>
+                        <div style="margin-top: 10px; font-size: 0.9rem; opacity: 0.9;">12 pending invoices</div>
                     </div>
                     <div class="metric-card-dashboard">
                         <div class="metric-icon"><i class="fas fa-chart-line"></i></div>
                         <h4>Monthly Revenue</h4>
                         <div class="metric-value">$85,300</div>
+                        <div style="margin-top: 10px; font-size: 0.9rem; opacity: 0.9;">↑ 12% from last month</div>
+                    </div>
+                </div>
+
+                <div class="document-card" style="margin-bottom: 30px;">
+                    <h3 style="margin-bottom: 20px;">📊 Weekly Time Tracking</h3>
+                    <div style="height: 300px; position: relative;">
+                        <canvas id="billingTrendChart"></canvas>
                     </div>
                 </div>
 
