@@ -480,9 +480,9 @@ class EnhancedAuthService:
     
         with col_feat1:
             st.markdown("""
-            <div class="feature-card" style="min-height: 400px>
+            <div class="feature-card" style="height: 380px; display: flex; flex-direction: column;">
                 <h4>AI-Powered Intelligence</h4>
-                <p style="color: #475569; line-height: 1.6;">
+                <p style="color: #475569; line-height: 1.6; flex-grow: 1;">
                 Advanced document analysis and contract review powered by machine learning. 
                 Automatically identify risks, obligations, and key terms in seconds.
                 </p>
@@ -496,9 +496,9 @@ class EnhancedAuthService:
     
         with col_feat2:
             st.markdown("""
-            <div class="feature-card" style="min-height: 400px>
+            <div class="feature-card" style="height: 380px; display: flex; flex-direction: column;">
                 <h4>Complete Practice Management</h4>
-                <p style="color: #475569; line-height: 1.6;">
+                <p style="color: #475569; line-height: 1.6; flex-grow: 1;">
                 Streamline your entire practice with integrated matter management, 
                 time tracking, billing, and client communication tools.
                 </p>
@@ -512,9 +512,9 @@ class EnhancedAuthService:
     
         with col_feat3:
             st.markdown("""
-            <div class="feature-card" style="min-height: 400px>
+            <div class="feature-card" style="height: 380px; display: flex; flex-direction: column;">
                 <h4>Enterprise-Grade Security</h4>
-                <p style="color: #475569; line-height: 1.6;">
+                <p style="color: #475569; line-height: 1.6; flex-grow: 1;">
                 Bank-level encryption and security protocols. Fully compliant with 
                 attorney-client privilege and international data protection standards.
                 </p>
