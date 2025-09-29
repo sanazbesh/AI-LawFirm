@@ -467,6 +467,31 @@ Save this as your main dashboard template
     </div>
     
     <script>
+    <script>
+    // Check authentication
+    const token = localStorage.getItem('access_token');
+    const userData = JSON.parse(localStorage.getItem('user') || '{}');
+    
+    if (!token) {
+        window.location.href = '/login';
+    }
+    
+    // Helper function for authenticated requests
+    async function fetchWithAuth(url, options = {}) {
+        options.headers = {
+            ...options.headers,
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+        };
+        const response = await fetch(url, options);
+        if (response.status === 401) {
+            localStorage.clear();
+            window.location.href = '/login';
+        }
+        return response;
+    }
+    
+    // Rest of your existing script...    
         let charts = {};
         
         function toggleSidebar() {
@@ -500,7 +525,7 @@ Save this as your main dashboard template
         async function loadDashboard() {
             document.getElementById('page-title').textContent = 'Executive Dashboard';
             
-            const response = await fetch('/api/dashboard-stats');
+            const response = await fetchWithAuth('/api/dashboard/metrics');
             const stats = await response.json();
             
             document.getElementById('page-content').innerHTML = `
@@ -513,25 +538,25 @@ Save this as your main dashboard template
                     <div class="metric-card">
                         <div class="metric-icon"><i class="fas fa-briefcase"></i></div>
                         <div class="metric-label">Active Matters</div>
-                        <div class="metric-value">${stats.matters}</div>
+                        <div class="metric-value">${stats.activeMatters}</div>
                         <div class="metric-change">↑ 12% from last month</div>
                     </div>
                     <div class="metric-card">
                         <div class="metric-icon"><i class="fas fa-file-alt"></i></div>
                         <div class="metric-label">Total Documents</div>
-                        <div class="metric-value">${stats.documents}</div>
+                        <div class="metric-value">${stats.totalDocuments}</div>
                         <div class="metric-change">↑ 8% from last month</div>
                     </div>
                     <div class="metric-card">
                         <div class="metric-icon"><i class="fas fa-users"></i></div>
                         <div class="metric-label">Active Clients</div>
-                        <div class="metric-value">${stats.clients}</div>
+                        <div class="metric-value">${stats.activeClients}</div>
                         <div class="metric-change">↑ 5% from last month</div>
                     </div>
                     <div class="metric-card">
                         <div class="metric-icon"><i class="fas fa-clock"></i></div>
                         <div class="metric-label">Pending Tasks</div>
-                        <div class="metric-value">${stats.tasks}</div>
+                        <div class="metric-value">${stats.billableHours}</div>
                         <div class="metric-change">↓ 3% from last month</div>
                     </div>
                 </div>
