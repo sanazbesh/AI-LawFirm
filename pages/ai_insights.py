@@ -71,7 +71,37 @@ def show():
             radial-gradient(circle at 50% 50%, rgba(59, 130, 246, 0.05) 0%, transparent 50%);
         pointer-events: none;
     }
+    /* Sidebar styling - must be in each page file */
+    [data-testid="stSidebar"] {
+        background: linear-gradient(180deg, #667eea 0%, #764ba2 100%) !important;
+        padding: 0 !important;
+    }
     
+    [data-testid="stSidebar"] > div:first-child {
+        padding: 2rem 1rem !important;
+    }
+    
+    [data-testid="stSidebar"] .css-17eq0hr {
+        color: white !important;
+    }
+    
+    [data-testid="stSidebar"] label {
+        color: white !important;
+        font-weight: 600 !important;
+    }
+    
+    [data-testid="stSidebar"] button {
+        background: rgba(255,255,255,0.15) !important;
+        color: white !important;
+        border: 1px solid rgba(255,255,255,0.2) !important;
+        border-radius: 12px !important;
+        padding: 0.75rem 1rem !important;
+        width: 100% !important;
+    }
+    
+    [data-testid="stSidebar"] button:hover {
+        background: rgba(255,255,255,0.25) !important;
+    }
     .ai-header {
         background: rgba(30, 58, 138, 0.6);
         backdrop-filter: blur(10px);
@@ -117,6 +147,8 @@ def show():
         background-color: rgba(59, 130, 246, 0.8);
         color: white;
     }
+    
+
     </style>
     <div class="ai-header">
         <h1>AI Legal Insights</h1>
