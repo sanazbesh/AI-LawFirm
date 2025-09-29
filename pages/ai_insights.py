@@ -25,8 +25,8 @@ try:
 except ImportError:
     AI_SERVICE_AVAILABLE = False
 
-def show():  # This function already exists in your file
-    # ADD THIS CODE AT THE TOP:
+def show():
+    # Subscription check
     from services.subscription_manager import EnhancedAuthService
     auth_service = EnhancedAuthService()
     
@@ -40,12 +40,50 @@ def show():  # This function already exists in your file
             st.rerun()
         return
     
-
-
-def show():
+    # Professional header styling
     st.markdown("""
-    <div class="main-header">
-        <h1>🤖 AI Legal Insights</h1>
+    <style>
+    .ai-header {
+        background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+        padding: 3rem 2rem;
+        border-radius: 16px;
+        margin-bottom: 2rem;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    }
+    .ai-header h1 {
+        color: white;
+        font-size: 2.5rem;
+        margin-bottom: 0.5rem;
+        font-weight: 700;
+    }
+    .ai-header p {
+        color: rgba(255, 255, 255, 0.9);
+        font-size: 1.2rem;
+        margin: 0;
+    }
+    .metric-card {
+        background: white;
+        padding: 1.5rem;
+        border-radius: 12px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        border-left: 4px solid #3b82f6;
+    }
+    .stTabs [data-baseweb="tab-list"] {
+        gap: 8px;
+    }
+    .stTabs [data-baseweb="tab"] {
+        padding: 12px 24px;
+        background-color: #f1f5f9;
+        border-radius: 8px;
+        font-weight: 600;
+    }
+    .stTabs [aria-selected="true"] {
+        background-color: #3b82f6;
+        color: white;
+    }
+    </style>
+    <div class="ai-header">
+        <h1>AI Legal Insights</h1>
         <p>AI-powered document analysis, contract review, and legal intelligence</p>
     </div>
     """, unsafe_allow_html=True)
@@ -670,48 +708,82 @@ def show_risk_assessment():
     """Risk assessment dashboard"""
     st.subheader("⚖️ Legal Risk Assessment")
     
-    # Risk metrics
+    # Risk metrics with professional styling
     col1, col2, col3, col4 = st.columns(4)
     
+    metrics_html = """
+    <div class="metric-card" style="text-align: center;">
+        <h4 style="color: #64748b; font-size: 0.9rem; margin-bottom: 0.5rem;">{title}</h4>
+        <p style="font-size: 1.8rem; font-weight: 700; color: {color}; margin: 0;">{value}</p>
+        <p style="color: #64748b; font-size: 0.85rem; margin-top: 0.5rem;">{change}</p>
+    </div>
+    """
+    
     with col1:
-        st.metric("High Risk Documents", "12", "+3")
+        st.markdown(metrics_html.format(
+            title="High Risk Documents",
+            value="12",
+            change="+3 this month",
+            color="#ef4444"
+        ), unsafe_allow_html=True)
+    
     with col2:
-        st.metric("Compliance Score", "8.2/10", "+0.5")
+        st.markdown(metrics_html.format(
+            title="Compliance Score",
+            value="8.2/10",
+            change="+0.5 improvement",
+            color="#10b981"
+        ), unsafe_allow_html=True)
+    
     with col3:
-        st.metric("Average Risk Score", "3.4/10", "-0.2")
+        st.markdown(metrics_html.format(
+            title="Average Risk Score",
+            value="3.4/10",
+            change="-0.2 lower",
+            color="#3b82f6"
+        ), unsafe_allow_html=True)
+    
     with col4:
-        st.metric("Documents Reviewed", "156", "+23")
-    
-    # Risk trends over time
-    dates = pd.date_range('2024-01-01', '2024-09-01', freq='M')
-    risk_values = [3.2, 3.5, 3.1, 2.9, 3.4, 3.8, 3.2, 3.0, 2.8][:len(dates)]
-    risk_data = pd.DataFrame({
-        'Month': dates,
-        'Average Risk': risk_values
-    })
-    
-    fig = px.line(risk_data, x='Month', y='Average Risk', 
-                 title='Risk Trends Over Time')
-    st.plotly_chart(fig, use_container_width=True)
+        st.markdown(metrics_html.format(
+            title="Documents Reviewed",
+            value="156",
+            change="+23 this week",
+            color="#3b82f6"
+        ), unsafe_allow_html=True)
 
 def show_practice_analytics():
     """Practice management analytics"""
     st.subheader("📈 Practice Analytics")
     
-    # Document processing metrics
+    # Document processing metrics with professional cards
     col1, col2, col3 = st.columns(3)
     
     with col1:
-        st.metric("Documents Processed", "1,247")
-        st.metric("Processing Accuracy", "94.2%")
+        st.markdown("""
+        <div class="metric-card">
+            <h3 style="color: #1e3a8a; margin-bottom: 1rem;">Documents Processed</h3>
+            <p style="font-size: 2rem; font-weight: 700; color: #3b82f6; margin: 0;">1,247</p>
+            <p style="color: #64748b; margin-top: 0.5rem;">Processing Accuracy: 94.2%</p>
+        </div>
+        """, unsafe_allow_html=True)
     
     with col2:
-        st.metric("Time Saved", "142 hours")
-        st.metric("Cost Savings", "$28,400")
+        st.markdown("""
+        <div class="metric-card">
+            <h3 style="color: #1e3a8a; margin-bottom: 1rem;">Time Saved</h3>
+            <p style="font-size: 2rem; font-weight: 700; color: #3b82f6; margin: 0;">142 hours</p>
+            <p style="color: #64748b; margin-top: 0.5rem;">Cost Savings: $28,400</p>
+        </div>
+        """, unsafe_allow_html=True)
     
     with col3:
-        st.metric("AI Confidence", "87.5%")
-        st.metric("User Satisfaction", "4.6/5")
+        st.markdown("""
+        <div class="metric-card">
+            <h3 style="color: #1e3a8a; margin-bottom: 1rem;">AI Performance</h3>
+            <p style="font-size: 2rem; font-weight: 700; color: #3b82f6; margin: 0;">87.5%</p>
+            <p style="color: #64748b; margin-top: 0.5rem;">User Satisfaction: 4.6/5</p>
+        </div>
+        """, unsafe_allow_html=True)
 
 def show_predictive_insights():
     """Predictive analytics and insights"""
