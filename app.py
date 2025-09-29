@@ -501,9 +501,14 @@ def main():
             border: 1px solid #334155 !important;
         }
         
-        /* Make all text readable on dark background */
-        .main .block-container * {
+        /* Make text readable on dark background, but not inside charts */
+        .main .block-container > div:not(.stPlotlyChart) * {
             color: #e2e8f0 !important;
+        }
+
+        /* Keep chart text dark for readability */
+        .stPlotlyChart * {
+            color: #000000 !important;
         }
         
         /* Headers */
@@ -521,12 +526,21 @@ def main():
         }
         
         /* Chart backgrounds - light for readability */
-        .js-plotly-plot, .plotly {
+        .js-plotly-plot .plotly, .js-plotly-plot .plot-container {
             background: #ffffff !important;
         }
         
-        .js-plotly-plot .plotly .main-svg {
+        /* Ensure chart elements render properly */
+        .stPlotlyChart {
             background: #ffffff !important;
+            border-radius: 8px !important;
+            padding: 1rem !important;
+        }
+        
+        /* Don't override plotly's internal rendering */
+        .js-plotly-plot .plotly .main-svg, 
+        .js-plotly-plot svg {
+            background: transparent !important;
         }
         
         /* Table styling */
