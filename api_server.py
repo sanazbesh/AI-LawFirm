@@ -210,7 +210,11 @@ def log_audit_event(user_id, action, resource_type=None, resource_id=None, detai
 @app.route('/')
 def serve_frontend():
     return send_from_directory('.', 'index.html')
-
+    
+@app.route('/login')
+def serve_login():
+    return send_from_directory('.', 'login.html')
+    
 @app.route('/<path:filename>')
 def serve_static(filename):
     return send_from_directory('.', filename)
