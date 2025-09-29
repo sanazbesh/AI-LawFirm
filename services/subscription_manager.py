@@ -292,25 +292,70 @@ class EnhancedAuthService:
     
     def show_login(self):
         """Login interface with subscription validation and account creation"""
-        # Add custom CSS for better styling
+        # Add custom CSS for professional styling
         st.markdown("""
         <style>
         .stApp {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 50%, #06b6d4 100%);
         }
         .main-header {
             text-align: center;
             color: white;
-            padding: 2rem 0;
+            padding: 3rem 0 2rem 0;
+            margin-bottom: 2rem;
         }
         .main-header h1 {
-            font-size: 3rem;
+            font-size: 3.5rem;
+            font-weight: 700;
             margin-bottom: 0.5rem;
+            letter-spacing: -0.02em;
+        }
+        .main-header p {
+            font-size: 1.3rem;
+            font-weight: 300;
+            opacity: 0.95;
+        }
+        .login-box {
+            background: white;
+            padding: 3rem;
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            margin: 0 auto 3rem auto;
+            max-width: 900px;
+        }
+        .section-header {
+            color: #1e3a8a;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            font-size: 1.8rem;
+        }
+        .feature-card {
+            background: #f8fafc;
+            padding: 1.5rem;
+            border-radius: 12px;
+            border-left: 4px solid #3b82f6;
+            height: 100%;
+        }
+        .feature-card h4 {
+            color: #1e3a8a;
+            margin-bottom: 1rem;
+            font-size: 1.2rem;
+        }
+        .stButton > button {
+            font-weight: 600;
+            border-radius: 8px;
+            padding: 0.75rem 2rem;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+        .stButton > button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
         }
         </style>
         <div class="main-header">
-            <h1>⚖️ LegalDoc Pro</h1>
-            <p style="font-size: 1.2rem;">Enterprise Legal Management Platform</p>
+            <h1>LegalDoc Pro</h1>
+            <p>Enterprise Legal Management Platform</p>
         </div>
         """, unsafe_allow_html=True)
         
@@ -323,28 +368,14 @@ class EnhancedAuthService:
             self.show_trial_signup()
             return
         
-        # Create a container with white background
-        container = st.container()
-        with container:
-            st.markdown("""
-            <style>
-            div[data-testid="stVerticalBlock"] > div:has(div.login-container) {
-                background-color: white;
-                padding: 2rem;
-                border-radius: 10px;
-                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-                margin: 2rem auto;
-                max-width: 1000px;
-            }
-            </style>
-            <div class="login-container"></div>
-            """, unsafe_allow_html=True)
+        # Create a professional container
+        st.markdown('<div class="login-box">', unsafe_allow_html=True)
         
-        with container:
-            # Existing customer login
-            st.subheader("Existing Customers")
-            org_code = st.text_input("Organization Code", 
-                                    placeholder="Enter your firm's code (e.g., 'smithlaw')")
+        # Existing customer login
+        st.markdown('<h2 class="section-header">Sign In</h2>', unsafe_allow_html=True)
+        org_code = st.text_input("Organization Code", 
+                                placeholder="Enter your firm's code (e.g., 'smithlaw')",
+                                label_visibility="visible")
             
             if org_code:
                 # Check if organization exists
@@ -396,62 +427,107 @@ class EnhancedAuthService:
             # Account creation section
             st.divider()
             
-            st.markdown("### Get Started")
+            st.markdown('<h2 class="section-header">New to LegalDoc Pro?</h2>', unsafe_allow_html=True)
             
             # Two-column layout for new customers
-            col_trial, col_paid = st.columns(2)
+            col_trial, col_paid = st.columns(2, gap="large")
             
             with col_trial:
-                st.markdown("#### Free Trial")
-                st.write("Try all features free for 7 days")
-                st.write("• No credit card required")
-                st.write("• Full platform access")
-                st.write("• Up to 3 users")
-                
-                if st.button("Start 7-Day Free Trial", type="primary", use_container_width=True, key="trial_btn"):
+                st.markdown("""
+                <div style="background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); 
+                            padding: 2rem; border-radius: 12px; color: white; height: 280px;">
+                    <h3 style="margin-top: 0; font-size: 1.5rem; margin-bottom: 1rem;">Free Trial</h3>
+                    <p style="font-size: 1.1rem; margin-bottom: 1.5rem;">Experience the full platform risk-free</p>
+                    <ul style="list-style: none; padding-left: 0; margin-bottom: 2rem;">
+                        <li style="margin-bottom: 0.5rem;">✓ 7 days full access</li>
+                        <li style="margin-bottom: 0.5rem;">✓ No credit card required</li>
+                        <li style="margin-bottom: 0.5rem;">✓ Up to 3 users</li>
+                        <li style="margin-bottom: 0.5rem;">✓ All core features</li>
+                    </ul>
+                </div>
+                """, unsafe_allow_html=True)
+                st.markdown("<br>", unsafe_allow_html=True)
+                if st.button("Start Free Trial", type="primary", use_container_width=True, key="trial_btn"):
                     st.session_state['show_trial_signup'] = True
                     st.rerun()
             
             with col_paid:
-                st.markdown("#### Paid Account")
-                st.write("Get started with full access")
-                st.write("• Immediate activation")
-                st.write("• Choose your plan")
-                st.write("• Priority support")
-                
-                if st.button("Create Paid Account", use_container_width=True, key="paid_btn"):
+                st.markdown("""
+                <div style="background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); 
+                            padding: 2rem; border-radius: 12px; color: white; height: 280px;
+                            border: 2px solid #3b82f6;">
+                    <h3 style="margin-top: 0; font-size: 1.5rem; margin-bottom: 1rem;">Enterprise Account</h3>
+                    <p style="font-size: 1.1rem; margin-bottom: 1.5rem;">Full-featured legal management solution</p>
+                    <ul style="list-style: none; padding-left: 0; margin-bottom: 2rem;">
+                        <li style="margin-bottom: 0.5rem;">✓ Immediate activation</li>
+                        <li style="margin-bottom: 0.5rem;">✓ Flexible plans</li>
+                        <li style="margin-bottom: 0.5rem;">✓ Priority support</li>
+                        <li style="margin-bottom: 0.5rem;">✓ Custom integrations</li>
+                    </ul>
+                </div>
+                """, unsafe_allow_html=True)
+                st.markdown("<br>", unsafe_allow_html=True)
+                if st.button("View Plans & Pricing", use_container_width=True, key="paid_btn"):
                     st.session_state['show_signup'] = True
                     st.rerun()
             
-            # Features preview
-            st.divider()
-            st.markdown("### Why Choose LegalDoc Pro?")
+            st.markdown('</div>', unsafe_allow_html=True)
             
-            col_feat1, col_feat2, col_feat3 = st.columns(3)
+            # Features preview with professional cards
+            st.markdown('<div style="max-width: 1200px; margin: 3rem auto; padding: 0 2rem;">', unsafe_allow_html=True)
+            st.markdown('<h2 style="text-align: center; color: white; margin-bottom: 3rem; font-size: 2.5rem;">Why Leading Law Firms Choose LegalDoc Pro</h2>', unsafe_allow_html=True)
+            
+            col_feat1, col_feat2, col_feat3 = st.columns(3, gap="large")
             
             with col_feat1:
                 st.markdown("""
-                #### 🤖 AI-Powered Analysis
-                • Document review & analysis  
-                • Contract risk assessment  
-                • Automated legal insights
-                """)
+                <div class="feature-card">
+                    <h4>AI-Powered Intelligence</h4>
+                    <p style="color: #475569; line-height: 1.6;">
+                    Advanced document analysis and contract review powered by machine learning. 
+                    Automatically identify risks, obligations, and key terms in seconds.
+                    </p>
+                    <ul style="color: #64748b; margin-top: 1rem;">
+                        <li>Smart document extraction</li>
+                        <li>Risk scoring & assessment</li>
+                        <li>Automated legal insights</li>
+                    </ul>
+                </div>
+                """, unsafe_allow_html=True)
             
             with col_feat2:
                 st.markdown("""
-                #### 📊 Complete Practice Management
-                • Matter & case management  
-                • Time tracking & billing  
-                • Document organization
-                """)
+                <div class="feature-card">
+                    <h4>Complete Practice Management</h4>
+                    <p style="color: #475569; line-height: 1.6;">
+                    Streamline your entire practice with integrated matter management, 
+                    time tracking, billing, and client communication tools.
+                    </p>
+                    <ul style="color: #64748b; margin-top: 1rem;">
+                        <li>Matter & case tracking</li>
+                        <li>Time & billing automation</li>
+                        <li>Client portal access</li>
+                    </ul>
+                </div>
+                """, unsafe_allow_html=True)
             
             with col_feat3:
                 st.markdown("""
-                #### 🔒 Secure & Compliant
-                • Bank-level security  
-                • Attorney-client privilege  
-                • GDPR compliant
-                """)
+                <div class="feature-card">
+                    <h4>Enterprise-Grade Security</h4>
+                    <p style="color: #475569; line-height: 1.6;">
+                    Bank-level encryption and security protocols. Fully compliant with 
+                    attorney-client privilege and international data protection standards.
+                    </p>
+                    <ul style="color: #64748b; margin-top: 1rem;">
+                        <li>256-bit encryption</li>
+                        <li>GDPR & SOC 2 compliant</li>
+                        <li>Regular security audits</li>
+                    </ul>
+                </div>
+                """, unsafe_allow_html=True)
+            
+            st.markdown('</div>', unsafe_allow_html=True)
     
     def show_trial_signup(self):
         """7-day trial signup process"""
