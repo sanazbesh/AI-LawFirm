@@ -428,12 +428,12 @@ class EnhancedAuthService:
             
             # Account creation section
             st.divider()
-            
+    
             st.markdown('<h2 class="section-header">New to LegalDoc Pro?</h2>', unsafe_allow_html=True)
-            
+    
             # Two-column layout for new customers
             col_trial, col_paid = st.columns(2, gap="large")
-            
+    
             with col_trial:
                 st.markdown("""
                 <div style="background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); 
@@ -452,7 +452,7 @@ class EnhancedAuthService:
                 if st.button("Start Free Trial", type="primary", use_container_width=True, key="trial_btn"):
                     st.session_state['show_trial_signup'] = True
                     st.rerun()
-            
+    
             with col_paid:
                 st.markdown("""
                 <div style="background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); 
@@ -472,15 +472,15 @@ class EnhancedAuthService:
                 if st.button("View Plans & Pricing", use_container_width=True, key="paid_btn"):
                     st.session_state['show_signup'] = True
                     st.rerun()
-            
+    
             st.markdown('</div>', unsafe_allow_html=True)
-            
+    
             # Features preview with professional cards
             st.markdown('<div style="max-width: 1200px; margin: 3rem auto; padding: 0 2rem;">', unsafe_allow_html=True)
             st.markdown('<h2 style="text-align: center; color: white; margin-bottom: 3rem; font-size: 2.5rem;">Why Leading Law Firms Choose LegalDoc Pro</h2>', unsafe_allow_html=True)
-            
+    
             col_feat1, col_feat2, col_feat3 = st.columns(3, gap="large")
-            
+    
             with col_feat1:
                 st.markdown("""
                 <div class="feature-card">
@@ -496,7 +496,7 @@ class EnhancedAuthService:
                     </ul>
                 </div>
                 """, unsafe_allow_html=True)
-            
+    
             with col_feat2:
                 st.markdown("""
                 <div class="feature-card">
@@ -512,7 +512,7 @@ class EnhancedAuthService:
                     </ul>
                 </div>
                 """, unsafe_allow_html=True)
-            
+    
             with col_feat3:
                 st.markdown("""
                 <div class="feature-card">
@@ -528,7 +528,7 @@ class EnhancedAuthService:
                     </ul>
                 </div>
                 """, unsafe_allow_html=True)
-            
+    
             st.markdown('</div>', unsafe_allow_html=True)
     
     def show_trial_signup(self):
