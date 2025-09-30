@@ -114,10 +114,9 @@ def show():
     
 
     </style>
-    st.markdown("""
-    <div class="main-header">
-        <h1>📅 Calendar & Task Management</h1>
-        <p>Integrated scheduling, deadlines, and task tracking for legal professionals</p>
+    <div class="ai-header">
+        <h1>AI Legal Insights</h1>
+        <p>AI-powered document analysis, contract review, and legal intelligence</p>
     </div>
     """, unsafe_allow_html=True)
     
