@@ -292,9 +292,28 @@ class EnhancedAuthService:
     
     def show_login(self):
         """Login interface with subscription validation and account creation"""
-        # Add custom CSS for professional styling
+        
+        # CRITICAL: Hide sidebar completely on login page
         st.markdown("""
         <style>
+        /* Hide the entire sidebar */
+        [data-testid="stSidebar"] {
+            display: none;
+        }
+        
+        /* Hide the sidebar collapse button */
+        [data-testid="collapsedControl"] {
+            display: none;
+        }
+        
+        /* Expand main content to full width */
+        .main .block-container {
+            max-width: 100%;
+            padding-left: 2rem;
+            padding-right: 2rem;
+        }
+        
+        /* Your existing styling */
         .stApp {
             background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 50%, #06b6d4 100%);
             min-height: 100vh;
@@ -360,7 +379,7 @@ class EnhancedAuthService:
             <p>Enterprise Legal Management Platform</p>
         </div>
         """, unsafe_allow_html=True)
-        
+                
         # Show signup form if triggered
         if st.session_state.get('show_signup', False):
             self.show_subscription_signup()
@@ -1263,19 +1282,38 @@ def initialize_demo_data():
         st.session_state.demo_initialized = True
 
 
-# Main execution for testing
+# In your main execution, structure it like this:
 if __name__ == "__main__":
     st.set_page_config(
-        page_title="LegalDoc Pro - Subscription Demo",
+        page_title="LegalDoc Pro",
         page_icon="⚖️",
-        layout="wide"
+        layout="wide",
+        initial_sidebar_state="collapsed"  # Start with sidebar collapsed
     )
     
     auth_service = EnhancedAuthService()
     
+    # Check login state
     if not auth_service.is_logged_in():
+        # Show login page (sidebar hidden via CSS)
         auth_service.show_login()
     else:
+        # User is logged in - NOW show the sidebar and main app
+        
+        # Remove the login page CSS that hides sidebar
+        st.markdown("""
+        <style>
+        /* Allow sidebar to show when logged in */
+        [data-testid="stSidebar"] {
+            display: block !important;
+        }
+        
+        [data-testid="collapsedControl"] {
+            display: block !important;
+        }
+        </style>
+        """, unsafe_allow_html=True)
+        
         # Handle modals
         user_data = st.session_state.get('user_data', {})
         org_code = user_data.get('organization_code')
@@ -1285,21 +1323,55 @@ if __name__ == "__main__":
         elif st.session_state.get('show_billing'):
             auth_service.show_billing_interface(org_code)
         else:
-            # Show main interface
+            # Render sidebar navigation
             auth_service.render_sidebar()
             
-            st.title("LegalDoc Pro Dashboard")
-            st.write("Welcome to your legal management platform!")
+            # Main dashboard content
+            current_page = st.session_state.get('current_page', 'Dashboard')
             
-            # Show subscription status
-            subscription = auth_service.subscription_manager.get_organization_subscription(org_code)
-            if subscription:
-                status_msg = auth_service.subscription_manager.get_subscription_status_message(org_code)
-                st.success(f"Subscription Status: {status_msg}")
+            if current_page == 'Dashboard':
+                st.title("Dashboard")
+                st.write("Welcome to your legal management platform!")
                 
-                # Show usage
-                col1, col2 = st.columns(2)
-                with col1:
-                    st.write(f"Users: {subscription.get('current_users', 0)}")
-                with col2:
-                    st.write(f"Storage: {subscription.get('storage_used_gb', 0):.1f}GB")
+                # Show subscription status
+                subscription = auth_service.subscription_manager.get_organization_subscription(org_code)
+                if subscription:
+                    status_msg = auth_service.subscription_manager.get_subscription_status_message(org_code)
+                    st.success(f"Subscription Status: {status_msg}")
+                    
+                    # Show usage metrics
+                    col1, col2, col3 = st.columns(3)
+                    with col1:
+                        st.metric("Active Users", subscription.get('current_users', 0))
+                    with col2:
+                        st.metric("Storage Used", f"{subscription.get('storage_used_gb', 0):.1f} GB")
+                    with col3:
+                        limits = auth_service.subscription_manager.get_plan_limits(subscription.get('plan'))
+                        st.metric("Plan", subscription.get('plan', 'N/A').title())
+            
+            elif current_page == 'Documents':
+                st.title("Document Management")
+                st.info("Document management interface goes here")
+            
+            elif current_page == 'Matters':
+                st.title("Matter Management")
+                st.info("Matter tracking interface goes here")
+            
+            elif current_page == 'Billing':
+                st.title("Time & Billing")
+                st.info("Time tracking and billing interface goes here")
+            
+            elif current_page == 'Calendar':
+                st.title("Calendar & Tasks")
+                st.info("Calendar and task management goes here")
+            
+            elif current_page == 'AI Insights':
+                st.title("AI-Powered Insights")
+                if auth_service.subscription_manager.has_ai_feature(org_code, 'basic_analysis'):
+                    st.info("AI analysis tools go here")
+                else:
+                    st.error("This feature requires a subscription upgrade")
+            
+            else:
+                st.title(current_page)
+                st.info(f"{current_page} interface goes here")
