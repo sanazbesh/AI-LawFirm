@@ -383,6 +383,11 @@ def show():
         <p>Track cases, matters, and client engagements</p>
     </div>
     """, unsafe_allow_html=True)
+    # ADD THESE LINES:
+    
+    initialize_matter_session_state()
+    auth_service = AuthService()
+    
     
     
     # Navigation tabs
