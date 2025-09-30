@@ -86,6 +86,7 @@ def show():
     initialize_session_state()
     auth_service = AuthService()
     # Professional header styling
+    # Professional header styling
     st.markdown("""
     <style>
     /* Match main app background */
@@ -195,10 +196,9 @@ def show():
     
 
     </style>
-    st.markdown("""
-    <div class="main-header">
-        <h1>⏱️ Time Tracking & Billing</h1>
-        <p>Comprehensive time tracking, billing, and revenue management system</p>
+    <div class="ai-header">
+        <h1>AI Legal Insights</h1>
+        <p>AI-powered document analysis, contract review, and legal intelligence</p>
     </div>
     """, unsafe_allow_html=True)
     
