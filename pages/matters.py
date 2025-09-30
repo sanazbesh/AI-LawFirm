@@ -271,45 +271,30 @@ def show():
         margin-bottom: 0.5rem;
         font-weight: 700;
     }
-    /* Make all text white/light for readability on dark background */
-    .main .block-container {
+    /* Default: Light text for dark background */
+    .main .block-container,
+    .main .block-container * {
         color: #e2e8f0 !important;
     }
     
-    .main .block-container > * {
-        color: #e2e8f0 !important;
-    }
-    
-    /* Headers */
+    /* Headers - light */
     h1, h2, h3, h4, h5, h6 {
         color: #f1f5f9 !important;
     }
     
-    /* Dark text for white/light backgrounds (forms, expanders, white boxes) */
-    .stExpander, 
-    [data-testid="stExpander"],
+    /* ONLY white boxes get dark text - target expanders specifically */
+    .stExpander[data-testid="stExpander"] > div > div,
+    .stExpander[data-testid="stExpander"] > div > div * {
+        color: #1e293b !important;
+    }
+    
+    /* Forms get dark text */
     .stForm,
-    [data-testid="stForm"],
-    div[style*="background: white"],
-    div[style*="background: #fff"],
-    div[style*="background-color: white"],
-    div[style*="background-color: #fff"],
-    div[style*="background: rgb(255, 255, 255)"] {
+    .stForm * {
         color: #1e293b !important;
     }
     
-    .stExpander *, 
-    [data-testid="stExpander"] *,
-    .stForm *,
-    [data-testid="stForm"] *,
-    div[style*="background: white"] *,
-    div[style*="background: #fff"] *,
-    div[style*="background-color: white"] *,
-    div[style*="background-color: #fff"] * {
-        color: #1e293b !important;
-    }
-    
-    /* Metrics */
+    /* Metrics stay colored */
     [data-testid="stMetricValue"] {
         color: #60a5fa !important;
     }
@@ -318,14 +303,14 @@ def show():
         color: #cbd5e1 !important;
     }
     
-    /* Input fields - dark text on white background */
+    /* Input fields - dark text */
     input, textarea, select {
         color: #1e293b !important;
         background: white !important;
     }
     
-    /* Buttons stay white text */
-    .stButton button, .stButton button * {
+    /* Buttons - white text */
+    .stButton button {
         color: white !important;
     }
     .metric-card {
