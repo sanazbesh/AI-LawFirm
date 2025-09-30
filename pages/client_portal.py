@@ -114,10 +114,9 @@ def show():
     
 
     </style>
-    st.markdown("""
-    <div class="main-header">
-        <h1>🏛️ Client Portal Management</h1>
-        <p>Manage client access, permissions, and self-service capabilities</p>
+    <div class="ai-header">
+        <h1>AI Legal Insights</h1>
+        <p>AI-powered document analysis, contract review, and legal intelligence</p>
     </div>
     """, unsafe_allow_html=True)
     
