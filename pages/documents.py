@@ -237,11 +237,16 @@ def show():
         show_document_settings()
 
 def show_dashboard_stats(auth_service, org_code):
-    """Show document management dashboard with subscription-aware stats"""
-    
-    # Get subscription info for display
     subscription = auth_service.subscription_manager.get_organization_subscription(org_code)
-    limits = auth_service.subscription_manager.get_plan_limits(subscription["plan"])
+    
+    # Add this check
+    if not subscription:
+        st.warning("No subscription found for this organization")
+        return
+    
+    # Now safe to access
+    limits = auth_service.subscription_manager.get_plan_limits(subscription.get("plan", "trial"))
+    
     
     # Storage usage display
     storage_used = subscription.get("storage_used_gb", 0)
