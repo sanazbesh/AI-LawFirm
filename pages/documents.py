@@ -196,8 +196,7 @@ def show():
         <p>Organize, store, and manage all your legal documents</p>
     </div>
     """, unsafe_allow_html=True)
-    # OLD:
-    auth_service = AuthService()
+    
 
     # NEW:
     auth_service = EnhancedAuthService()
