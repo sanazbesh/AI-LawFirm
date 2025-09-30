@@ -82,10 +82,84 @@ def show():
         margin-bottom: 0.5rem;
         font-weight: 700;
     }
-    .ai-header p {
-        color: rgba(255, 255, 255, 0.9);
-        font-size: 1.2rem;
-        margin: 0;
+    /* Default: Light text everywhere */
+    * {
+        color: #e2e8f0 !important;
+    }
+    
+    /* Headers - light */
+    h1, h2, h3, h4, h5, h6 {
+        color: #f1f5f9 !important;
+    }
+    
+    /* Dark text ONLY inside white expander boxes */
+    [data-testid="stExpander"] [data-testid="stExpanderDetails"] {
+        background: white !important;
+    }
+    
+    [data-testid="stExpander"] [data-testid="stExpanderDetails"] * {
+        color: #1e293b !important;
+    }
+    
+    /* Dark text in forms */
+    [data-testid="stForm"] {
+        background: rgba(255, 255, 255, 0.95) !important;
+    }
+    
+    [data-testid="stForm"] * {
+        color: #1e293b !important;
+    }
+    
+    /* Metrics - keep colored */
+    [data-testid="stMetricValue"] {
+        color: #60a5fa !important;
+    }
+    
+    [data-testid="stMetricLabel"] {
+        color: #cbd5e1 !important;
+    }
+    
+    /* Input fields */
+    input, textarea, select {
+        color: #1e293b !important;
+        background: white !important;
+    }
+    
+    /* Buttons */
+    .stButton button * {
+        color: white !important;
+    }
+    
+    /* Info/warning/error boxes - keep light text */
+    .stAlert, .stSuccess, .stWarning, .stError, .stInfo {
+        color: #1e293b !important;
+    }
+
+    /* Dropdown menus - dark text */
+    [data-baseweb="select"] [role="listbox"],
+    [data-baseweb="select"] [role="option"],
+    [data-baseweb="popover"] {
+        background: white !important;
+    }
+    
+    [data-baseweb="select"] [role="listbox"] *,
+    [data-baseweb="select"] [role="option"] *,
+    [data-baseweb="popover"] * {
+        color: #1e293b !important;
+    }
+    
+    /* Dropdown list items */
+    [data-baseweb="menu"] li,
+    [data-baseweb="menu"] li *,
+    div[role="listbox"] li,
+    div[role="listbox"] li * {
+        color: #1e293b !important;
+        background: white !important;
+    }
+    
+    /* Select/dropdown text */
+    .stSelectbox [data-baseweb="select"] > div {
+        color: #1e293b !important;
     }
     .metric-card {
         background: rgba(30, 41, 59, 0.8);
@@ -116,8 +190,8 @@ def show():
 
     </style>
     <div class="ai-header">
-        <h1>AI Legal Insights</h1>
-        <p>AI-powered document analysis, contract review, and legal intelligence</p>
+        <h1>📱 Mobile App</h1>
+        <p>Access LegalDoc Pro on the go</p>
     </div>
     """, unsafe_allow_html=True)
     
