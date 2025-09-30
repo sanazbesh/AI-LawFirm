@@ -357,15 +357,15 @@ def _show_matter_statistics():
     col1, col2, col3, col4 = st.columns(4)
     
     with col1:
-        active_matters = len([m for m in st.session_state.matters if m.status == 'active'])
+        active_matters = len([m for m in st.session_state.matters if m['status'] == 'active'])
         st.metric("🟢 Active Matters", active_matters)
     
     with col2:
-        total_budget = sum(m.budget for m in st.session_state.matters if m.status == 'active')
+        total_budget = sum(m.budget for m in st.session_state.matters if m['status'] == 'active')
         st.metric("💰 Active Budget", f"${total_budget:,.0f}")
     
     with col3:
-        total_hours = sum(m.actual_hours for m in st.session_state.matters if m.status == 'active')
+        total_hours = sum(m.actual_hours for m in st.session_state.matters if m['status'] == 'active')
         st.metric("⏰ Hours Logged", f"{total_hours:.1f}")
     
     with col4:
@@ -381,21 +381,21 @@ def _show_matter_statistics():
     
     with col5:
         overdue_matters = len([m for m in st.session_state.matters 
-                             if m.deadline and m.deadline < datetime.now() and m.status == 'active'])
+                             if m.['deadline'] and m['deadline'] < datetime.now() and m['status'] == 'active'])
         st.metric("⚠️ Overdue", overdue_matters, delta=None, delta_color="inverse")
     
     with col6:
         high_priority = len([m for m in st.session_state.matters 
-                           if m.priority in ['high', 'critical'] and m.status == 'active'])
+                           if m['priority'] in ['high', 'critical'] and m['status'] == 'active'])
         st.metric("🔴 High Priority", high_priority)
     
     with col7:
-        on_hold = len([m for m in st.session_state.matters if m.status == 'on_hold'])
+        on_hold = len([m for m in st.session_state.matters if m['status'] == 'on_hold'])
         st.metric("⏸️ On Hold", on_hold)
     
     with col8:
         closed_this_month = len([m for m in st.session_state.matters 
-                               if m.closed_date and (datetime.now() - m.closed_date).days <= 30])
+                               if m['closed_date'] and (datetime.now() - m['closed_date']).days <= 30])
         st.metric("✅ Closed (30d)", closed_this_month)
 
 def _show_create_matter_form(auth_service):
