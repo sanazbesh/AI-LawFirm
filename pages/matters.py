@@ -323,6 +323,33 @@ def show():
     .stAlert, .stSuccess, .stWarning, .stError, .stInfo {
         color: #1e293b !important;
     }
+
+    /* Dropdown menus - dark text */
+    [data-baseweb="select"] [role="listbox"],
+    [data-baseweb="select"] [role="option"],
+    [data-baseweb="popover"] {
+        background: white !important;
+    }
+    
+    [data-baseweb="select"] [role="listbox"] *,
+    [data-baseweb="select"] [role="option"] *,
+    [data-baseweb="popover"] * {
+        color: #1e293b !important;
+    }
+    
+    /* Dropdown list items */
+    [data-baseweb="menu"] li,
+    [data-baseweb="menu"] li *,
+    div[role="listbox"] li,
+    div[role="listbox"] li * {
+        color: #1e293b !important;
+        background: white !important;
+    }
+    
+    /* Select/dropdown text */
+    .stSelectbox [data-baseweb="select"] > div {
+        color: #1e293b !important;
+    }
     .metric-card {
         background: rgba(30, 41, 59, 0.8);
         backdrop-filter: blur(10px);
