@@ -809,7 +809,45 @@ Password: Any password (or use Demo Login)
     
     def authenticate_user(self, org_code, username, password, is_demo=False):
         """Authenticate user with subscription validation"""
-        # Mock authentication - in real app, check database
+        
+        # STEP 1: Check subscription status FIRST (before validating credentials)
+        if org_code not in ['demo', 'smithlaw', 'testfirm']:
+            subscription = self.subscription_manager.get_organization_subscription(org_code)
+            
+            if not subscription:
+                st.error("❌ Organization not found. Please check your organization code.")
+                return False
+            
+            # Check if subscription is active
+            if not self.subscription_manager.is_subscription_active(org_code):
+                status = subscription.get('status')
+                
+                st.error("🚫 Your subscription is not active. Please renew to access the platform.")
+                
+                if status == SubscriptionStatus.EXPIRED.value:
+                    st.warning("⏰ Your subscription has expired.")
+                elif status == SubscriptionStatus.TRIAL.value:
+                    trial_end = subscription.get('trial_end_date')
+                    if trial_end:
+                        st.warning(f"⏰ Your trial period ended on {trial_end.strftime('%Y-%m-%d')}.")
+                
+                st.markdown("### 💳 Renew Your Subscription")
+                
+                col1, col2 = st.columns(2)
+                with col1:
+                    if st.button("Upgrade Plan", type="primary", use_container_width=True):
+                        st.session_state['show_upgrade_modal'] = True
+                        st.session_state['upgrade_org_code'] = org_code
+                        st.rerun()
+                
+                with col2:
+                    if st.button("Contact Support", use_container_width=True):
+                        st.info("📧 Email: support@legaldocpro.com\n📞 Phone: 1-800-LEGAL-DOC")
+                
+                return False  # Block login completely
+        
+        # STEP 2: Only validate credentials if subscription is active
+        # Mock authentication - in production, check against database
         if is_demo or (username and password) or org_code.lower() in ['demo', 'smithlaw', 'testfirm']:
             user_data = {
                 'user_id': str(uuid.uuid4()),
