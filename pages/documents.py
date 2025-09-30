@@ -196,7 +196,7 @@ def show():
         <p>Organize, store, and manage all your legal documents</p>
     </div>
     """, unsafe_allow_html=True)
-    auth_service = AuthService()
+    auth_service = EnhancedAuthService()
     
     
     # Initialize documents in session state if not exists
