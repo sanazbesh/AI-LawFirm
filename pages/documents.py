@@ -117,6 +117,11 @@ def show():
     
 
     </style>
+    <div class="ai-header">
+        <h1>AI Legal Insights</h1>
+        <p>AI-powered document analysis, contract review, and legal intelligence</p>
+    </div>
+    """, unsafe_allow_html=True)
     """Main document management interface with subscription enforcement"""
     
     # Subscription check for document management
@@ -138,12 +143,7 @@ def show():
             st.rerun()
         return
     
-    st.markdown("""
-    <div class="main-header">
-        <h1>📁 Document Management</h1>
-        <p>Secure document storage, organization, and collaboration platform</p>
-    </div>
-    """, unsafe_allow_html=True)
+    
     
     # Initialize documents in session state if not exists
     if 'documents' not in st.session_state:
