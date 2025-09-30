@@ -6,7 +6,10 @@ import plotly.graph_objects as go
 from datetime import datetime, timedelta
 from dataclasses import dataclass
 from typing import List, Optional
+from types import SimpleNamespace
 
+def dict_to_obj(d):
+    return SimpleNamespace(**d)
 # Mock data classes (since services and models aren't available)
 @dataclass
 class TimeEntry:
@@ -83,6 +86,17 @@ def initialize_session_state():
         st.session_state.user = {'email': 'user@lawfirm.com', 'name': 'John Attorney'}
 
 def show():
+    # Convert all time entries to objects once
+    if 'time_entries' in st.session_state:
+        time_entries = [dict_to_obj(entry) for entry in st.session_state.time_entries]
+    else:
+        time_entries = []
+    
+    # Now use time_entries with dot notation
+    total_unbilled_hours = sum(
+        entry.hours for entry in time_entries 
+        if entry.status == "draft" and entry.billable
+    )
     initialize_session_state()
     auth_service = AuthService()
     # Professional header styling
