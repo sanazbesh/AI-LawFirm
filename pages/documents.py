@@ -201,6 +201,12 @@ def show():
     # NEW:
     auth_service = EnhancedAuthService()
     
+    # Get org_code from session state
+    user_data = st.session_state.get('user_data', {})
+    org_code = user_data.get('organization_code')
+    
+    # Now call your function
+    show_dashboard_stats(auth_service, org_code)
     
     # Initialize documents in session state if not exists
     if 'documents' not in st.session_state:
