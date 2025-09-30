@@ -379,16 +379,11 @@ def show():
 
     </style>
     <div class="ai-header">
-        <h1>AI Legal Insights</h1>
-        <p>AI-powered document analysis, contract review, and legal intelligence</p>
+        <h1>⚖️ Matter Management</h1>
+        <p>Track cases, matters, and client engagements</p>
     </div>
     """, unsafe_allow_html=True)
-    """Main matter management interface"""
-    initialize_matter_session_state()
-    auth_service = AuthService()
     
-    st.title("⚖️ Matter Management")
-    st.markdown("---")
     
     # Navigation tabs
     tab1, tab2, tab3, tab4, tab5 = st.tabs(["📋 Matters", "📊 Analytics", "✅ Tasks", "⏰ Time Tracking", "💰 Expenses"])
