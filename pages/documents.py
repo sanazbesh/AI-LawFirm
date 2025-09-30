@@ -5,7 +5,7 @@ import plotly.graph_objects as go
 from datetime import datetime, timedelta
 import uuid
 import os
-
+from services.subscription_manager import EnhancedAuthService
 def show():
     # Professional header styling
     st.markdown("""
@@ -196,6 +196,10 @@ def show():
         <p>Organize, store, and manage all your legal documents</p>
     </div>
     """, unsafe_allow_html=True)
+    # OLD:
+    auth_service = AuthService()
+
+    # NEW:
     auth_service = EnhancedAuthService()
     
     
