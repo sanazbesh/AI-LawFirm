@@ -3,6 +3,116 @@ import pandas as pd
 from datetime import datetime
 
 def show():
+    # Professional header styling
+    st.markdown("""
+    <style>
+    /* Match main app background */
+    .stApp {
+        background: linear-gradient(135deg, 
+            #1a0b2e 0%,
+            #2d1b4e 15%,
+            #1e3a8a 35%,
+            #0f172a 50%,
+            #1e3a8a 65%,
+            #16537e 85%,
+            #0891b2 100%) !important;
+        min-height: 100vh;
+        position: relative;
+    }
+    
+    /* Geometric overlay pattern */
+    .stApp::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-image: 
+            radial-gradient(circle at 20% 30%, rgba(168, 85, 247, 0.1) 0%, transparent 50%),
+            radial-gradient(circle at 80% 70%, rgba(14, 165, 233, 0.1) 0%, transparent 50%),
+            radial-gradient(circle at 50% 50%, rgba(59, 130, 246, 0.05) 0%, transparent 50%);
+        pointer-events: none;
+    }
+    /* Sidebar styling - must be in each page file */
+    [data-testid="stSidebar"] {
+        background: linear-gradient(180deg, #667eea 0%, #764ba2 100%) !important;
+        padding: 0 !important;
+    }
+    
+    [data-testid="stSidebar"] > div:first-child {
+        padding: 2rem 1rem !important;
+    }
+    
+    [data-testid="stSidebar"] .css-17eq0hr {
+        color: white !important;
+    }
+    
+    [data-testid="stSidebar"] label {
+        color: white !important;
+        font-weight: 600 !important;
+    }
+    
+    [data-testid="stSidebar"] button {
+        background: rgba(255,255,255,0.15) !important;
+        color: white !important;
+        border: 1px solid rgba(255,255,255,0.2) !important;
+        border-radius: 12px !important;
+        padding: 0.75rem 1rem !important;
+        width: 100% !important;
+    }
+    
+    [data-testid="stSidebar"] button:hover {
+        background: rgba(255,255,255,0.25) !important;
+    }
+    .ai-header {
+        background: rgba(30, 58, 138, 0.6);
+        backdrop-filter: blur(10px);
+        padding: 3rem 2rem;
+        border-radius: 16px;
+        margin-bottom: 2rem;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        border: 1px solid rgba(59, 130, 246, 0.2);
+    }
+    .ai-header h1 {
+        color: white;
+        font-size: 2.5rem;
+        margin-bottom: 0.5rem;
+        font-weight: 700;
+    }
+    .ai-header p {
+        color: rgba(255, 255, 255, 0.9);
+        font-size: 1.2rem;
+        margin: 0;
+    }
+    .metric-card {
+        background: rgba(30, 41, 59, 0.8);
+        backdrop-filter: blur(10px);
+        padding: 1.5rem;
+        border-radius: 12px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+        border-left: 4px solid #3b82f6;
+        border: 1px solid rgba(59, 130, 246, 0.2);
+    }
+    .stTabs [data-baseweb="tab-list"] {
+        gap: 8px;
+    }
+    .stTabs [data-baseweb="tab"] {
+        padding: 12px 24px;
+        background-color: rgba(30, 41, 59, 0.6);
+        backdrop-filter: blur(10px);
+        border-radius: 8px;
+        font-weight: 600;
+        color: #cbd5e1;
+        border: 1px solid rgba(59, 130, 246, 0.2);
+    }
+    .stTabs [aria-selected="true"] {
+        background-color: rgba(59, 130, 246, 0.8);
+        color: white;
+    }
+    
+
+    </style>
     st.markdown("""
     <div class="main-header">
         <h1>⚙️ System Settings & Configuration</h1>
