@@ -276,7 +276,7 @@ def show():
         color: #e2e8f0 !important;
     }
     
-    .main .block-container * {
+    .main .block-container > * {
         color: #e2e8f0 !important;
     }
     
@@ -285,9 +285,28 @@ def show():
         color: #f1f5f9 !important;
     }
     
-    /* Keep certain elements their original colors */
-    .stButton button, .stButton button * {
-        color: white !important;
+    /* Dark text for white/light backgrounds (forms, expanders, white boxes) */
+    .stExpander, 
+    [data-testid="stExpander"],
+    .stForm,
+    [data-testid="stForm"],
+    div[style*="background: white"],
+    div[style*="background: #fff"],
+    div[style*="background-color: white"],
+    div[style*="background-color: #fff"],
+    div[style*="background: rgb(255, 255, 255)"] {
+        color: #1e293b !important;
+    }
+    
+    .stExpander *, 
+    [data-testid="stExpander"] *,
+    .stForm *,
+    [data-testid="stForm"] *,
+    div[style*="background: white"] *,
+    div[style*="background: #fff"] *,
+    div[style*="background-color: white"] *,
+    div[style*="background-color: #fff"] * {
+        color: #1e293b !important;
     }
     
     /* Metrics */
@@ -299,15 +318,15 @@ def show():
         color: #cbd5e1 !important;
     }
     
-    /* Form labels and text */
-    label, .stMarkdown, .stText, p, span, div {
-        color: #e2e8f0 !important;
-    }
-    
-    /* Input fields */
+    /* Input fields - dark text on white background */
     input, textarea, select {
         color: #1e293b !important;
         background: white !important;
+    }
+    
+    /* Buttons stay white text */
+    .stButton button, .stButton button * {
+        color: white !important;
     }
     .metric-card {
         background: rgba(30, 41, 59, 0.8);
