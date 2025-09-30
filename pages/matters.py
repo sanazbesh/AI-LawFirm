@@ -271,9 +271,8 @@ def show():
         margin-bottom: 0.5rem;
         font-weight: 700;
     }
-    /* Default: Light text for dark background */
-    .main .block-container,
-    .main .block-container * {
+    /* Default: Light text everywhere */
+    * {
         color: #e2e8f0 !important;
     }
     
@@ -282,19 +281,25 @@ def show():
         color: #f1f5f9 !important;
     }
     
-    /* ONLY white boxes get dark text - target expanders specifically */
-    .stExpander[data-testid="stExpander"] > div > div,
-    .stExpander[data-testid="stExpander"] > div > div * {
+    /* Dark text ONLY inside white expander boxes */
+    [data-testid="stExpander"] [data-testid="stExpanderDetails"] {
+        background: white !important;
+    }
+    
+    [data-testid="stExpander"] [data-testid="stExpanderDetails"] * {
         color: #1e293b !important;
     }
     
-    /* Forms get dark text */
-    .stForm,
-    .stForm * {
+    /* Dark text in forms */
+    [data-testid="stForm"] {
+        background: rgba(255, 255, 255, 0.95) !important;
+    }
+    
+    [data-testid="stForm"] * {
         color: #1e293b !important;
     }
     
-    /* Metrics stay colored */
+    /* Metrics - keep colored */
     [data-testid="stMetricValue"] {
         color: #60a5fa !important;
     }
@@ -303,15 +308,20 @@ def show():
         color: #cbd5e1 !important;
     }
     
-    /* Input fields - dark text */
+    /* Input fields */
     input, textarea, select {
         color: #1e293b !important;
         background: white !important;
     }
     
-    /* Buttons - white text */
-    .stButton button {
+    /* Buttons */
+    .stButton button * {
         color: white !important;
+    }
+    
+    /* Info/warning/error boxes - keep light text */
+    .stAlert, .stSuccess, .stWarning, .stError, .stInfo {
+        color: #1e293b !important;
     }
     .metric-card {
         background: rgba(30, 41, 59, 0.8);
