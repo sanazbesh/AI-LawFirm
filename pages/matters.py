@@ -304,6 +304,11 @@ def show():
     
 
     </style>
+    <div class="ai-header">
+        <h1>AI Legal Insights</h1>
+        <p>AI-powered document analysis, contract review, and legal intelligence</p>
+    </div>
+    """, unsafe_allow_html=True)
     """Main matter management interface"""
     initialize_matter_session_state()
     auth_service = AuthService()
