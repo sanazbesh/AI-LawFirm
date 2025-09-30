@@ -271,10 +271,43 @@ def show():
         margin-bottom: 0.5rem;
         font-weight: 700;
     }
-    .ai-header p {
-        color: rgba(255, 255, 255, 0.9);
-        font-size: 1.2rem;
-        margin: 0;
+    /* Make all text white/light for readability on dark background */
+    .main .block-container {
+        color: #e2e8f0 !important;
+    }
+    
+    .main .block-container * {
+        color: #e2e8f0 !important;
+    }
+    
+    /* Headers */
+    h1, h2, h3, h4, h5, h6 {
+        color: #f1f5f9 !important;
+    }
+    
+    /* Keep certain elements their original colors */
+    .stButton button, .stButton button * {
+        color: white !important;
+    }
+    
+    /* Metrics */
+    [data-testid="stMetricValue"] {
+        color: #60a5fa !important;
+    }
+    
+    [data-testid="stMetricLabel"] {
+        color: #cbd5e1 !important;
+    }
+    
+    /* Form labels and text */
+    label, .stMarkdown, .stText, p, span, div {
+        color: #e2e8f0 !important;
+    }
+    
+    /* Input fields */
+    input, textarea, select {
+        color: #1e293b !important;
+        background: white !important;
     }
     .metric-card {
         background: rgba(30, 41, 59, 0.8);
