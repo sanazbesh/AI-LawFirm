@@ -7,7 +7,10 @@ import pandas as pd
 from dataclasses import dataclass, field
 from typing import List, Dict, Any, Optional
 from enum import Enum
+from types import SimpleNamespace
 
+def dict_to_obj(d):
+    return SimpleNamespace(**d)
 class MatterType(Enum):
     LITIGATION = "litigation"
     CORPORATE = "corporate"
@@ -194,6 +197,17 @@ def initialize_matter_session_state():
         st.session_state.matters.extend(sample_matters)
 
 def show():
+    # Convert all time entries to objects once
+    if 'time_entries' in st.session_state:
+        time_entries = [dict_to_obj(entry) for entry in st.session_state.time_entries]
+    else:
+        time_entries = []
+    
+    # Now use time_entries with dot notation
+    total_unbilled_hours = sum(
+        entry.hours for entry in time_entries 
+        if entry.status == "draft" and entry.billable
+    )
     # Professional header styling
     st.markdown("""
     <style>
