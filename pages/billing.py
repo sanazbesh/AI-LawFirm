@@ -8,6 +8,20 @@ from dataclasses import dataclass
 from typing import List, Optional
 from types import SimpleNamespace
 
+
+class SafeNamespace:
+    """Safe namespace that returns None for missing attributes"""
+    def __init__(self, data):
+        if isinstance(data, dict):
+            self.__dict__.update(data)
+        else:
+            self.__dict__ = data.__dict__
+    
+    def __getattr__(self, name):
+        return self.__dict__.get(name, None)
+
+
+
 def dict_to_obj(d):
     return SimpleNamespace(**d)
 # Mock data classes (since services and models aren't available)
@@ -86,13 +100,13 @@ def initialize_session_state():
         st.session_state.user = {'email': 'user@lawfirm.com', 'name': 'John Attorney'}
 
 def show():
-    # Convert all time entries to objects once
+    # Convert all time entries to safe objects once
     if 'time_entries' in st.session_state:
-        time_entries = [dict_to_obj(entry) for entry in st.session_state.time_entries]
+        time_entries = [SafeNamespace(entry) for entry in st.session_state.time_entries]
     else:
         time_entries = []
     
-    # Now use time_entries with dot notation
+    # Now this works safely
     total_unbilled_hours = sum(
         entry.hours for entry in time_entries 
         if entry.status == "draft" and entry.billable
