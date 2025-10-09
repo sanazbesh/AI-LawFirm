@@ -761,7 +761,7 @@ def show_document_analytics(auth_service, org_code):
     """Show document analytics dashboard"""
     
     # Check if advanced analytics are available
-    if not auth_service.can_use_feature(org_code, "advanced_analytics"):
+    if not auth_service.subscription_manager.can_use_feature(org_code, "advanced_analytics"):
         st.warning("📊 Advanced Document Analytics requires Professional plan or higher.")
         if st.button("Upgrade to Professional"):
             st.session_state['show_upgrade_modal'] = True
