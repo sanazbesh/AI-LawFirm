@@ -331,7 +331,7 @@ def show_upload_interface(auth_service, org_code):
         st.warning("⚠️ No subscription found. Please contact your administrator.")
         return
         
-    limits = auth_service.subscription_manager.get_plan_limits(subscription["plan"])
+    limits = auth_service.subscription_manager.get_plan_limits(subscription.get("plan", "trial"))
     
     # Display storage info
     storage_used = subscription.get("storage_used_gb", 0)
@@ -834,7 +834,7 @@ def show_basic_document_analytics():
 def show_storage_analytics(auth_service, org_code):
     """Show detailed storage analytics"""
     subscription = auth_service.subscription_manager.get_organization_subscription(org_code)
-    limits = auth_service.subscription_manager.get_plan_limits(subscription["plan"])
+    limits = auth_service.subscription_manager.get_plan_limits(subscription.get("plan", "trial"))
     
     st.subheader("💾 Storage Analytics")
     
@@ -866,7 +866,7 @@ def show_storage_report(auth_service, org_code):
     st.subheader("📊 Storage Usage Report")
     
     subscription = auth_service.subscription_manager.get_organization_subscription(org_code)
-    limits = auth_service.subscription_manager.get_plan_limits(subscription["plan"])
+    limits = auth_service.subscription_manager.get_plan_limits(subscription.get("plan", "trial"))
     
     # Current usage
     storage_used = subscription.get("storage_used_gb", 0)
@@ -958,7 +958,7 @@ def show_document_settings():
     st.markdown("#### Storage Management")
     
     storage_used = subscription.get("storage_used_gb", 0)
-    limits = auth_service.subscription_manager.get_plan_limits(subscription["plan"])
+    limits = auth_service.subscription_manager.get_plan_limits(subscription.get("plan", "trial"))
     max_storage = limits.get("storage_gb", 0)
     
     col1, col2, col3 = st.columns(3)
