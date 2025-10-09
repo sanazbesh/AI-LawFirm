@@ -417,7 +417,7 @@ def show_upload_interface(auth_service, org_code):
         # Batch upload (Professional+ only)
         st.divider()
         
-        if auth_service.can_use_feature(org_code, "batch_processing"):
+        if auth_service.subscription_manager.can_use_feature(org_code, "batch_processing"):
             st.markdown("#### Batch Upload")
             batch_files = st.file_uploader(
                 "Upload multiple files",
@@ -933,7 +933,7 @@ def show_document_settings():
             st.warning("Auto-deletion is permanent and cannot be undone!")
     
     # Advanced settings for higher tier plans
-    if auth_service.can_use_feature(org_code, "white_label"):
+    if auth_service.subscription_manager.can_use_feature(org_code, "white_label"):
         st.markdown("#### White Label Customization")
         
         col1, col2 = st.columns(2)
@@ -1013,7 +1013,7 @@ def show_document_settings():
     
     with col2:
         if st.button("☁️ Backup to Cloud"):
-            if auth_service.can_use_feature(org_code, "custom_integrations"):
+            if auth_service.subscription_manager.can_use_feature(org_code, "custom_integrations"):
                 st.success("Backup initiated to cloud storage!")
             else:
                 st.error("Cloud backup requires Professional plan or higher")
