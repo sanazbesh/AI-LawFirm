@@ -326,6 +326,11 @@ def show_upload_interface(auth_service, org_code):
     
     # Get current subscription limits
     subscription = auth_service.subscription_manager.get_organization_subscription(org_code)
+    # Add this check
+    if not subscription:
+        st.warning("⚠️ No subscription found. Please contact your administrator.")
+        return
+        
     limits = auth_service.subscription_manager.get_plan_limits(subscription["plan"])
     
     # Display storage info
