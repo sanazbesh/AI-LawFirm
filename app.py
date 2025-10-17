@@ -386,12 +386,44 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-# Import services with error handling
+# Toggle this to False later when you wire real auth
+BYPASS_AUTH = True
+
 try:
-    from services.subscription_manager import EnhancedAuthService as AuthService
-except ImportError:
-    st.error("Authentication service not found. Please check the services/auth.py file.")
-    st.stop()
+    if not BYPASS_AUTH:
+        from services.subscription_manager import EnhancedAuthService as AuthService
+    else:
+        raise ImportError("Bypass auth stub")
+except Exception:
+    # Minimal stub to keep the app running without login
+    class AuthService:
+        def __init__(self):
+            # fake user in session
+            st.session_state.setdefault("user", {"email": "dev@local"})
+
+        def is_logged_in(self) -> bool:
+            return True  # always logged in
+
+        def show_login(self):
+            pass  # no-op
+
+        def show_user_settings(self):
+            with st.sidebar:
+                st.subheader("User (Bypass)")
+                st.write("dev@local")
+
+        def render_sidebar(self):
+            # Use page_modules defined below for navigation
+            with st.sidebar:
+                st.markdown("## LegalDoc Pro")
+                items = list(page_modules.keys())
+                current = st.session_state.get("current_page", items[0])
+                idx = items.index(current) if current in items else 0
+                choice = st.radio("Navigate", items, index=idx)
+                st.session_state["current_page"] = choice
+                st.markdown("---")
+                st.caption("🔓 Bypass auth enabled")
+
 
 try:
     from session_manager import initialize_session_state, load_sample_data
@@ -455,6 +487,8 @@ def show_basic_dashboard():
 
 # Try to import pages, with fallbacks
 page_modules = {
+    "Questions":  safe_import_page("questions",  "pages.questions"),
+    "Summarizer": safe_import_page("summarizer", "pages.summarizer"),
     "Executive Dashboard": safe_import_page("dashboard", "pages.dashboard"),
     "Document Management": safe_import_page("documents", "pages.documents"), 
     "Matter Management": safe_import_page("matters", "pages.matters"),

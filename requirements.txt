@@ -1,42 +1,18 @@
-# LegalDoc Pro - Python Dependencies\
-# Legal Document Management Dashboard\
-\
-# Core web framework\
-streamlit>=1.28.0\
-\
-# Data manipulation and analysis\
-pandas>=1.5.0\
-\
-# Date and time handling (built-in, but good to document)\
-# datetime - built-in Python module\
-\
-# File handling and path operations (built-in, but good to document)\
-# pathlib - built-in Python module\
-# os - built-in Python module\
-# json - built-in Python module\
-# hashlib - built-in Python module\
-# time - built-in Python module\
-\
-# Optional: For future database integration\
-# Uncomment when moving to Phase 2\
-# sqlite3 - built-in Python module\
-\
-# Optional: For future PDF processing\
-# Uncomment when adding PDF preview functionality\
-# PyPDF2>=3.0.0\
-# pdfplumber>=0.9.0\
-\
-# Optional: For future document processing\
-# Uncomment when adding advanced document features\
-# python-docx>=0.8.11\
-# openpyxl>=3.1.0\
-\
-# Optional: For future email integration\
-# Uncomment when adding email functionality\
-# email-validator>=2.0.0\
-# smtplib - built-in Python module\
-\
-# Development and testing (optional)\
-# pytest>=7.0.0\
-# black>=23.0.0\
-# flake8>=6.0.0}
+# LegalDoc Pro - Python Dependencies
+
+# Core web framework
+streamlit>=1.28.0
+
+# Data manipulation and analysis
+pandas>=1.5.0
+
+# RAG & summarizer (your BART pipeline)
+torch
+transformers>=4.41
+
+# Document text extraction (used by summarizer2.py)
+pypdf>=4.2
+docx2txt>=0.8
+
+plotly>=5.24
+scikit-learn>=1.4
