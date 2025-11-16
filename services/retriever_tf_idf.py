@@ -1,4 +1,4 @@
-# services/retriever_tf_idf.py
+
 from __future__ import annotations
 import re
 from dataclasses import dataclass
@@ -6,7 +6,6 @@ from typing import List, Dict, Iterable, Tuple
 import numpy as np
 from sklearn.feature_extraction.text import TfidfVectorizer
 
-# Optional, used by ask() for extractive answers
 try:
     from services.qa_llm import answer_from_context_extractive
 except Exception:
