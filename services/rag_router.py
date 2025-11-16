@@ -5,15 +5,15 @@ from typing import List, Dict
 from services.retriever_tf_idf import TinyTfidfQARetriever
 from services.retriever_hybrid import HybridRetriever, Chunk
 
-# Optional: tiny extractor fallback if you store on-disk paths
+
 try:
-    # summarizer2.extract_text is just a robust file text extractor; it doesn't summarize.
-    from summarizer2 import extract_text as _extract_text_from_path  # type: ignore
+ 
+    from summarizer2 import extract_text as _extract_text_from_path  
 except Exception:
     _extract_text_from_path = None
 
-# ---------- tiny deterministic tools (optional; fast answers) ----------
-# ---------- tiny deterministic tools (optional; fast answers) ----------
+
+# ---------- tiny deterministic tools ( fast answers) ----------
 def _src(label, preview):
     return [{"rank": 1, "doc_name": label, "client": "—", "chunk_id": 0, "score": 1.0, "preview": preview}]
 
